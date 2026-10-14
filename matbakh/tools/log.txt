@@ -1,97 +1,42 @@
-b1
-  found 4 picked File:Foul Mdammis, Tunisie.jpg
-b2
-  found 4 picked File:Easter breakfast in Serbia (close-up).jpg
-b3
-  found 4 picked File:Shakshuka by Calliopejen1.jpg
-b4
-  found 4 picked File:Samba dasami ghanta 01.jpg
-b5
+b1 -> File:Ful medames.jpg
+b2 -> File:Liat Portal for Foodie Disorder - Cheese burekas Israeli breakfast.jpg
+b3 -> File:Shakshuka by Calliopejen1.jpg
+b4 candidates 4
+b4 -> File:Hummus Fatteh with Meat.jpg
+b5 -> File:Apple cinnamon oatmeal.jpg
+b6 -> File:Food in Israel.jpg
+b7 candidates 4
+b7 -> File:Labneh (5196911587).jpg
+b8 -> File:الكسره.jpg
+l1 -> File:Du bamia avec du riz en février 2022.jpg
+l2 -> File:Danh's Garden, Shreveport, LA 2011.jpg
+l3 -> File:Bamia-Ocras tomate (cropped).JPG
+l4 -> File:Etli kuru fasulye.jpg
   retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  found 4 picked File:Apple cinnamon oatmeal.jpg
-b6
-  found 4 picked File:4pcs Falafel, Petra Restaurant, 2026 (01).jpg
-b7
-  found 2 picked File:Za'atar with labneh manakish at Agasi, Lajpat Nagar, Delhi (2025-08-13).jpg
-b8
-  found 4 picked File:Kisra maker.jpeg
-l1
+l5 -> File:Molokheya hi res.JPG
+l6 candidates 4
+l6 -> File:Mixed grilled meat and salad on a wooden board.jpg
+l7 -> File:Preparación de guiso de lentejas con verduras y caldo de carne en cocina doméstica argentina.jpg
+l8 -> File:Chicken breast baked in parchment on fried potato pancake, with mixed vegetables - Massachusetts.jpg
+l9 -> File:Tajine marocain.jpg
+l10 -> File:Iraqi Dolma-Mosul 02.jpg
+l11 -> File:Kabsa.jpg
+l12 -> File:Mujaddara.jpg
+l13 candidates 4
+l13 -> File:Kofta Curry (cropped).JPG
+l14 -> File:Fish Sayadieh.jpg
+d1 -> File:Lentil Soup - Schnitzel & Co. 2026-05-16.jpg
+d2 -> File:Tzatziki meze or appetizer, also used as a sauce.jpg
   retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  retry 4 <HTTPError 429: 'Too Many Requests'>
-ERROR l1 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Okra+stew+beef+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=360&format=json&formatversion=2')
-l2
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  found 4 picked File:Riz blanc au poisson.jpg
-l3
-  found 4 picked File:Bamia-Ocras tomate (cropped).JPG
-l4
-  found 4 picked File:Etli kuru fasulye.jpg
-l5
-  found 4 picked File:Corchorus olitorius (1459401640).jpg
-l6
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  retry 4 <HTTPError 429: 'Too Many Requests'>
-ERROR l6 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&titles=File%3ADoner+kebab+takeaway+focus+1.jpg&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=800&format=json&formatversion=2')
-l7
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  found 4 picked File:Preparación de guiso de lentejas con verduras y caldo de carne en cocina doméstica argentina.jpg
-l8
-  found 4 picked File:Le Christ chez Marthe et Marie - Joos Goemaere.jpg
-l9
-  found 4 picked File:Tajine marocain.jpg
-l10
-  found 4 picked File:Vorspeise mit Dolma und Tzatziki.jpg
-l11
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  retry 4 <HTTPError 429: 'Too Many Requests'>
-ERROR l11 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AKabsa.jpg&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=800&format=json&formatversion=2')
-l12
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  found 4 picked File:Mujaddara.jpg
-l13
-  found 0 picked None
-l14
-  found 4 picked File:Fish Sayadieh.jpg
-d1
-  found 4 picked File:Homemade Lentil Soup - Lavash 2025-02-10.jpg
-d2
-  found 4 picked File:Christmas table (Serbian cuisine).jpg
-d3
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  retry 4 <HTTPError 429: 'Too Many Requests'>
-ERROR d3 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Tuna+salad+vegetables+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=360&format=json&formatversion=2')
-d4
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  found 4 picked File:Chicken Vegetable Soup (8731954951).jpg
-d5
-  found 4 picked File:Liat Portal for Foodie Disorder - Herb Omelette with Israeli Salad and Orange Juice.jpg
-d6
-  found 4 picked File:Liat Portal for Foodie Disorder - Grilled Cheese Sandwich with Fresh Salad.jpg
-d7
-  found 4 picked File:Món ăn Đông Hà, Tết 2022 (phở Lý Quốc sư ở công viên Cọ Dầu) (2).jpg
-d8
-  found 4 picked File:Butter chicken rice bowl - chaiiwala 2024-02-10.jpg
-d9
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  retry 2 <HTTPError 429: 'Too Many Requests'>
-  retry 3 <HTTPError 429: 'Too Many Requests'>
-  retry 4 <HTTPError 429: 'Too Many Requests'>
-ERROR d9 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Freekeh+soup+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=360&format=json&formatversion=2')
-d10
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-  found 4 picked File:Black bean hummus and vegetables - 2021-11-20 - Sarah Stierch.jpg
-done 26 images
+d3 candidates 4
+d3 -> File:Tuna fish sandwiches for the National School Lunch Program (1).jpg
+d4 -> File:Chicken Vegetable Soup (8731954951).jpg
+d5 -> File:Omelette with bread and parsley 01.jpg
+d6 -> File:Liat Portal for Foodie Disorder - Israeli breakfast in Tel Aviv.jpg
+d7 candidates 4
+d7 -> File:Vegetable soup 6.jpg
+d8 -> File:Dinner at Northwestern University, Chicago, Illinois.jpg
+d9 candidates 4
+d9 -> File:Freekeh with roasted vegetables.jpg
+d10 -> File:Vegetables and Hummus (7271118362).jpg
+done 32 images
