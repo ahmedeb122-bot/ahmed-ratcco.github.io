@@ -101,6 +101,22 @@ svg.food{width:100%;height:auto;aspect-ratio:184/112;max-width:100%;display:bloc
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .grid .mcard{flex:auto}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:30px 0}
+/* صور الأكل */
+.ph{display:block;aspect-ratio:4/3;border-radius:20px;overflow:hidden;background:var(--mist2);box-shadow:0 2px 10px var(--shadow)}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.mcard .ph{margin:8px 0 6px}
+.grid .ph{aspect-ratio:1/1}
+.hero .ph{aspect-ratio:16/10;border-radius:22px}
+.hero .lbl{top:10px!important;inset-inline-start:10px!important}
+.hero .corner{top:10px!important;inset-inline-end:10px!important}
+.hero h2{margin-top:10px!important}
+.stage .ph{aspect-ratio:4/3;border-radius:28px;margin:0 6px}
+.stage .b1{top:6%;inset-inline-end:4%}.stage .b2{top:auto;bottom:6%;inset-inline-start:4%}.stage .b3{bottom:6%;inset-inline-end:4%}
+.credits{font-size:.8rem;color:var(--muted);line-height:1.5}
+.credits a{color:var(--muted)}
+.step{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.step i{width:26px;height:26px;border-radius:50%;background:var(--t-blue);display:grid;place-items:center;flex:none;font-style:normal;font-weight:700;font-size:.85rem}
+.topic{direction:ltr;font-family:monospace;background:var(--mist2);padding:2px 8px;border-radius:8px;user-select:all}
 /* الوجبة القادمة */
 .hero{background:var(--card);border-radius:30px;padding:14px;box-shadow:0 6px 24px var(--shadow);position:relative;overflow:hidden;margin-top:18px}
 .hero::before{content:"";position:absolute;inset:0 0 auto 0;height:60%;background:linear-gradient(180deg,var(--tint,var(--t-pink)),transparent)}
@@ -308,6 +324,13 @@ dialog h2{font-size:1.25rem;font-weight:600;margin-bottom:4px}
 
     <section id="v-rules" class="rules view" hidden>
       <section>
+        <h2>🔔 تنبيهات مواعيد الوجبات</h2>
+        <p class="sub" style="margin:0 0 8px">يرن الجوال قبل الوجبة بساعة، ثم كل نصف ساعة، ويتوقف عند الضغط على <b>«تم الطبخ»</b> (من التنبيه نفسه أو من التطبيق).</p>
+        <div class="step"><i>1</i><span>ثبّتي تطبيق <b>ntfy</b> المجاني:<br><a class="btn quiet" style="margin-top:6px" href="https://play.google.com/store/apps/details?id=io.heckel.ntfy" target="_blank" rel="noopener">فتح متجر جوجل بلاي</a></span></div>
+        <div class="step"><i>2</i><span>اشتركي في قناة المطبخ:<br><a class="btn solid" style="margin-top:6px" href="ntfy://ntfy.sh/matbakh-431a8f1f83">اشتراك في تنبيهات المطبخ</a><br><small class="sub">إذا لم يعمل الزر: افتحي ntfy ← زر + ← اكتبي <span class="topic">matbakh-431a8f1f83</span> ← Subscribe (اشتراك).</small></span></div>
+        <div class="step"><i>3</i><span>عند أول تنبيه اضغطي <b>Allow</b> (السماح بالإشعارات).</span></div>
+      </section>
+      <section>
         <h2>شكل الطبق الصحيح</h2>
         <div class="plate"><div class="v">نصف الطبق<br>خضار</div><div class="p">ربع: بروتين</div><div class="c">ربع: نشويات</div></div>
         <p style="margin:0">النشويات = كسرة أو عصيدة أو أرز أو خبز. <b>واحد فقط</b> في الوجبة، وليس اثنين معاً.</p>
@@ -372,6 +395,7 @@ dialog h2{font-size:1.25rem;font-weight:600;margin-bottom:4px}
         <h2>قنوات الطبخ</h2>
         <div id="channels"></div>
       </section>
+      <section><h2>مصادر الصور</h2><p class="credits" id="credits" style="margin:0">صور الأكلات من ويكيميديا كومنز، بأسماء المصورين ورخصهم.</p></section>
       <p class="sub">هذا الجدول مبني على الإرشادات الطبية العامة، ولا يغني عن مراجعة طبيبها.</p>
     </section>
   </main>
@@ -601,6 +625,33 @@ function drawFood(id){
   return `<svg class="food" viewBox="8 34 184 112" aria-hidden="true">${defs}${base}${tp}</svg>`;
 }
 
+// صورة حقيقية للأكلة (من ويكيميديا)، وإذا لم تتوفر نرسمها
+function photo(id){return `<span class="ph"><img src="img/${id}.jpg" alt="" loading="lazy" decoding="async" onerror="this.parentNode.outerHTML=drawFood('${id}')"></span>`}
+
+/* ===== التنبيهات عبر تطبيق ntfy ===== */
+const NTFY="https://ntfy.sh", TOPIC="matbakh-431a8f1f83";
+const isoDay=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function ntfyPost(topic,text){return fetch(NTFY+"/"+topic,{method:"POST",body:text}).catch(()=>{})}
+// نرسل وجبات اليوم الفعلية، حتى يذكر التنبيه اسم الأكلة الصحيحة بعد أي تغيير
+function postPlan(){
+  const w=getWeek(thisWeek)[todayIdx],plan=isoDay(now)+" b:"+w.b+" l:"+w.l+" d:"+w.d;
+  if(store.get("mm_plan")===plan||!navigator.onLine)return;
+  ntfyPost(TOPIC+"-plan",plan).then(r=>{if(r&&r.ok)store.set("mm_plan",plan)});
+}
+// إذا ضغطت زوجتك «تم الطبخ» من التنبيه أو من جوالها، يظهر هنا أيضاً
+let syncing=false;
+function syncDone(){
+  if(syncing||!navigator.onLine)return;syncing=true;
+  fetch(NTFY+"/"+TOPIC+"-done/json?poll=1&since=14h").then(r=>r.ok?r.text():"").then(txt=>{
+    const st={};txt.split("\n").filter(Boolean).map(l=>{try{return JSON.parse(l)}catch(e){return null}})
+      .filter(m=>m&&m.event==="message").sort((a,b)=>a.time-b.time).forEach(m=>{
+        const p=(m.message||"").trim().split(/\s+/);if(p.length>=2&&p[p.length-2]===isoDay(now))st[p[p.length-1]]=p[0]!=="undo"});
+    const d=done[todayKey];let ch=false;
+    Object.entries(st).forEach(([k,v])=>{if(!!d[k]!==v){ch=true;if(v)d[k]=true;else delete d[k]}});
+    if(ch){store.set("mm_done",done);renderMeals()}
+  }).catch(()=>{}).finally(()=>syncing=false);
+}
+
 /* ===== أيقونات وألوان ===== */
 const MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
 const SLOT_TINT={b:"var(--t-yel)",l:"var(--t-pink)",d:"var(--t-lav)"};
@@ -655,7 +706,7 @@ function renderHead(){
   document.querySelectorAll("#tiles [data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
 }
 function card(m,o){
-  return `<button class="mcard${o.cls||""}" ${o.id?`id="${o.id}"`:""} data-open="${m.id}" ${o.k?`data-k="${o.k}"`:""} style="--tint:${o.tint}">${o.label?`<span class="slot${o.flag?" hot":""}">${o.label}${o.flag?" · "+o.flag:""}</span>`:""}${drawFood(m.id)}<h3>${m.n}${prefs[m.id]===1?" ⭐":""}</h3><span class="when">${o.time?ICO.clock+o.time:m.t}</span></button>`;
+  return `<button class="mcard${o.cls||""}" ${o.id?`id="${o.id}"`:""} data-open="${m.id}" ${o.k?`data-k="${o.k}"`:""} style="--tint:${o.tint}">${o.label?`<span class="slot${o.flag?" hot":""}">${o.label}${o.flag?" · "+o.flag:""}</span>`:""}${photo(m.id)}<h3>${m.n}${prefs[m.id]===1?" ⭐":""}</h3><span class="when">${o.time?ICO.clock+o.time:m.t}</span></button>`;
 }
 function renderMeals(){
   renderHead();
@@ -666,7 +717,7 @@ function renderMeals(){
     return card(m,{id:"card-"+s.k,k:s.k,label:s.name,time:s.time,tint:SLOT_TINT[s.k],cls:(isDone?" done":"")+(isNext?" now":""),flag:isDone?"✓ تم":isNext?"القادمة":""});
   }).join("");
   w.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open,b.dataset.k));
-  renderNow();
+  renderNow();postPlan();
   if(detail){
     if(detail.k&&detail.slot)detail.id=week[sel][detail.k];
     const a=document.activeElement;if(!(a&&a.tagName==="INPUT"))renderDetail();
@@ -689,14 +740,14 @@ function renderNow(){
   if(!k){
     const tomorrow=todayIdx===6?getWeek(thisWeek+1)[0]:getWeek(thisWeek)[todayIdx+1],m=byId[tomorrow.b];
     el.style.setProperty("--tint",SLOT_TINT.b);
-    el.innerHTML=`<button class="open" id="gonow"><span class="lbl">انتهت وجبات اليوم 👍</span><span class="corner">${ICO.arrow}</span>${drawFood(m.id)}<h2>فطور الغد: ${m.n}</h2><div class="meta"><span>${ICO.clock}9:00 صباحاً</span><span>${m.t}</span></div></button>`;
+    el.innerHTML=`<button class="open" id="gonow"><span class="lbl">انتهت وجبات اليوم 👍</span><span class="corner">${ICO.arrow}</span>${photo(m.id)}<h2>فطور الغد: ${m.n}</h2><div class="meta"><span>${ICO.clock}9:00 صباحاً</span><span>${m.t}</span></div></button>`;
     document.getElementById("gonow").onclick=()=>openDetail(m.id,null);
     return;
   }
   const s=SLOTS.find(x=>x.k===k),m=byId[getWeek(thisWeek)[todayIdx][k]];
   const t=new Date(),diff=WIN[k][0]-(t.getHours()*60+t.getMinutes());
   el.style.setProperty("--tint",SLOT_TINT[k]);
-  el.innerHTML=`<button class="open" id="gonow"><span class="lbl">الوجبة القادمة · ${s.name}</span><span class="corner">${ICO.arrow}</span>${drawFood(m.id)}<h2>${m.n}</h2>
+  el.innerHTML=`<button class="open" id="gonow"><span class="lbl">الوجبة القادمة · ${s.name}</span><span class="corner">${ICO.arrow}</span>${photo(m.id)}<h2>${m.n}</h2>
     <div class="meta"><span class="eta">${diff>0?"⏰ بعد "+fmtMins(diff):"⏰ حان وقتها الآن"}</span><span>${ICO.clock}${s.time}</span><span>${m.t}</span></div></button>
     <div class="row"><button class="btn ok" id="donenow">${ICO.check}تم الطبخ</button></div>`;
   document.getElementById("gonow").onclick=()=>openDetail(m.id,k);
@@ -704,10 +755,11 @@ function renderNow(){
 }
 function toggleDone(k){
   const d=done[todayKey];d[k]=!d[k];if(!d[k])delete d[k];store.set("mm_done",done);
-  renderMeals();if(d[k])toast("بالعافية 🌿");
+  ntfyPost(TOPIC+"-done",(d[k]?"":"undo ")+isoDay(now)+" "+k);
+  renderMeals();if(d[k])toast("بالعافية 🌿 توقفت تنبيهات هذه الوجبة");
 }
 // إذا بقي التطبيق مفتوحاً لليوم التالي، نعيد تحميله
-document.addEventListener("visibilitychange",()=>{if(!document.hidden){if(dkey(new Date())!==todayKey)location.reload();else renderNow()}});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){if(dkey(new Date())!==todayKey)location.reload();else{renderNow();syncDone()}}});
 setInterval(()=>{if(!document.hidden&&dkey(new Date())===todayKey&&!detail)renderMeals()},5*60*1000);
 
 /* ===== صفحة تفاصيل الوجبة ===== */
@@ -724,7 +776,7 @@ function renderDetail(){
   const el=document.getElementById("v-detail");
   el.innerHTML=`
    <div class="dtop"><button class="round" id="dback" aria-label="رجوع">${ICO.back}</button>${isSlot?`<button class="round" data-swap="${k}" aria-label="غيّري هذه الوجبة">${ICO.swap}</button>`:""}</div>
-   <div class="stage">${drawFood(m.id)}<span class="bub b1">خضار <b>½</b></span><span class="bub b2">بروتين <b>¼</b></span><span class="bub b3">نشويات <b>¼</b></span></div>
+   <div class="stage">${photo(m.id)}<span class="bub b1">خضار <b>½</b></span><span class="bub b2">بروتين <b>¼</b></span><span class="bub b3">نشويات <b>¼</b></span></div>
    <div class="kind"><span>${isSlot?s.name+" · "+DAYS[sel]+" "+dateLabel(sel,0):s.name+" · "+m.t}${prefs[m.id]===1?" · ⭐":""}</span></div>
    <h1 class="dtitle">${m.n}</h1>
    <p class="dsub">${m.h}</p>
@@ -1017,6 +1069,11 @@ function shopText(){
     return l.length?"\n*"+SECS[k][0]+" "+SECS[k][1]+"*\n"+l.map(it=>"☐ "+it.n+" — "+fmtQ(it.q[0]+it.q[1],it.u)).join("\n"):"";
   }).join("");
 }
+function renderCredits(){
+  fetch("credits.json").then(r=>r.json()).then(c=>{
+    document.getElementById("credits").innerHTML=Object.entries(c).filter(([id])=>byId[id]).map(([id,x])=>`${esc(byId[id].n)}: <a href="${esc(x.page)}" target="_blank" rel="noopener">${esc(x.author)}</a> (${esc(x.license)})`).join(" · ");
+  }).catch(()=>{});
+}
 function renderChannels(){
   document.getElementById("channels").innerHTML=CHANNELS.map(([g,list])=>`<h3>${g}</h3>`+list.map(([n,h])=>`<a href="https://www.tiktok.com/@${h}" target="_blank" rel="noopener"><span>${n}</span><span>@${h}</span></a>`).join("")).join("");
 }
@@ -1037,7 +1094,7 @@ document.getElementById("r-search").addEventListener("input",renderRecipes);
 document.getElementById("to-all").onclick=()=>openRecipes("");
 document.getElementById("rback").onclick=()=>{renderMeals();show("today")};
 document.getElementById("theme-btn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("mm_theme",r.dataset.theme)}catch(e){}};
-renderDays();renderMeals();renderWeekPicks();renderWeek();renderShop();renderChannels();renderRatings();
+renderDays();renderMeals();renderWeekPicks();renderWeek();renderShop();renderChannels();renderRatings();syncDone();renderCredits();
 
 // تثبيت التطبيق للعمل بدون إنترنت
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
