@@ -82,6 +82,33 @@ nav button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-
 nav button svg{width:24px;height:24px}
 nav button[aria-current="page"]{color:var(--accent);font-weight:700}
 .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 18px;border-radius:999px;font-size:.95rem;max-width:90vw;text-align:center}
+/* الوجبة القادمة */
+.hero{background:var(--accent-soft);border:2px solid var(--accent);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:grid;gap:6px}
+.hero .lbl{font-size:.9rem;color:var(--muted)}
+.hero h2{font-size:1.45rem;color:var(--accent)}
+.hero .eta{font-weight:700;color:var(--green)}
+.meal.now{border:2px solid var(--accent)}
+.nowtag{font-size:.8rem;background:var(--accent);color:#fff;padding:1px 9px;border-radius:999px}
+@media (prefers-color-scheme:dark){.nowtag{color:#1d211b}}
+.meal.done{opacity:.6}
+.meal.done h3::after{content:" ✓";color:var(--green)}
+.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.actions .btn{justify-content:center}
+/* نافذة تغيير الوجبة */
+dialog{border:0;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));width:100%;max-width:640px;margin:auto auto 0;background:var(--surface);color:var(--fg);max-height:88vh;overflow-y:auto}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chips button{font:inherit;font-size:1rem;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 14px;min-height:46px;cursor:pointer}
+.chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.opt{display:block;width:100%;text-align:right;font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.opt b{font-size:1.05rem}
+.opt small{display:block;color:var(--muted)}
+.opt .w{color:var(--warn)}
+.rated{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.rated span{flex:1}
+.rated button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:8px;padding:4px 10px;cursor:pointer;min-height:36px}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:no-preference){.meal{transition:background .3s}.meal.flash{background:var(--green-soft)}}
 </style>
@@ -95,6 +122,7 @@ nav button[aria-current="page"]{color:var(--accent);font-weight:700}
 
   <main>
     <section id="v-today">
+      <div id="now" class="hero" hidden></div>
       <div class="pills" id="daypick" role="group" aria-label="اختر اليوم"></div>
       <div id="meals"></div>
       <div class="note">المهم <b>لا تتأخر الوجبات</b> عن مواعيدها، وتمشي الوالدة 10 دقائق بعد الغداء والعشاء.</div>
@@ -107,6 +135,11 @@ nav button[aria-current="page"]{color:var(--accent);font-weight:700}
       <div class="tablewrap"><table id="weektable"></table></div>
       <p class="sub" style="margin-top:10px" id="balance"></p>
       <div class="row"><button class="btn quiet" id="resetweek">إلغاء تغييراتي في هذا الأسبوع</button></div>
+      <section class="rules" style="margin-top:16px"><section>
+        <h2>الأكلات التي قيّمتِها</h2>
+        <p class="sub" style="margin:0 0 6px">⭐ تظهر أكثر، و👎 لا تظهر، <b>ابتداءً من الأسبوع القادم</b> (هذا الأسبوع لا يتغير حتى لا تتغير المشتريات). التقييم محفوظ في هذا الجوال فقط.</p>
+        <div id="ratings"></div>
+      </section></section>
     </section>
 
     <section id="v-shop" class="shop" hidden>
@@ -195,6 +228,7 @@ nav button[aria-current="page"]{color:var(--accent);font-weight:700}
   <button data-v="rules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>نصائح</button>
 </nav>
 <div class="toast" id="toast" hidden></div>
+<dialog id="sheet" aria-labelledby="sheet-title"></dialog>
 
 <script>
 const DAYS=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
@@ -264,28 +298,46 @@ const thisWeek=Math.round((satMid-EPOCH)/(7*DAY));
 function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function shuffle(a,r){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 
-function baseWeek(wk){
+// التقييم: 1 = مفضلة ⭐ ، -1 = لا نريدها 👎 (محفوظ في هذا الجوال فقط)
+let prefs=store.get("mm_pref")||{};
+const hasPrefs=()=>Object.keys(prefs).length>0;
+// أكلات سريعة التحضير (حوالي 30 دقيقة أو أقل)
+const QUICK=new Set(["b1","b2","b5","b7","l2","l7","l9","d2","d3","d5","d6","d8","d10"]);
+const EMO={"سمك":"🐟","دجاج":"🍗","لحم":"🥩","بقوليات":"🫘","بيض":"🥚","حبوب":"🌾","ألبان":"🥛"};
+
+// P = التقييم (أو null). بدون تقييم: نفس الجدول القديم تماماً على كل الجوالات
+function baseWeek(wk,P){
   const r=rng(wk*7919+13);
+  // ترتيب عشوائي: المفضلة لها فرصة أكبر (3 أضعاف)، وغير المرغوبة تُستبعد
+  const ord=a=>P?a.filter(m=>P[m.id]!==-1).map(m=>[Math.pow(r(),1/(P[m.id]===1?3:1)),m]).sort((x,y)=>y[0]-x[0]).map(x=>x[1]):shuffle(a,r);
   for(let tries=0;tries<300;tries++){
-    const b=shuffle(POOL.b,r).slice(0,7);
-    if(b.some((m,i)=>i&&m.t===b[i-1].t))continue;
-    const byT=t=>shuffle(POOL.l.filter(m=>m.t===t),r);
+    const b=ord(POOL.b).slice(0,7);
+    if(b.length<7||b.some((m,i)=>i&&m.t===b[i-1].t))continue;
+    const byT=t=>ord(POOL.l.filter(m=>m.t===t));
     // الغداء: سمك 2، بقوليات 2، دجاج 2، لحم أحمر 1
     let l=shuffle([...byT("سمك").slice(0,2),...byT("بقوليات").slice(0,2),...byT("دجاج").slice(0,2),...byT("لحم").slice(0,1)],r);
-    if(l.some((m,i)=>i&&m.t===l[i-1].t))continue;
+    if(l.length<7||l.some((m,i)=>i&&m.t===l[i-1].t))continue;
     const d=[];const used=new Set();let ok=true;
     for(let i=0;i<7;i++){
-      const c=shuffle(POOL.d,r).find(m=>!used.has(m.id)&&m.t!==l[i].t&&m.t!==b[i].t);
+      const c=ord(POOL.d).find(m=>!used.has(m.id)&&m.t!==l[i].t&&m.t!==b[i].t);
       if(!c){ok=false;break}
       d.push(c);used.add(c.id);
     }
     if(!ok)continue;
     return DAYS.map((_,i)=>({b:b[i].id,l:l[i].id,d:d[i].id}));
   }
+  if(P)return baseWeek(wk,null); // كثير من 👎: نرجع للجدول العادي حتى لا تنكسر القواعد الصحية
   return DAYS.map((_,i)=>({b:POOL.b[i].id,l:POOL.l[i].id,d:POOL.d[i].id}));
 }
+// هذا الأسبوع "مجمّد": يُحفظ أول مرة، فلا يتغير إذا قيّمتِ أكلة في منتصف الأسبوع
+function baseFor(wk){
+  if(wk>thisWeek)return baseWeek(wk,hasPrefs()?prefs:null);
+  const k="mm_base_"+wk;const f=store.get(k);
+  if(Array.isArray(f)&&f.length===7&&f.every(x=>x&&byId[x.b]&&byId[x.l]&&byId[x.d]))return f.map(x=>({...x}));
+  const w=baseWeek(wk,hasPrefs()?prefs:null);store.set(k,w);return w.map(x=>({...x}));
+}
 function getWeek(wk){
-  const w=baseWeek(wk);
+  const w=baseFor(wk);
   const sw=store.get("mm_sw_"+wk)||{};
   Object.entries(sw).forEach(([day,o])=>Object.entries(o).forEach(([k,id])=>{if(byId[id]&&w[day])w[day][k]=id}));
   return w;
@@ -294,6 +346,12 @@ function getWeek(wk){
 let sel=todayIdx, view="today", wOff=0;
 let checks=store.get("mm_checks")||{};
 let vids=store.get("mm_vid")||{};
+// "تم الطبخ": نحفظ يوم اليوم فقط
+const dkey=d=>d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+const todayKey=dkey(now);
+let done=store.get("mm_done")||{};done={[todayKey]:done[todayKey]||{}};store.set("mm_done",done);
+// تنظيف بيانات الأسابيع القديمة جداً
+try{Object.keys(localStorage).forEach(k=>{const m=k.match(/^mm_(base|sw)_(-?\d+)$/);if(m&&+m[2]<thisWeek-4)localStorage.removeItem(k)})}catch(e){}
 
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2000)}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -313,9 +371,10 @@ function renderMeals(){
     const m=byId[week[sel][s.k]];
     const q=encodeURIComponent(m.q);
     const saved=vids[m.id];
-    const c=document.createElement("article");c.className="meal";c.id="card-"+s.k;
-    c.innerHTML=`<div class="mhead"><span class="slot">${s.name} · ${DAYS[sel]} ${dateLabel(sel,0)}</span><span class="time">${s.time}</span></div>
-      <h3>${m.n}<span class="tag">${m.t}</span></h3>
+    const isToday=sel===todayIdx, isDone=isToday&&!!done[todayKey][s.k], isNext=isToday&&nextSlot()===s.k;
+    const c=document.createElement("article");c.className="meal"+(isDone?" done":"")+(isNext?" now":"");c.id="card-"+s.k;
+    c.innerHTML=`<div class="mhead"><span class="slot">${s.name} · ${DAYS[sel]} ${dateLabel(sel,0)}</span>${isNext?`<span class="nowtag">القادمة</span>`:""}<span class="time">${s.time}</span></div>
+      <h3>${m.n}${prefs[m.id]===1?" ⭐":""}<span class="tag">${m.t}</span></h3>
       <ul>${m.p.map(x=>`<li>${x}</li>`).join("")}</ul>
       <div class="vidrow">
         ${saved?`<a class="btn solid" href="${esc(saved)}" target="_blank" rel="noopener">${ICON_PLAY}شاهد فيديو الطريقة</a>`:""}
@@ -329,10 +388,18 @@ function renderMeals(){
         <input type="url" id="vid-${m.id}" placeholder="https://..." value="${saved?esc(saved):""}">
         <div class="row" style="margin-top:8px"><button class="btn solid" data-savevid="${m.id}">حفظ</button>${saved?`<button class="btn quiet" data-delvid="${m.id}">حذف</button>`:""}</div>
       </details>
-      <div class="row"><button class="btn" data-swap="${s.k}">غيّر هذه الوجبة</button></div>`;
+      <div class="actions">
+        ${isToday?`<button class="btn ${isDone?"quiet":"solid"}" data-done="${s.k}" style="grid-column:1/-1">${isDone?"↩ لم تُطبخ بعد":"✓ تم الطبخ"}</button>`:""}
+        <button class="btn" data-swap="${s.k}" style="grid-column:1/-1">🔄 غيّري هذه الوجبة</button>
+        <button class="btn quiet" data-rate="${m.id}" data-v="1" aria-pressed="${prefs[m.id]===1}">⭐ أحببناها</button>
+        <button class="btn quiet" data-rate="${m.id}" data-v="-1" aria-pressed="${prefs[m.id]===-1}">👎 لا نريدها</button>
+      </div>`;
     w.appendChild(c);
   });
-  w.querySelectorAll("[data-swap]").forEach(b=>b.onclick=()=>swap(b.dataset.swap));
+  w.querySelectorAll("[data-swap]").forEach(b=>b.onclick=()=>openSwap(b.dataset.swap));
+  w.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>toggleDone(b.dataset.done));
+  w.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>rate(b.dataset.rate,+b.dataset.v));
+  renderNow();
   w.querySelectorAll("[data-savevid]").forEach(b=>b.onclick=()=>{
     const id=b.dataset.savevid;const v=document.getElementById("vid-"+id).value.trim();
     if(!/^https:\/\/\S+$/.test(v)){toast("الرابط يجب أن يبدأ بـ https://");return}
@@ -340,22 +407,116 @@ function renderMeals(){
   });
   w.querySelectorAll("[data-delvid]").forEach(b=>b.onclick=()=>{delete vids[b.dataset.delvid];store.set("mm_vid",vids);renderMeals();toast("تم حذف الرابط")});
 }
-function swap(k){
-  const week=getWeek(thisWeek);
-  const cur=byId[week[sel][k]];
-  const inWeek=new Set(week.map(x=>x[k]));
-  const other=k==="d"?byId[week[sel].l].t:(k==="l"?byId[week[sel].d].t:null);
-  let opts=POOL[k].filter(m=>!inWeek.has(m.id)&&m.t!==other);
-  const same=opts.filter(m=>m.t===cur.t);
-  if(k==="l"&&same.length)opts=same;
-  if(!opts.length)opts=POOL[k].filter(m=>m.id!==cur.id&&!inWeek.has(m.id));
-  if(!opts.length)opts=POOL[k].filter(m=>m.id!==cur.id);
-  const n=opts[Math.floor(Math.random()*opts.length)];
-  const sw=store.get("mm_sw_"+thisWeek)||{};
-  sw[sel]=sw[sel]||{};sw[sel][k]=n.id;store.set("mm_sw_"+thisWeek,sw);
+/* ===== الوجبة القادمة حسب الساعة ===== */
+// كل وجبة تبقى "القادمة" حتى تضغطي تم الطبخ، أو حتى يمر وقتها بساعات
+const WIN={b:[540,720],l:[840,1050],d:[1170,1320]}; // [الموعد، نهاية الوقت] بالدقائق من منتصف الليل
+function nextSlot(){
+  const t=new Date(),mins=t.getHours()*60+t.getMinutes(),d=done[todayKey]||{};
+  const s=SLOTS.find(s=>!d[s.k]&&mins<WIN[s.k][1]);return s?s.k:null;
+}
+function fmtMins(x){const h=Math.floor(x/60),m=x%60;return h?(h===1?"ساعة":h===2?"ساعتين":h+" ساعات")+(m?" و"+m+" دقيقة":""):m+" دقيقة"}
+function renderNow(){
+  const el=document.getElementById("now");
+  if(sel!==todayIdx){el.hidden=true;return}
+  el.hidden=false;
+  const k=nextSlot();
+  if(!k){
+    const tomorrow=todayIdx===6?getWeek(thisWeek+1)[0]:getWeek(thisWeek)[todayIdx+1];
+    el.innerHTML=`<div class="lbl">انتهت وجبات اليوم 👍</div><h2>فطور الغد: ${byId[tomorrow.b].n}</h2><div class="eta">الساعة 9:00 صباحاً</div>`;
+    return;
+  }
+  const s=SLOTS.find(x=>x.k===k),m=byId[getWeek(thisWeek)[todayIdx][k]];
+  const t=new Date(),diff=WIN[k][0]-(t.getHours()*60+t.getMinutes());
+  el.innerHTML=`<div class="lbl">الوجبة القادمة · ${s.name} · ${s.time}</div>
+    <h2>${m.n}</h2>
+    <div class="eta">${diff>0?"⏰ بعد "+fmtMins(diff):"⏰ حان وقتها الآن"}</div>
+    <div class="row"><button class="btn solid" id="gonow">افتحي التفاصيل</button><button class="btn" id="donenow">✓ تم الطبخ</button></div>`;
+  document.getElementById("gonow").onclick=()=>document.getElementById("card-"+k).scrollIntoView({behavior:"smooth",block:"start"});
+  document.getElementById("donenow").onclick=()=>toggleDone(k);
+}
+function toggleDone(k){
+  const d=done[todayKey];d[k]=!d[k];if(!d[k])delete d[k];store.set("mm_done",done);
+  renderMeals();if(d[k])toast("بالعافية 🌿");
+}
+// إذا بقي التطبيق مفتوحاً لليوم التالي، نعيد تحميله
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){if(dkey(new Date())!==todayKey)location.reload();else renderNow()}});
+setInterval(()=>{if(!document.hidden&&dkey(new Date())===todayKey)renderMeals()},5*60*1000);
+
+/* ===== التقييم ⭐ و 👎 ===== */
+function rate(id,v){
+  if(prefs[id]===v)delete prefs[id];else prefs[id]=v;
+  store.set("mm_pref",prefs);
+  renderMeals();renderWeek();renderShop();renderRatings();
+  toast(prefs[id]===1?"⭐ ستظهر أكثر من الأسبوع القادم":prefs[id]===-1?"👎 لن تظهر من الأسبوع القادم. لتغييرها الآن اضغطي «غيّري»":"تم إلغاء التقييم");
+}
+function renderRatings(){
+  const el=document.getElementById("ratings");
+  const ids=Object.keys(prefs).filter(id=>byId[id]);
+  if(!ids.length){el.innerHTML=`<p class="sub" style="margin:0">لم تقيّمي أي أكلة بعد. اضغطي ⭐ أو 👎 تحت أي وجبة في صفحة «اليوم».</p>`;return}
+  ids.sort((a,b)=>prefs[b]-prefs[a]);
+  el.innerHTML=ids.map(id=>`<div class="rated">${prefs[id]===1?"⭐":"👎"}<span>${byId[id].n}</span><button data-unrate="${id}">إلغاء</button></div>`).join("");
+  el.querySelectorAll("[data-unrate]").forEach(b=>b.onclick=()=>rate(b.dataset.unrate,prefs[b.dataset.unrate]));
+}
+
+/* ===== تغيير الوجبة حسب السبب ===== */
+const sheet=document.getElementById("sheet");
+function openSwap(k){
+  const week=getWeek(thisWeek),cur=byId[week[sel][k]],slot=SLOTS.find(s=>s.k===k);
+  const types=[...new Set(POOL[k].map(m=>m.t))];
+  const reasons=[["any","🎲 أي اقتراح"],["quick","⚡ شيء سريع"],...types.map(t=>["t:"+t,(EMO[t]||"")+" "+t])];
+  if(POOL[k].some(m=>prefs[m.id]===1&&m.id!==cur.id))reasons.splice(1,0,["fav","⭐ من المفضلة"]);
+  const sw=store.get("mm_sw_"+thisWeek)||{},swapped=sw[sel]&&sw[sel][k];
+  sheet.innerHTML=`<h2 id="sheet-title">تغيير ${slot.name} يوم ${DAYS[sel]}</h2>
+    <p class="sub" style="margin:0">الحالية: <b>${cur.n}</b>. ماذا تريدين بدلاً منها؟</p>
+    <div class="chips">${reasons.map(([v,t])=>`<button data-r="${v}" aria-pressed="false">${t}</button>`).join("")}</div>
+    <div id="opts"></div>
+    <div class="row" style="margin-top:6px">${swapped?`<button class="btn quiet" id="undoswap">↩ رجّعي الوجبة الأصلية</button>`:""}<button class="btn quiet" id="closesheet">إغلاق</button></div>`;
+  sheet.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{
+    sheet.querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    showOptions(k,b.dataset.r);
+  });
+  document.getElementById("closesheet").onclick=()=>sheet.close();
+  if(swapped)document.getElementById("undoswap").onclick=()=>{delete sw[sel][k];if(!Object.keys(sw[sel]).length)delete sw[sel];
+    if(Object.keys(sw).length)store.set("mm_sw_"+thisWeek,sw);else try{localStorage.removeItem("mm_sw_"+thisWeek)}catch(e){}
+    sheet.close();afterSwap(k,"رجعت الوجبة الأصلية")};
+  sheet.showModal();
+}
+function showOptions(k,reason){
+  const week=getWeek(thisWeek),cur=byId[week[sel][k]];
+  const others=new Set(week.filter((_,i)=>i!==sel).map(x=>x[k]));
+  // عدد اللحم الأحمر والسمك في الأسبوع (الغداء والعشاء) بدون الخانة التي نغيّرها
+  let red=0,fish=0;
+  week.forEach((x,i)=>["l","d"].forEach(s=>{if(i===sel&&s===k)return;const t=byId[x[s]].t;if(t==="لحم")red++;if(t==="سمك")fish++}));
+  const otherMeal=k==="l"?byId[week[sel].d]:k==="d"?byId[week[sel].l]:null;
+  let list=POOL[k].filter(m=>m.id!==cur.id&&!others.has(m.id)&&prefs[m.id]!==-1);
+  if(reason==="quick")list=list.filter(m=>QUICK.has(m.id));
+  else if(reason==="fav")list=list.filter(m=>prefs[m.id]===1);
+  else if(reason.startsWith("t:"))list=list.filter(m=>m.t===reason.slice(2));
+  const el=document.getElementById("opts");
+  // قاعدة القلب والمخ: اللحم الأحمر مرة واحدة فقط في الأسبوع
+  const blocked=red>=1?list.filter(m=>m.t==="لحم"):[];
+  list=list.filter(m=>!blocked.includes(m));
+  if(!list.length){
+    el.innerHTML=`<div class="note">${blocked.length||reason==="t:لحم"&&red>=1?"اللحم الأحمر موجود مرة هذا الأسبوع. بسبب الجلطة العابرة نكتفي <b>بمرة واحدة</b> لحماية القلب والمخ. جرّبي الدجاج أو السمك.":"لا توجد أكلة أخرى بهذا الطلب هذا الأسبوع (حتى لا تتكرر الأكلة). اختاري طلباً آخر."}</div>`;
+    return;
+  }
+  const notes=m=>{const n=[];
+    if(cur.t==="سمك"&&m.t!=="سمك"&&fish<2)n.push("⚠ سيصبح السمك أقل من مرتين هذا الأسبوع");
+    if(otherMeal&&otherMeal.t===m.t&&m.t!=="ألبان")n.push("نفس نوع "+(k==="l"?"العشاء":"الغداء")+" اليوم");
+    return n};
+  list.sort((a,b)=>((prefs[b.id]===1)-(prefs[a.id]===1))||(notes(a).length-notes(b).length));
+  el.innerHTML=`<p class="sub" style="margin:0 0 6px">اضغطي على الأكلة التي تريدينها:</p>`+list.map(m=>{const n=notes(m);
+    return `<button class="opt" data-pick="${m.id}"><b>${prefs[m.id]===1?"⭐ ":""}${m.n}</b> <span class="tag">${m.t}</span>${QUICK.has(m.id)?` <span class="tag">⚡ سريع</span>`:""}${n.length?`<small class="w">${n.join(" · ")}</small>`:""}<small>${esc(m.f)}</small></button>`}).join("")
+    +(blocked.length?`<p class="sub" style="margin:4px 0 0">🥩 أخفينا أكلات اللحم الأحمر لأنه موجود مرة هذا الأسبوع (لحماية القلب والمخ).</p>`:"");
+  el.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{
+    const sw=store.get("mm_sw_"+thisWeek)||{};sw[sel]=sw[sel]||{};sw[sel][k]=b.dataset.pick;store.set("mm_sw_"+thisWeek,sw);
+    sheet.close();afterSwap(k,"تم التغيير إلى: "+byId[b.dataset.pick].n);
+  });
+}
+function afterSwap(k,msg){
   renderMeals();renderWeek();renderShop();
-  const c=document.getElementById("card-"+k);c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),600);
-  toast("تم التغيير إلى: "+n.n);
+  const c=document.getElementById("card-"+k);if(c){c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),600)}
+  toast(msg);
 }
 function renderWeekPicks(){
   ["weekpick1","weekpick2"].forEach(id=>{
@@ -367,7 +528,7 @@ function renderWeek(){
   const wk=thisWeek+wOff, week=getWeek(wk);
   const t=document.getElementById("weektable");
   t.innerHTML=`<thead><tr><th>اليوم</th>${SLOTS.map(s=>`<th>${s.name}<br><small>${s.time}</small></th>`).join("")}</tr></thead><tbody>${
-    DAYS.map((d,i)=>`<tr class="${i===todayIdx&&!wOff?"today":""}"><td>${d}<br><small>${dateLabel(i,wOff)}</small></td>${SLOTS.map(s=>`<td>${byId[week[i][s.k]].n}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    DAYS.map((d,i)=>`<tr class="${i===todayIdx&&!wOff?"today":""}"><td>${d}<br><small>${dateLabel(i,wOff)}</small></td>${SLOTS.map(s=>`<td>${byId[week[i][s.k]].n}${prefs[week[i][s.k]]===1?" ⭐":""}</td>`).join("")}</tr>`).join("")}</tbody>`;
   const cnt={};week.forEach(x=>["l","d"].forEach(k=>{const tg=byId[x[k]].t;cnt[tg]=(cnt[tg]||0)+1}));
   const fish=cnt["سمك"]||0;
   document.getElementById("balance").innerHTML=`توازن الغداء والعشاء: سمك ${fish}، بقوليات ${cnt["بقوليات"]||0}، دجاج ${cnt["دجاج"]||0}، لحم أحمر ${cnt["لحم"]||0}.`+(fish<2?` <b style="color:var(--warn)">السمك أقل من مرتين، غيّري وجبة إلى سمك.</b>`:"");
@@ -399,7 +560,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
   ["today","week","shop","rules"].forEach(v=>document.getElementById("v-"+v).hidden=v!==b.dataset.v);
   window.scrollTo(0,0);
 });
-renderDays();renderMeals();renderWeekPicks();renderWeek();renderShop();renderChannels();
+renderDays();renderMeals();renderWeekPicks();renderWeek();renderShop();renderChannels();renderRatings();
 
 // تثبيت التطبيق للعمل بدون إنترنت
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
