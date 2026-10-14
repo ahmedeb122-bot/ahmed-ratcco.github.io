@@ -109,6 +109,16 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
 .rated{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
 .rated span{flex:1}
 .rated button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:8px;padding:4px 10px;cursor:pointer;min-height:36px}
+/* المشتريات */
+.it{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.it label{flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:40px;padding:0;border:0}
+.it .qty{font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}
+.it .homeb{font:inherit;border:1px solid var(--line);background:none;border-radius:8px;min-width:44px;min-height:40px;cursor:pointer;color:var(--fg)}
+.it.done .nm{text-decoration:line-through;color:var(--muted)}
+.it.done .qty{color:var(--muted)}
+.it small{display:block;color:var(--muted);font-size:.8rem;line-height:1.4}
+.homes{margin-top:18px;background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:6px 12px}
+.homes summary{color:var(--green)}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:no-preference){.meal{transition:background .3s}.meal.flash{background:var(--green-soft)}}
 </style>
@@ -144,10 +154,16 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
 
     <section id="v-shop" class="shop" hidden>
       <h2>قائمة المشتريات</h2>
-      <div class="pills" id="weekpick2" role="group" aria-label="اختر الأسبوع" style="margin-top:8px"></div>
-      <p class="sub">الرقم = عدد الوجبات التي يدخل فيها الصنف. اضغط على الصنف بعد شرائه.</p>
+      <div class="pills" id="shopdays" role="group" aria-label="مدة القائمة" style="margin-top:8px"></div>
+      <p class="sub" id="shoprange"></p>
+      <div id="shopexpired"></div>
+      <p class="sub" style="margin-top:-6px">الكميات تقريبية لـ <b>3 كبار + الطفل</b>. ✓ = اشتريته، 🏠 = موجود في البيت.</p>
       <div id="shoplist"></div>
-      <div class="row" style="margin-top:14px"><button class="btn quiet" id="clearshop">مسح العلامات</button></div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn solid" id="shareshop">📤 أرسلي القائمة</button>
+        <button class="btn" id="newshop">🔄 قائمة جديدة تبدأ اليوم</button>
+        <button class="btn quiet" id="clearshop">مسح العلامات</button>
+      </div>
     </section>
 
     <section id="v-rules" class="rules" hidden>
@@ -344,7 +360,7 @@ function getWeek(wk){
 }
 
 let sel=todayIdx, view="today", wOff=0;
-let checks=store.get("mm_checks")||{};
+try{localStorage.removeItem("mm_checks")}catch(e){}
 let vids=store.get("mm_vid")||{};
 // "تم الطبخ": نحفظ يوم اليوم فقط
 const dkey=d=>d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
@@ -519,7 +535,7 @@ function afterSwap(k,msg){
   toast(msg);
 }
 function renderWeekPicks(){
-  ["weekpick1","weekpick2"].forEach(id=>{
+  ["weekpick1"].forEach(id=>{
     const w=document.getElementById(id);w.innerHTML="";
     [["هذا الأسبوع",0],["الأسبوع القادم",1]].forEach(([t,o])=>{const b=document.createElement("button");b.textContent=t;b.setAttribute("aria-pressed",wOff===o);b.onclick=()=>{wOff=o;renderWeekPicks();renderWeek();renderShop()};w.appendChild(b)});
   });
@@ -534,26 +550,103 @@ function renderWeek(){
   document.getElementById("balance").innerHTML=`توازن الغداء والعشاء: سمك ${fish}، بقوليات ${cnt["بقوليات"]||0}، دجاج ${cnt["دجاج"]||0}، لحم أحمر ${cnt["لحم"]||0}.`+(fish<2?` <b style="color:var(--warn)">السمك أقل من مرتين، غيّري وجبة إلى سمك.</b>`:"");
   document.getElementById("resetweek").hidden=!!wOff||!store.get("mm_sw_"+thisWeek);
 }
+/* ===== قائمة المشتريات بالكميات ===== */
+// الكمية لكل وجبة للبيت كله (3 كبار + الطفل). g = جرام، ml = ملّي، null = بهارات (حسب الحاجة)
+const AMT={
+"فول مدمس":[2,"علبة"],"زيت زيتون":[30,"ml"],"طماطم":[300,"g"],"خيار":[300,"g"],"جرجير":[1,"حزمة"],"ليمون":[150,"g"],
+"خبز بُر":[3,"رغيف"],"بيض":[7,"حبة"],"جبنة بيضاء قليلة الملح":[250,"g"],"فلفل رومي":[250,"g"],"بصل":[200,"g"],
+"حمص حب":[250,"g"],"زبادي قليل الدسم":[500,"g"],"شوفان":[200,"g"],"حليب قليل الدسم":[750,"ml"],"قرفة":[0,null],
+"تفاح":[500,"g"],"عجينة طعمية":[500,"g"],"طحينة":[60,"g"],"خس":[1,"حبة"],"لبنة":[250,"g"],"زعتر":[0,null],
+"نعناع":[1,"حزمة"],"دقيق بُر":[500,"g"],"ويكة":[50,"g"],"لحم هبر":[750,"g"],"دقيق ذرة للكسرة":[500,"g"],
+"سمك":[1000,"g"],"أرز بني":[400,"g"],"باذنجان":[500,"g"],"ثوم":[1,"رأس"],"برتقال":[500,"g"],"بامية":[750,"g"],
+"دجاج":[1250,"g"],"جوافة":[500,"g"],"فاصوليا بيضاء":[300,"g"],"جزر":[300,"g"],"كوسة":[500,"g"],"ملوخية":[500,"g"],
+"دقيق ذرة أو دخن":[500,"g"],"زبدة فول سوداني":[100,"g"],"عدس أحمر":[300,"g"],"بطاطس":[300,"g"],
+"لحم مفروم قليل الدهن":[750,"g"],"بقدونس":[1,"حزمة"],"بهارات كبسة":[0,null],"عدس بني":[300,"g"],"برغل":[300,"g"],
+"كمون":[0,null],"تونة بالماء":[2,"علبة"],"فريكة":[150,"g"]};
+// تعديلات خاصة: "رقم الأكلة:الصنف" أو "نوع الوجبة:الصنف" (b فطور، d عشاء)
+const OVR={"d2:بيض":4,"d7:شوفان":100,"d1:عدس أحمر":250,"d4:دجاج":500,"d8:دجاج":500,"d9:دجاج":500,
+"l10:باذنجان":750,"l10:لحم مفروم قليل الدهن":500,"b:طماطم":200,"b:خيار":200,"d:طماطم":200,"d:خيار":200,"d:خبز بُر":2,"d:خس":0.5,"l:بصل":300,"d:كوسة":300,"d:جزر":200};
+const FRESH=new Set(["خس","جرجير","بقدونس","نعناع","ملوخية","خبز بُر","عجينة طعمية","طماطم","خيار"]); // تذبل بسرعة
+const FREEZE=new Set(["سمك","دجاج","لحم هبر","لحم مفروم قليل الدهن"]);
+const PL={"علبة":"علب","حبة":"حبات","حزمة":"حزم","رغيف":"أرغفة","رأس":"رؤوس"};
+function fmtQ(q,u){
+  if(!u)return "حسب الحاجة";
+  if(u==="g"){if(q>=1000)return (Math.ceil(q/250)*250/1000)+" كجم";return Math.ceil(q/50)*50+" جم"}
+  if(u==="ml"){if(q>=1000)return (Math.ceil(q/250)*250/1000)+" لتر";return Math.ceil(q/50)*50+" مل"}
+  q=Math.ceil(q);return q+" "+(q>=3&&q<=10&&PL[u]?PL[u]:u);
+}
+const parseKey=k=>{const [y,m,d]=k.split("-").map(Number);return new Date(y,m-1,d)};
+let shopCfg=store.get("mm_shopcfg");
+if(!shopCfg||!shopCfg.start){shopCfg={start:todayKey,days:14};store.set("mm_shopcfg",shopCfg)}
+let shopMarks=store.get("mm_shopmarks")||{};
+const marks=()=>{shopMarks[shopCfg.start]=shopMarks[shopCfg.start]||{buy:{},home:{}};return shopMarks[shopCfg.start]};
+const saveMarks=()=>store.set("mm_shopmarks",{[shopCfg.start]:marks()});
+function shopItems(){
+  const start=parseKey(shopCfg.start),agg={},cache={};
+  for(let i=0;i<shopCfg.days;i++){
+    const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i);
+    const di=(d.getDay()+1)%7,sat=new Date(d.getFullYear(),d.getMonth(),d.getDate()-di);
+    const wk=Math.round((sat-EPOCH)/(7*DAY));
+    const day=(cache[wk]=cache[wk]||getWeek(wk))[di],half=i<7?0:1;
+    SLOTS.forEach(s=>{const m=byId[day[s.k]];m.i.forEach(([n,c])=>{
+      const a=AMT[n]||[0,null];
+      const q=OVR[m.id+":"+n]??OVR[s.k+":"+n]??a[0];
+      const it=agg[n]=agg[n]||{n,c,u:a[1],q:[0,0]};it.q[half]+=q;
+    })});
+  }
+  // الطفل يحتاج حليب كامل الدسم (حوالي نصف لتر في اليوم)
+  agg["حليب كامل الدسم (للطفل)"]={n:"حليب كامل الدسم (للطفل)",c:D,u:"ml",q:[500*Math.min(7,shopCfg.days),500*Math.max(0,shopCfg.days-7)]};
+  return Object.values(agg);
+}
 function renderShop(){
-  const wk=thisWeek+wOff, week=getWeek(wk);
-  const agg={};
-  week.forEach(x=>SLOTS.forEach(s=>byId[x[s.k]].i.forEach(([n,c])=>{agg[c]=agg[c]||{};agg[c][n]=(agg[c][n]||0)+1})));
-  const ck=checks[wk]||{};
-  const w=document.getElementById("shoplist");w.innerHTML="";
-  [V,M,D,G,O].forEach(c=>{if(!agg[c])return;
+  const start=parseKey(shopCfg.start),end=new Date(start.getFullYear(),start.getMonth(),start.getDate()+shopCfg.days-1);
+  const dl=d=>DAYS[(d.getDay()+1)%7]+" "+d.getDate()+"/"+(d.getMonth()+1);
+  document.getElementById("shoprange").innerHTML=`🛒 قائمة <b>${shopCfg.days===14?"أسبوعين":"أسبوع"}</b>: من ${dl(start)} إلى ${dl(end)}`;
+  document.getElementById("shopexpired").innerHTML=now>=new Date(start.getFullYear(),start.getMonth(),start.getDate()+shopCfg.days)?`<div class="note" style="margin-bottom:10px">انتهت مدة هذه القائمة. يوم التسوق اضغطي <b>«🔄 قائمة جديدة تبدأ اليوم»</b>.</div>`:"";
+  const sd=document.getElementById("shopdays");
+  sd.innerHTML=[[14,"أسبوعان (مرتين في الشهر)"],[7,"أسبوع واحد"]].map(([v,t])=>`<button data-days="${v}" aria-pressed="${shopCfg.days===v}">${t}</button>`).join("");
+  sd.querySelectorAll("[data-days]").forEach(b=>b.onclick=()=>{shopCfg.days=+b.dataset.days;store.set("mm_shopcfg",shopCfg);renderShop()});
+  const mk=marks(),items=shopItems(),w=document.getElementById("shoplist");w.innerHTML="";
+  const row=(it,home)=>{
+    const total=it.q[0]+it.q[1],bought=!!mk.buy[it.n];
+    let extra="";
+    if(!home&&it.u&&FRESH.has(it.n)&&it.q[1]>0)extra=`<small>🥬 يذبل بسرعة: الأسبوع الأول ${fmtQ(it.q[0],it.u)} · الثاني ${fmtQ(it.q[1],it.u)}</small>`;
+    else if(!home&&FREEZE.has(it.n)&&shopCfg.days===14)extra=`<small>❄ قسّميه أكياساً بحجم الوجبة وجمّديه</small>`;
+    const r=document.createElement("div");r.className="it"+(bought&&!home?" done":"");
+    r.innerHTML=home?`<span class="nm" style="flex:1">${it.n}</span><button class="homeb" style="min-width:auto;padding:0 10px">إرجاع للقائمة</button>`
+      :`<label><input type="checkbox" ${bought?"checked":""}><span><span class="nm">${it.n}</span>${extra}</span></label><span class="qty">${fmtQ(total,it.u)}</span><button class="homeb" aria-label="موجود في البيت" title="موجود في البيت">🏠</button>`;
+    if(!home){const cb=r.querySelector("input");cb.onchange=()=>{if(cb.checked)mk.buy[it.n]=1;else delete mk.buy[it.n];saveMarks();r.classList.toggle("done",cb.checked);r.querySelector(".qty").style.color=""}}
+    r.querySelector(".homeb").onclick=()=>{if(home)delete mk.home[it.n];else mk.home[it.n]=1;saveMarks();renderShop();if(!home)toast("🏠 نقلناه إلى «موجود في البيت»")};
+    return r;
+  };
+  [V,M,D,G,O].forEach(c=>{
+    const list=items.filter(it=>it.c===c&&!mk.home[it.n]).sort((a,b)=>(!!a.u-!!b.u)*-1||a.n.localeCompare(b.n,"ar"));
+    if(!list.length)return;
     const h=document.createElement("h3");h.textContent=c;w.appendChild(h);
-    Object.entries(agg[c]).sort((a,b)=>b[1]-a[1]).forEach(([n,k],j)=>{
-      const l=document.createElement("label");l.className=ck[n]?"done":"";
-      l.innerHTML=`<input type="checkbox" id="chk-${c.length}-${j}" ${ck[n]?"checked":""}><span>${n}</span><span class="cnt">${k} ${k>2&&k<11?"وجبات":"وجبة"}</span>`;
-      l.querySelector("input").onchange=e=>{checks[wk]=checks[wk]||{};checks[wk][n]=e.target.checked;store.set("mm_checks",checks);l.className=e.target.checked?"done":""};
-      w.appendChild(l);
-    });
+    list.forEach(it=>w.appendChild(row(it,false)));
   });
+  const homeList=items.filter(it=>mk.home[it.n]);
+  if(homeList.length){
+    const det=document.createElement("details");det.className="homes";
+    det.innerHTML=`<summary>🏠 موجود في البيت (${homeList.length})</summary>`;
+    homeList.forEach(it=>det.appendChild(row(it,true)));w.appendChild(det);
+  }
+}
+function shopText(){
+  const mk=marks(),items=shopItems();
+  return "🛒 مشتريات المطبخ\n"+[V,M,D,G,O].map(c=>{
+    const l=items.filter(it=>it.c===c&&!mk.home[it.n]&&!mk.buy[it.n]);
+    return l.length?"\n*"+c+"*\n"+l.map(it=>"• "+it.n+" — "+fmtQ(it.q[0]+it.q[1],it.u)).join("\n"):"";
+  }).join("");
 }
 function renderChannels(){
   document.getElementById("channels").innerHTML=CHANNELS.map(([g,list])=>`<h3>${g}</h3>`+list.map(([n,h])=>`<a href="https://www.tiktok.com/@${h}" target="_blank" rel="noopener"><span>${n}</span><span>@${h}</span></a>`).join("")).join("");
 }
-document.getElementById("clearshop").onclick=()=>{delete checks[thisWeek+wOff];store.set("mm_checks",checks);renderShop()};
+document.getElementById("clearshop").onclick=()=>{shopMarks={};store.set("mm_shopmarks",{});renderShop();toast("تم مسح العلامات")};
+document.getElementById("newshop").onclick=()=>{if(!confirm("نبدأ قائمة جديدة من اليوم؟ (العلامات القديمة ستُمسح)"))return;shopCfg.start=todayKey;store.set("mm_shopcfg",shopCfg);shopMarks={};store.set("mm_shopmarks",{});renderShop();toast("بدأت قائمة جديدة من اليوم")};
+document.getElementById("shareshop").onclick=async()=>{const t=shopText();
+  try{if(navigator.share){await navigator.share({text:t});return}}catch(e){if(e&&e.name==="AbortError")return}
+  try{await navigator.clipboard.writeText(t);toast("تم نسخ القائمة، الصقيها في واتساب")}catch(e){toast("لم أستطع النسخ")}};
 document.getElementById("resetweek").onclick=()=>{try{localStorage.removeItem("mm_sw_"+thisWeek)}catch(e){}renderMeals();renderWeek();renderShop();toast("رجع الجدول الأساسي لهذا الأسبوع")};
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("nav button").forEach(x=>x.removeAttribute("aria-current"));b.setAttribute("aria-current","page");
