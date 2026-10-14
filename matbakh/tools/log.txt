@@ -1,20 +1,16 @@
 b1 -> File:Ful medames.jpg
 b2 -> File:Liat Portal for Foodie Disorder - Cheese burekas Israeli breakfast.jpg
 b3 -> File:Shakshuka by Calliopejen1.jpg
-b4 candidates 4
-b4 -> File:Hummus Fatteh with Meat.jpg
+b4 -> File:Boiled sanag alu27.11.13. (74).JPG
 b5 -> File:Apple cinnamon oatmeal.jpg
 b6 -> File:Food in Israel.jpg
-b7 candidates 4
 b7 -> File:Labneh (5196911587).jpg
 b8 -> File:الكسره.jpg
 l1 -> File:Du bamia avec du riz en février 2022.jpg
 l2 -> File:Danh's Garden, Shreveport, LA 2011.jpg
 l3 -> File:Bamia-Ocras tomate (cropped).JPG
 l4 -> File:Etli kuru fasulye.jpg
-  retry 1 <HTTPError 429: 'Too Many Requests'>
 l5 -> File:Molokheya hi res.JPG
-l6 candidates 4
 l6 -> File:Mixed grilled meat and salad on a wooden board.jpg
 l7 -> File:Preparación de guiso de lentejas con verduras y caldo de carne en cocina doméstica argentina.jpg
 l8 -> File:Chicken breast baked in parchment on fried potato pancake, with mixed vegetables - Massachusetts.jpg
@@ -22,21 +18,16 @@ l9 -> File:Tajine marocain.jpg
 l10 -> File:Iraqi Dolma-Mosul 02.jpg
 l11 -> File:Kabsa.jpg
 l12 -> File:Mujaddara.jpg
-l13 candidates 4
 l13 -> File:Kofta Curry (cropped).JPG
 l14 -> File:Fish Sayadieh.jpg
 d1 -> File:Lentil Soup - Schnitzel & Co. 2026-05-16.jpg
 d2 -> File:Tzatziki meze or appetizer, also used as a sauce.jpg
-  retry 1 <HTTPError 429: 'Too Many Requests'>
-d3 candidates 4
-d3 -> File:Tuna fish sandwiches for the National School Lunch Program (1).jpg
+d3 -> File:Tuna salad on mixed greens, with corn, carrots, tomatoes, olive oil, red vinegar, and black pepper - Massachusetts.jpg
 d4 -> File:Chicken Vegetable Soup (8731954951).jpg
 d5 -> File:Omelette with bread and parsley 01.jpg
 d6 -> File:Liat Portal for Foodie Disorder - Israeli breakfast in Tel Aviv.jpg
-d7 candidates 4
-d7 -> File:Vegetable soup 6.jpg
+d7 -> File:Rice, tomato, chicken, sausage, and mixed vegetable soup - Massachusetts.jpg
 d8 -> File:Dinner at Northwestern University, Chicago, Illinois.jpg
-d9 candidates 4
-d9 -> File:Freekeh with roasted vegetables.jpg
+d9 -> File:فريكة.jpg
 d10 -> File:Vegetables and Hummus (7271118362).jpg
 done 32 images
