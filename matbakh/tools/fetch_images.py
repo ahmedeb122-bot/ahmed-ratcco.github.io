@@ -14,7 +14,7 @@ def get(url, tries=4):
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as r:
                 return r.read()
         except Exception as e:
-            print("  retry", i + 1, e)
+            log("  retry", i + 1, repr(e)[:200])
             time.sleep(3 * (i + 1))
     raise RuntimeError("failed: " + url)
 
@@ -64,6 +64,15 @@ def credit(title, ii):
             "license": v("LicenseShortName")}
 
 
+LOG = []
+
+
+def log(*a):
+    s = " ".join(str(x) for x in a)
+    print(s)
+    LOG.append(s)
+
+
 def main():
     queries = json.load(open(os.path.join(HERE, "images.json"), encoding="utf-8"))
     picks_path = os.path.join(HERE, "picks.json")
@@ -75,7 +84,18 @@ def main():
     for mid, qs in queries.items():
         if mid.startswith("_"):
             continue
-        print(mid)
+        try:
+            one(mid, qs, picks, cand_dir, img_dir, report, credits)
+        except Exception as e:
+            log("ERROR", mid, repr(e))
+    json.dump(report, open(os.path.join(HERE, "candidates.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(credits, open(os.path.join(APP, "credits.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    log("done", len(credits), "images")
+    open(os.path.join(HERE, "log.txt"), "w", encoding="utf-8").write("\n".join(LOG))
+
+
+def one(mid, qs, picks, cand_dir, img_dir, report, credits):
+        log(mid)
         found, seen = [], set()
         for q in qs:
             for t, ii in search(q, 360):
@@ -99,9 +119,7 @@ def main():
             open(os.path.join(img_dir, f"{mid}.jpg"), "wb").write(get(ii["thumburl"]))
             credits[mid] = credit(t, ii)
         time.sleep(0.4)
-    json.dump(report, open(os.path.join(HERE, "candidates.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    json.dump(credits, open(os.path.join(APP, "credits.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    print("done", len(credits), "images")
+        log("  found", len(found), "picked", credits.get(mid, {}).get("file"))
 
 
 if __name__ == "__main__":
