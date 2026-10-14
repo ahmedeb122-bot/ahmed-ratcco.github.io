@@ -119,6 +119,16 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
 .it small{display:block;color:var(--muted);font-size:.8rem;line-height:1.4}
 .homes{margin-top:18px;background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:6px 12px}
 .homes summary{color:var(--green)}
+.aisle{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 12px 2px;margin-bottom:10px}
+.aisle h3{display:flex;justify-content:space-between;align-items:center;margin:8px 0 2px!important}
+.aisle h3 small{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:400}
+.aisle.complete{opacity:.65;padding:2px 12px}
+.aisle.complete summary{color:var(--green);font-weight:700;padding:6px 0}
+.prog{height:10px;background:var(--line);border-radius:999px;overflow:hidden;margin:4px 0 2px}
+.prog div{height:100%;background:var(--green);border-radius:999px;transition:width .3s}
+.ord{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.ord span{flex:1}
+.ord button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;min-width:44px;min-height:40px;cursor:pointer}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion:no-preference){.meal{transition:background .3s}.meal.flash{background:var(--green-soft)}}
 </style>
@@ -157,7 +167,10 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
       <div class="pills" id="shopdays" role="group" aria-label="مدة القائمة" style="margin-top:8px"></div>
       <p class="sub" id="shoprange"></p>
       <div id="shopexpired"></div>
-      <p class="sub" style="margin-top:-6px">الكميات تقريبية لـ <b>3 كبار + الطفل</b>. ✓ = اشتريته، 🏠 = موجود في البيت.</p>
+      <p class="sub" style="margin:0 0 4px"><b>ترتيب القائمة حسب مشيك في الهايبر:</b></p>
+      <div class="pills" id="shoproute" role="group" aria-label="ترتيب الأقسام"></div>
+      <div id="shopprog"></div>
+      <p class="sub" style="margin-top:-6px">الكميات تقريبية لـ <b>3 كبار + الطفل</b>. ✓ = اشتريته، 🏠 = موجود في البيت. القسم المكتمل يُطوى تلقائياً.</p>
       <div id="shoplist"></div>
       <div class="row" style="margin-top:14px">
         <button class="btn solid" id="shareshop">📤 أرسلي القائمة</button>
@@ -598,6 +611,42 @@ function shopItems(){
   agg["حليب كامل الدسم (للطفل)"]={n:"حليب كامل الدسم (للطفل)",c:D,u:"ml",q:[500*Math.min(7,shopCfg.days),500*Math.max(0,shopCfg.days-7)]};
   return Object.values(agg);
 }
+/* ===== أقسام الهايبر ماركت وترتيب المشي ===== */
+const SECS={fruit:["🍎","الفواكه"],veg:["🥦","الخضار"],herbs:["🌿","الورقيات والأعشاب"],bakery:["🍞","المخبز"],
+meat:["🥩","اللحوم"],poultry:["🍗","الدواجن"],fish:["🐟","الأسماك"],dairy:["🥛","الألبان والأجبان"],eggs:["🥚","البيض"],
+frozen:["❄️","المجمدات"],grains:["🌾","الأرز والحبوب والبقوليات"],flour:["🥣","الدقيق"],spices:["🧂","البهارات"],
+oils:["🫒","الزيوت والطحينة"],cans:["🥫","المعلبات"]};
+const SEC={"تفاح":"fruit","برتقال":"fruit","جوافة":"fruit",
+"طماطم":"veg","خيار":"veg","ليمون":"veg","فلفل رومي":"veg","بصل":"veg","باذنجان":"veg","ثوم":"veg","بامية":"veg","جزر":"veg","كوسة":"veg","بطاطس":"veg",
+"جرجير":"herbs","خس":"herbs","نعناع":"herbs","بقدونس":"herbs","ملوخية":"herbs",
+"خبز بُر":"bakery","لحم هبر":"meat","لحم مفروم قليل الدهن":"meat","دجاج":"poultry","سمك":"fish",
+"جبنة بيضاء قليلة الملح":"dairy","زبادي قليل الدسم":"dairy","حليب قليل الدسم":"dairy","لبنة":"dairy","حليب كامل الدسم (للطفل)":"dairy",
+"بيض":"eggs","عجينة طعمية":"frozen",
+"حمص حب":"grains","شوفان":"grains","فاصوليا بيضاء":"grains","أرز بني":"grains","فريكة":"grains","عدس بني":"grains","برغل":"grains","عدس أحمر":"grains",
+"دقيق بُر":"flour","دقيق ذرة للكسرة":"flour","دقيق ذرة أو دخن":"flour",
+"قرفة":"spices","زعتر":"spices","كمون":"spices","بهارات كبسة":"spices","ويكة":"spices",
+"زيت زيتون":"oils","طحينة":"oils","زبدة فول سوداني":"oils","فول مدمس":"cans","تونة بالماء":"cans"};
+const secOf=it=>SEC[it.n]||({[V]:"veg",[M]:"meat",[D]:"dairy",[G]:"grains",[O]:"spices"})[it.c];
+const ROUTES={
+  fresh:["🥬 الطازج أولاً",["fruit","veg","herbs","bakery","meat","poultry","fish","dairy","eggs","grains","flour","spices","oils","cans","frozen"]],
+  cold:["❄️ البارد آخراً",["grains","flour","spices","oils","cans","bakery","fruit","veg","herbs","eggs","dairy","meat","poultry","fish","frozen"]]
+};
+let route=store.get("mm_route")||{mode:"cold",custom:null};
+const routeOrder=()=>{const all=Object.keys(SECS);
+  if(route.mode==="custom"&&Array.isArray(route.custom)){const c=route.custom.filter(k=>SECS[k]);return [...c,...all.filter(k=>!c.includes(k))]}
+  return (ROUTES[route.mode]||ROUTES.cold)[1]};
+function openRouteEditor(){
+  const ord=routeOrder();
+  sheet.innerHTML=`<h2 id="sheet-title">رتّبي الأقسام حسب فرعك</h2>
+    <p class="sub" style="margin:0 0 8px">امشي في الهايبر بخيالك من الباب: أول قسم تقابلينه فوق، وآخر قسم تحت. استخدمي ⬆ و⬇.</p>
+    <div>${ord.map((k,i)=>`<div class="ord"><span>${SECS[k][0]} ${SECS[k][1]}</span><button data-up="${i}" ${i?"":"disabled"} aria-label="لأعلى">⬆</button><button data-dn="${i}" ${i<ord.length-1?"":"disabled"} aria-label="لأسفل">⬇</button></div>`).join("")}</div>
+    <div class="row" style="margin-top:10px"><button class="btn solid" id="routedone">تم</button></div>`;
+  const mv=(i,j)=>{[ord[i],ord[j]]=[ord[j],ord[i]];route={mode:"custom",custom:ord};store.set("mm_route",route);openRouteEditor();renderShop()};
+  sheet.querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>mv(+b.dataset.up,+b.dataset.up-1));
+  sheet.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>mv(+b.dataset.dn,+b.dataset.dn+1));
+  document.getElementById("routedone").onclick=()=>sheet.close();
+  if(!sheet.open)sheet.showModal();
+}
 function renderShop(){
   const start=parseKey(shopCfg.start),end=new Date(start.getFullYear(),start.getMonth(),start.getDate()+shopCfg.days-1);
   const dl=d=>DAYS[(d.getDay()+1)%7]+" "+d.getDate()+"/"+(d.getMonth()+1);
@@ -606,7 +655,14 @@ function renderShop(){
   const sd=document.getElementById("shopdays");
   sd.innerHTML=[[14,"أسبوعان (مرتين في الشهر)"],[7,"أسبوع واحد"]].map(([v,t])=>`<button data-days="${v}" aria-pressed="${shopCfg.days===v}">${t}</button>`).join("");
   sd.querySelectorAll("[data-days]").forEach(b=>b.onclick=()=>{shopCfg.days=+b.dataset.days;store.set("mm_shopcfg",shopCfg);renderShop()});
+  const rt=document.getElementById("shoproute");
+  rt.innerHTML=Object.entries(ROUTES).map(([k,[t]])=>`<button data-route="${k}" aria-pressed="${route.mode===k}">${t}</button>`).join("")+`<button data-route="custom" aria-pressed="${route.mode==="custom"}">✏️ ترتيب فرعي</button>`;
+  rt.querySelectorAll("[data-route]").forEach(b=>b.onclick=()=>{const k=b.dataset.route;
+    if(k==="custom"){if(!route.custom)route.custom=routeOrder().slice();route.mode="custom";store.set("mm_route",route);renderShop();openRouteEditor();return}
+    route.mode=k;store.set("mm_route",route);renderShop();toast(k==="cold"?"اللحوم والسمك والمجمدات آخر شيء، حتى تبقى باردة":"الخضار والفواكه أولاً، مثل مدخل أغلب الهايبرات")});
   const mk=marks(),items=shopItems(),w=document.getElementById("shoplist");w.innerHTML="";
+  const need=items.filter(it=>!mk.home[it.n]),got=need.filter(it=>mk.buy[it.n]).length;
+  document.getElementById("shopprog").innerHTML=need.length?`<div class="prog"><div style="width:${Math.round(got/need.length*100)}%"></div></div><p class="sub" style="margin:0 0 10px">${got===need.length?"🎉 اكتملت المشتريات!":"✓ اشتريتِ "+got+" من "+need.length}</p>`:"";
   const row=(it,home)=>{
     const total=it.q[0]+it.q[1],bought=!!mk.buy[it.n];
     let extra="";
@@ -615,15 +671,18 @@ function renderShop(){
     const r=document.createElement("div");r.className="it"+(bought&&!home?" done":"");
     r.innerHTML=home?`<span class="nm" style="flex:1">${it.n}</span><button class="homeb" style="min-width:auto;padding:0 10px">إرجاع للقائمة</button>`
       :`<label><input type="checkbox" ${bought?"checked":""}><span><span class="nm">${it.n}</span>${extra}</span></label><span class="qty">${fmtQ(total,it.u)}</span><button class="homeb" aria-label="موجود في البيت" title="موجود في البيت">🏠</button>`;
-    if(!home){const cb=r.querySelector("input");cb.onchange=()=>{if(cb.checked)mk.buy[it.n]=1;else delete mk.buy[it.n];saveMarks();r.classList.toggle("done",cb.checked);r.querySelector(".qty").style.color=""}}
+    if(!home){const cb=r.querySelector("input");cb.onchange=()=>{if(cb.checked)mk.buy[it.n]=1;else delete mk.buy[it.n];saveMarks();const y=window.scrollY;renderShop();window.scrollTo(0,y)}}
     r.querySelector(".homeb").onclick=()=>{if(home)delete mk.home[it.n];else mk.home[it.n]=1;saveMarks();renderShop();if(!home)toast("🏠 نقلناه إلى «موجود في البيت»")};
     return r;
   };
-  [V,M,D,G,O].forEach(c=>{
-    const list=items.filter(it=>it.c===c&&!mk.home[it.n]).sort((a,b)=>(!!a.u-!!b.u)*-1||a.n.localeCompare(b.n,"ar"));
+  routeOrder().forEach(k=>{
+    const list=items.filter(it=>secOf(it)===k&&!mk.home[it.n]).sort((a,b)=>(!!b.u-!!a.u)||a.n.localeCompare(b.n,"ar"));
     if(!list.length)return;
-    const h=document.createElement("h3");h.textContent=c;w.appendChild(h);
-    list.forEach(it=>w.appendChild(row(it,false)));
+    const left=list.filter(it=>!mk.buy[it.n]).length,title=SECS[k][0]+" "+SECS[k][1];
+    let box;
+    if(!left){box=document.createElement("details");box.className="aisle complete";box.innerHTML=`<summary>✓ ${title} — اكتمل</summary>`}
+    else{box=document.createElement("section");box.className="aisle";box.innerHTML=`<h3>${title}<small>باقي ${left} من ${list.length}</small></h3>`}
+    list.forEach(it=>box.appendChild(row(it,false)));w.appendChild(box);
   });
   const homeList=items.filter(it=>mk.home[it.n]);
   if(homeList.length){
@@ -634,9 +693,9 @@ function renderShop(){
 }
 function shopText(){
   const mk=marks(),items=shopItems();
-  return "🛒 مشتريات المطبخ\n"+[V,M,D,G,O].map(c=>{
-    const l=items.filter(it=>it.c===c&&!mk.home[it.n]&&!mk.buy[it.n]);
-    return l.length?"\n*"+c+"*\n"+l.map(it=>"• "+it.n+" — "+fmtQ(it.q[0]+it.q[1],it.u)).join("\n"):"";
+  return "🛒 مشتريات المطبخ (مرتبة حسب أقسام الهايبر)\n"+routeOrder().map(k=>{
+    const l=items.filter(it=>secOf(it)===k&&!mk.home[it.n]&&!mk.buy[it.n]);
+    return l.length?"\n*"+SECS[k][0]+" "+SECS[k][1]+"*\n"+l.map(it=>"☐ "+it.n+" — "+fmtQ(it.q[0]+it.q[1],it.u)).join("\n"):"";
   }).join("");
 }
 function renderChannels(){
