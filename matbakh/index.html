@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>المطبخ</title>
+<meta name="theme-color" content="#9b1f3a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+/* Layout: one-column phone app, bottom tab bar. Hibiscus (karkadeh) red + okra green on a cool sorghum-grey ground */
+:root{
+  --bg:#f3f4ef; --surface:#ffffff; --fg:#1d221c; --muted:#5d665a; --line:#dde1d6;
+  --accent:#9b1f3a; --accent-soft:#f6e3e7; --green:#4f6b2a; --green-soft:#e6eedb; --warn:#a15c00; --warn-soft:#fbefd9;
+  --display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#141713; --surface:#1d211b; --fg:#ebeee6; --muted:#a3ab9e; --line:#30362c;
+  --accent:#e2768d; --accent-soft:#3a1d24; --green:#a9c77e; --green-soft:#263220; --warn:#e9b25c; --warn-soft:#352812; color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.7;padding-top:env(safe-area-inset-top,0px)}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:18px 110px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.3}
+h1{font-size:1.75rem;color:var(--accent)}
+.sub{color:var(--muted);font-size:.95rem;margin:.2rem 0 1rem}
+.pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
+.pills button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;font-size:.95rem;padding:6px 14px;border-radius:999px;cursor:pointer}
+.pills button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.meal{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;margin-bottom:12px}
+.mhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.slot{font-size:.85rem;color:var(--muted);letter-spacing:.02em}
+.time{font-variant-numeric:tabular-nums;font-weight:700;color:var(--green);background:var(--green-soft);padding:2px 10px;border-radius:999px;font-size:.9rem}
+.meal h3{font-size:1.3rem}
+.meal ul{margin:0;padding-inline-start:1.2rem}
+.tag{display:inline-block;font-size:.8rem;padding:1px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-inline-start:6px;vertical-align:middle;font-family:var(--body)}
+.fix{background:var(--green-soft);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:.93rem}
+.fix b{color:var(--green)}
+details{border-top:1px dashed var(--line);padding-top:6px}
+summary{cursor:pointer;color:var(--accent);font-weight:500;min-height:32px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.98rem;border:1.5px solid var(--accent);color:var(--accent);background:transparent;border-radius:10px;padding:8px 14px;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.solid{background:var(--accent);color:#fff}
+.btn.quiet{border-color:var(--line);color:var(--fg)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn:focus-visible,.pills button:focus-visible,nav button:focus-visible,input:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.vidrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.vidrow .btn{justify-content:center}
+.vidrow .btn.solid{grid-column:1/-1}
+input[type=url]{width:100%;font:inherit;font-size:.95rem;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);direction:ltr;text-align:left}
+.note{background:var(--warn-soft);color:var(--fg);border-radius:12px;padding:12px 14px;font-size:.95rem;border-inline-start:4px solid var(--warn)}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:right;vertical-align:top}
+th{font-family:var(--display);background:var(--green-soft);color:var(--green);font-weight:700}
+td:first-child{font-weight:700;color:var(--accent);white-space:nowrap}
+tr.today td{background:var(--accent-soft)}
+.shop h3{font-size:1.1rem;color:var(--green);margin:16px 0 6px}
+.shop label{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.shop input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.shop .cnt{margin-inline-start:auto;color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.shop label.done span:first-of-type{text-decoration:line-through;color:var(--muted)}
+.rules section{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.rules h2{font-size:1.2rem;color:var(--accent);margin-bottom:6px}
+.rules ul{margin:0;padding-inline-start:1.2rem}
+.danger{border:2px solid var(--accent)!important}
+.big{font-size:1.6rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.plate{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-width:260px;margin:8px 0}
+.plate div{padding:8px;border-radius:8px;text-align:center;font-size:.9rem}
+.plate .v{grid-row:span 2;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-weight:700}
+.plate .p{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.plate .c{background:var(--warn-soft);color:var(--warn);font-weight:700}
+.chan h3{font-size:1rem;color:var(--green);margin:10px 0 4px}
+.chan a{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+.chan a span:last-child{color:var(--muted);direction:ltr;font-size:.85rem}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+nav button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:.85rem;padding:6px 2px;cursor:pointer;display:grid;justify-items:center;gap:2px;min-height:48px}
+nav button svg{width:24px;height:24px}
+nav button[aria-current="page"]{color:var(--accent);font-weight:700}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 18px;border-radius:999px;font-size:.95rem;max-width:90vw;text-align:center}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.meal{transition:background .3s}.meal.flash{background:var(--green-soft)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>المطبخ</h1>
+    <p class="sub" id="sub">وجبات الوالدة: صحية لمريض السكري، ومناسبة للقلب والمخ</p>
+  </header>
+
+  <main>
+    <section id="v-today">
+      <div class="pills" id="daypick" role="group" aria-label="اختر اليوم"></div>
+      <div id="meals"></div>
+      <div class="note">المهم <b>لا تتأخر الوجبات</b> عن مواعيدها، وتمشي الوالدة 10 دقائق بعد الغداء والعشاء.</div>
+    </section>
+
+    <section id="v-week" hidden>
+      <h2 style="margin-bottom:8px">جدول الأسبوع</h2>
+      <div class="pills" id="weekpick1" role="group" aria-label="اختر الأسبوع"></div>
+      <p class="sub">نفس الجدول يظهر على كل الجوالات تلقائياً. خذ لقطة شاشة واطبعها للثلاجة.</p>
+      <div class="tablewrap"><table id="weektable"></table></div>
+      <p class="sub" style="margin-top:10px" id="balance"></p>
+      <div class="row"><button class="btn quiet" id="resetweek">إلغاء تغييراتي في هذا الأسبوع</button></div>
+    </section>
+
+    <section id="v-shop" class="shop" hidden>
+      <h2>قائمة المشتريات</h2>
+      <div class="pills" id="weekpick2" role="group" aria-label="اختر الأسبوع" style="margin-top:8px"></div>
+      <p class="sub">الرقم = عدد الوجبات التي يدخل فيها الصنف. اضغط على الصنف بعد شرائه.</p>
+      <div id="shoplist"></div>
+      <div class="row" style="margin-top:14px"><button class="btn quiet" id="clearshop">مسح العلامات</button></div>
+    </section>
+
+    <section id="v-rules" class="rules" hidden>
+      <section>
+        <h2>شكل الطبق الصحيح</h2>
+        <div class="plate"><div class="v">نصف الطبق<br>خضار</div><div class="p">ربع: بروتين</div><div class="c">ربع: نشويات</div></div>
+        <p style="margin:0">النشويات = كسرة أو عصيدة أو أرز أو خبز. <b>واحد فقط</b> في الوجبة، وليس اثنين معاً.</p>
+      </section>
+      <section>
+        <h2>عند مشاهدة أي فيديو طبخ</h2>
+        <ul>
+          <li>الزيت: <b>ملعقتان فقط</b> للحلة كلها، مهما وضعوا في الفيديو.</li>
+          <li>لا سمن ولا زبدة، ولا مكعبات مرقة (ماجي).</li>
+          <li>الملح نصف ما في الفيديو، والسكر صفر.</li>
+          <li>الأرز الأبيض ← أرز بني، والدقيق الأبيض ← بُر أو ذرة كاملة.</li>
+          <li>المقلي ← في الفرن أو القلاية الهوائية.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>السكر</h2>
+        <ul>
+          <li>الشاي والقهوة والكركدي <b>بدون سكر</b>. هذه أهم نقطة في الجدول كله.</li>
+          <li>لا عصائر ولا مشروبات غازية. الفاكهة تؤكل كاملة وليس عصيراً.</li>
+          <li>التمر: 2 أو 3 حبات مع الوجبة، بدل الفاكهة وليس فوقها.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>القلب والمخ (بسبب الجلطة العابرة)</h2>
+        <ul>
+          <li>الملح قليل جداً: لا ملحة على السفرة، ولا مخللات.</li>
+          <li>السمك مرتين في الأسبوع على الأقل (الجدول يضمن ذلك).</li>
+          <li>الكمونية والمرارة والأكل المقلي: نادراً جداً.</li>
+          <li>الماء: 6 إلى 8 أكواب في اليوم.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>الربو</h2>
+        <p style="margin:0">العشاء الثقيل المتأخر يسبب ارتجاعاً (حموضة) يزيد ضيق النفس. لذلك العشاء خفيف و<b>قبل النوم بساعتين ونصف</b> على الأقل.</p>
+      </section>
+      <section>
+        <h2>اسأل الطبيب عن</h2>
+        <ul>
+          <li>تحليل <b>السكر التراكمي</b> (HbA1c)، والكوليسترول، ووظائف الكلى، وقياس الضغط.</li>
+          <li>هل تحتاج دواء سيولة بعد الجلطة العابرة؟ إذا أخذت <b>الوارفارين</b>: خلي كمية الملوخية والجرجير ثابتة كل أسبوع.</li>
+        </ul>
+      </section>
+      <section class="danger">
+        <h2>علامات الجلطة: اتصل فوراً</h2>
+        <ul>
+          <li><b>الوجه:</b> ميلان في الفم أو الوجه.</li>
+          <li><b>الذراع:</b> ضعف أو تنميل في ذراع أو رجل.</li>
+          <li><b>الكلام:</b> كلام ثقيل أو غير مفهوم.</li>
+        </ul>
+        <p style="margin:.4rem 0 0">الهلال الأحمر السعودي: <span class="big">997</span></p>
+        <p class="sub" style="margin:0">لا تنتظر حتى تختفي الأعراض، حتى لو استمرت دقائق فقط.</p>
+      </section>
+      <section>
+        <h2>الطفل الصغير</h2>
+        <ul>
+          <li>يأكل من نفس الأكل مهروساً. خذي نصيبه <b>قبل إضافة الملح</b>.</li>
+          <li>يحتاج حليب وزبادي <b>كامل الدسم</b>، وليس قليل الدسم مثل الوالدة.</li>
+          <li>لا مكسرات كاملة ولا عنب كامل (خطر الاختناق).</li>
+        </ul>
+      </section>
+      <section class="chan">
+        <h2>قنوات الطبخ</h2>
+        <div id="channels"></div>
+      </section>
+      <p class="sub">هذا الجدول مبني على الإرشادات الطبية العامة، ولا يغني عن مراجعة طبيبها.</p>
+    </section>
+  </main>
+</div>
+
+<nav aria-label="الأقسام">
+  <button data-v="today" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>اليوم</button>
+  <button data-v="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>الأسبوع</button>
+  <button data-v="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16l-2 10H6z"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>المشتريات</button>
+  <button data-v="rules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>نصائح</button>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const DAYS=["السبت","الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة"];
+const SLOTS=[
+  {k:"b",name:"الفطور",time:"9:00 صباحاً"},
+  {k:"l",name:"الغداء",time:"2:00 ظهراً"},
+  {k:"d",name:"العشاء",time:"7:30 مساءً"}
+];
+const CHANNELS=[
+  ["أكل سوداني",[["وصفات بخيتة","ooonz1"],["Cooking with Shahd","cooking_with_shahd"],["Habi Makes","habi_makes"],["رجاء بريطانيا","gift_of_food_and_baking_"],["دورا أم وسيم","daralslamali2"],["رميسة محمد","romamohammad30"],["شهد كيتشن","omhlashosho"],["إسراء كيتشن","israkitchen0"],["مرسى كيتشن","marsaahashim"]]],
+  ["أكل عربي بيتي",[["أحمد الذهبي","thegoldenbalance"],["هشام باعشن","hishambaeshen"]]],
+  ["أكل صحي والسكري",[["كوتش محب","coach_mohab"],["د. نيللي شمس","dr.nilly_shams"],["Healthy and Tasty","healthyand_tasty00"]]]
+];
+// i: [ingredient, category]   q: search words   f: healthy change while following a video
+const V="خضار وفواكه",M="لحوم وأسماك",D="ألبان وبيض",G="حبوب وبقوليات",O="أخرى";
+const POOL={
+b:[
+{id:"b1",n:"فول بزيت الزيتون",t:"بقوليات",q:"فول بزيت الزيتون",f:"ملعقة زيت زيتون واحدة، وبدون جبنة فوقه.",p:["نصف كوب فول مدمس","ملعقة زيت زيتون","طماطم وخيار وجرجير","نصف رغيف بُر"],h:"سخّني الفول واهرسيه مع كمون وليمون. ملح قليل جداً.",i:[["فول مدمس",G],["زيت زيتون",O],["طماطم",V],["خيار",V],["جرجير",V],["ليمون",V],["خبز بُر",G]]},
+{id:"b2",n:"بيض مسلوق وجبنة بيضاء",t:"بيض",q:"فطور صحي بيض مسلوق",f:"جبنة مكتوب عليها قليلة الملح.",p:["بيضتان مسلوقتان","قطعة صغيرة جبنة بيضاء قليلة الملح","خيار وطماطم","نصف رغيف بُر"],h:"اسلقي البيض 10 دقائق.",i:[["بيض",D],["جبنة بيضاء قليلة الملح",D],["خيار",V],["طماطم",V],["خبز بُر",G]]},
+{id:"b3",n:"شكشوكة بالخضار",t:"بيض",q:"شكشوكة صحية",f:"ملعقة زيت فقط، وبدون سمن أو سجق.",p:["بيضتان","طماطم وبصل وفلفل رومي","ملعقة زيت زيتون","نصف رغيف بُر"],h:"شوّحي البصل والفلفل، ثم الطماطم، ثم البيض.",i:[["بيض",D],["طماطم",V],["بصل",V],["فلفل رومي",V],["زيت زيتون",O],["خبز بُر",G]]},
+{id:"b4",n:"بليلة حمص بالكمون",t:"بقوليات",q:"بليلة حمص سودانية",f:"بدون سكر وبدون سمن.",p:["نصف كوب حمص مسلوق","كمون وليمون","نصف كوب زبادي قليل الدسم","خيار"],h:"انقعي الحمص من الليل واسلقيه، وسخّنيه صباحاً.",i:[["حمص حب",G],["زبادي قليل الدسم",D],["خيار",V],["ليمون",V]]},
+{id:"b5",n:"شوفان بالحليب والقرفة",t:"حبوب",q:"شوفان بالحليب بدون سكر",f:"بدون سكر ولا عسل. التفاح والقرفة يكفيان.",p:["نصف كوب شوفان","حليب قليل الدسم","قرفة","نصف تفاحة مقطعة"],h:"اطبخي الشوفان بالحليب 5 دقائق.",i:[["شوفان",G],["حليب قليل الدسم",D],["قرفة",O],["تفاح",V]]},
+{id:"b6",n:"طعمية بالفرن وسلطة",t:"بقوليات",q:"طعمية بالفرن",f:"في الفرن أو القلاية الهوائية، وليس في الزيت.",p:["4 أقراص طعمية مخبوزة","سلطة خضراء","ملعقة طحينة","نصف رغيف بُر"],h:"اخبزي الطعمية 20 دقيقة مع قلبها مرة.",i:[["عجينة طعمية",G],["طحينة",O],["خس",V],["طماطم",V],["خبز بُر",G]]},
+{id:"b7",n:"لبنة بزيت الزيتون والزعتر",t:"ألبان",q:"فطور لبنة وزعتر",f:"ملعقتان لبنة فقط.",p:["ملعقتان لبنة","زيت زيتون وزعتر","خيار وطماطم ونعناع","نصف رغيف بُر"],h:"وجبة سريعة بدون طبخ.",i:[["لبنة",D],["زيت زيتون",O],["زعتر",O],["خيار",V],["طماطم",V],["نعناع",V],["خبز بُر",G]]},
+{id:"b8",n:"قراصة بُر مع ملاح روب",t:"ألبان",q:"قراصة سودانية ملاح روب",f:"دقيق بُر كامل، وبدون سمن على الوجه.",p:["قطعة قراصة صغيرة من دقيق البُر","ملاح روب (زبادي بالبصل)","خيار"],h:"القراصة رقيقة وصغيرة بحجم الكف.",i:[["دقيق بُر",G],["زبادي قليل الدسم",D],["بصل",V],["خيار",V]]}
+],
+l:[
+{id:"l1",n:"ملاح ويكة باللحم مع كسرة",t:"لحم",q:"ملاح ويكة سوداني",f:"لحم بدون شحم، ملعقتان زيت، وطرقة كسرة واحدة.",p:["كوب ملاح ويكة بلحم قليل الدهن","طرقة كسرة واحدة","سلطة خضراء كبيرة"],h:"انزعي دهن اللحم قبل الطبخ. بدون مكعبات مرقة.",i:[["ويكة",O],["لحم هبر",M],["بصل",V],["طماطم",V],["دقيق ذرة للكسرة",G],["خس",V]]},
+{id:"l2",n:"سمك مشوي وأرز بني وسلطة أسود",t:"سمك",q:"سمك مشوي بالفرن",f:"السمك والباذنجان بالفرن، وليس مقلياً.",p:["قطعة سمك مشوي بحجم كف اليد","نصف كوب أرز بني","سلطة أسود من باذنجان مشوي","نصف برتقالة"],h:"تبّلي السمك بالليمون والثوم والكمون.",i:[["سمك",M],["أرز بني",G],["باذنجان",V],["طماطم",V],["ثوم",V],["ليمون",V],["برتقال",V]]},
+{id:"l3",n:"ملاح بامية بالدجاج مع كسرة",t:"دجاج",q:"ملاح بامية سوداني",f:"دجاج بدون جلد، ملعقتان زيت فقط.",p:["كوب ملاح بامية بدجاج بدون جلد","طرقة كسرة واحدة","خيار وجرجير","جوافة صغيرة"],h:"البامية ممتازة لمريض السكري.",i:[["بامية",V],["دجاج",M],["بصل",V],["طماطم",V],["دقيق ذرة للكسرة",G],["خيار",V],["جرجير",V],["جوافة",V]]},
+{id:"l4",n:"فاصوليا بيضاء بالخضار",t:"بقوليات",q:"فاصوليا بيضاء بالصلصة",f:"زيدي الجزر والكوسة، وأرز بني نصف كوب.",p:["كوب فاصوليا بالطماطم والجزر","نصف كوب أرز بني","سلطة خضراء"],h:"انقعي الفاصوليا من الليل.",i:[["فاصوليا بيضاء",G],["طماطم",V],["جزر",V],["كوسة",V],["أرز بني",G],["خس",V]]},
+{id:"l5",n:"ملاح خضرة بالدجاج مع عصيدة",t:"دجاج",q:"ملاح خضرة ملوخية سوداني",f:"عصيدة بحجم قبضة اليد فقط، من دقيق كامل.",p:["كوب ملاح خضرة (ملوخية) بالدجاج","قطعة عصيدة بحجم قبضة اليد","سلطة طماطم","تفاحة صغيرة"],h:"العصيدة من دقيق الذرة أو الدخن الكامل.",i:[["ملوخية",V],["دجاج",M],["ثوم",V],["دقيق ذرة أو دخن",G],["طماطم",V],["تفاح",V]]},
+{id:"l6",n:"شية لحم وسلطة دكوة",t:"لحم",q:"شية سودانية سلطة دكوة",f:"لحم هبر، وملعقة دكوة واحدة فقط.",p:["شية لحم مشوية بحجم كف اليد","سلطة دكوة","نصف رغيف بُر","بصل وجرجير"],h:"اشوي اللحم في الفرن أو على الفحم.",i:[["لحم هبر",M],["زبدة فول سوداني",O],["خيار",V],["طماطم",V],["بصل",V],["جرجير",V],["خبز بُر",G]]},
+{id:"l7",n:"ملاح عدس بالخضار مع كسرة",t:"بقوليات",q:"عدس سوداني بالخضار",f:"كمون وثوم بدل الملح الكثير.",p:["كوب عدس أحمر بالجزر والكوسة","طرقة كسرة واحدة","سلطة خضراء","نصف برتقالة"],h:"العدس يشبع ويرفع السكر ببطء.",i:[["عدس أحمر",G],["جزر",V],["كوسة",V],["ثوم",V],["دقيق ذرة للكسرة",G],["خس",V],["برتقال",V]]},
+{id:"l8",n:"صينية دجاج وخضار بالفرن",t:"دجاج",q:"صينية دجاج وخضار بالفرن",f:"بدون مرقة جاهزة، وبطاطس واحدة صغيرة.",p:["ربع دجاجة بدون جلد","كوسة وجزر وبصل وفلفل","بطاطس صغيرة واحدة","سلطة زبادي بالخيار"],h:"تبّلي بالليمون والثوم، والفرن ساعة.",i:[["دجاج",M],["كوسة",V],["جزر",V],["بصل",V],["فلفل رومي",V],["بطاطس",V],["زبادي قليل الدسم",D],["خيار",V]]},
+{id:"l9",n:"طاجن سمك بالصلصة",t:"سمك",q:"طاجن سمك بالفرن",f:"في الفرن، وملعقة زيت فقط.",p:["قطعة سمك بصلصة طماطم وفلفل","نصف كوب أرز بني أو نصف رغيف بُر","سلطة خضراء","جوافة صغيرة"],h:"السمك فوق البصل والطماطم في صينية، والفرن 30 دقيقة.",i:[["سمك",M],["طماطم",V],["فلفل رومي",V],["بصل",V],["أرز بني",G],["خس",V],["جوافة",V]]},
+{id:"l10",n:"محشي كوسة وباذنجان",t:"لحم",q:"محشي كوسة وباذنجان",f:"أرز بني قليل في الحشوة، وزيدي البصل والطماطم.",p:["4 قطع محشي بأرز بني ولحم مفروم قليل الدهن","سلطة زبادي بالخيار","سلطة خضراء"],h:"لا تقلي الخضار قبل الحشو.",i:[["كوسة",V],["باذنجان",V],["لحم مفروم قليل الدهن",M],["أرز بني",G],["بقدونس",V],["زبادي قليل الدسم",D],["خيار",V]]},
+{id:"l11",n:"كبسة دجاج بالأرز البني",t:"دجاج",q:"كبسة دجاج",f:"أرز بني ثلثي كوب، دجاج بدون جلد، وبدون سمن.",p:["قطعة دجاج بدون جلد","ثلثا كوب أرز بني بالبهارات","سلطة خضراء كبيرة","دقوس طماطم"],h:"نفس طريقة الكبسة، لكن بأرز بني وزيت قليل.",i:[["دجاج",M],["أرز بني",G],["بصل",V],["طماطم",V],["بهارات كبسة",O],["خس",V]]},
+{id:"l12",n:"مجدرة عدس بالبرغل",t:"بقوليات",q:"مجدرة",f:"البصل محمّر بملعقة زيت فقط، وليس مقلياً.",p:["كوب مجدرة عدس بني وبرغل","سلطة زبادي بالخيار","سلطة خضراء"],h:"البرغل أفضل من الأرز لمريض السكري.",i:[["عدس بني",G],["برغل",G],["بصل",V],["زبادي قليل الدسم",D],["خيار",V],["خس",V]]},
+{id:"l13",n:"كفتة بالفرن مع الخضار",t:"لحم",q:"كفتة بالفرن بالخضار",f:"لحم مفروم قليل الدهن، والبطاطس قطعة واحدة.",p:["4 أصابع كفتة","كوسة وطماطم وفلفل في الصينية","نصف رغيف بُر","سلطة خضراء"],h:"الكفتة فوق الخضار، والفرن 40 دقيقة.",i:[["لحم مفروم قليل الدهن",M],["بصل",V],["بقدونس",V],["كوسة",V],["طماطم",V],["فلفل رومي",V],["خبز بُر",G]]},
+{id:"l14",n:"سمك صيادية بالأرز البني",t:"سمك",q:"صيادية سمك",f:"أرز بني ثلثي كوب، والسمك مشوي وليس مقلياً.",p:["قطعة سمك مشوي","ثلثا كوب أرز بني بالبصل والكمون","سلطة طحينة خفيفة","سلطة خضراء"],h:"لون الأرز من البصل المحمّر بقليل زيت.",i:[["سمك",M],["أرز بني",G],["بصل",V],["كمون",O],["طحينة",O],["خس",V]]}
+],
+d:[
+{id:"d1",n:"شوربة عدس وسلطة",t:"بقوليات",q:"شوربة عدس",f:"بدون مكعبات مرقة وبدون كريمة.",p:["كوب شوربة عدس بالخضار","سلطة خضراء بالليمون","ربع رغيف بُر"],h:"اطبخي العدس مع جزرة وبصلة.",i:[["عدس أحمر",G],["جزر",V],["بصل",V],["خس",V],["ليمون",V],["خبز بُر",G]]},
+{id:"d2",n:"سلطة زبادي وبيضة",t:"بيض",q:"سلطة زبادي بالخيار",f:"زبادي قليل الدسم.",p:["كوب زبادي قليل الدسم بالخيار والنعناع","بيضة مسلوقة","نصف رغيف بُر"],h:"خفيف وسريع، ومناسب قبل النوم.",i:[["زبادي قليل الدسم",D],["خيار",V],["نعناع",V],["بيض",D],["خبز بُر",G]]},
+{id:"d3",n:"سلطة تونة بالخضار",t:"سمك",q:"سلطة تونة صحية",f:"تونة بالماء، واشطفيها لتقليل الملح.",p:["نصف علبة تونة بالماء","خس وخيار وطماطم","ليمون وملعقة زيت زيتون","نصف رغيف بُر"],h:"بدون مايونيز.",i:[["تونة بالماء",M],["خس",V],["خيار",V],["طماطم",V],["ليمون",V],["زيت زيتون",O],["خبز بُر",G]]},
+{id:"d4",n:"شوربة خضار بالدجاج",t:"دجاج",q:"شوربة خضار بالدجاج",f:"مرق الدجاج المسلوق بدل المكعبات.",p:["كوب ونصف شوربة خضار","قطع دجاج صغيرة بدون جلد","ربع رغيف بُر"],h:"استعملي مرق الغداء إن وجد.",i:[["دجاج",M],["جزر",V],["كوسة",V],["بصل",V],["خبز بُر",G]]},
+{id:"d5",n:"عجة خضار",t:"بيض",q:"عجة بالخضار",f:"مقلاة غير لاصقة بملعقة زيت صغيرة.",p:["عجة من بيضتين مع بقدونس وبصل","سلطة طماطم وخيار","نصف رغيف بُر"],h:"اخلطي البيض بالخضار المفرومة واطبخيها على نار هادئة.",i:[["بيض",D],["بقدونس",V],["بصل",V],["طماطم",V],["خيار",V],["خبز بُر",G]]},
+{id:"d6",n:"جبنة بيضاء وخضار مشكلة",t:"ألبان",q:"عشاء خفيف صحي",f:"جبنة قليلة الملح.",p:["قطعة جبنة بيضاء قليلة الملح","خيار وطماطم وفلفل وجزر","نصف رغيف بُر"],h:"بدون طبخ. قطّعي الخضار أصابع.",i:[["جبنة بيضاء قليلة الملح",D],["خيار",V],["طماطم",V],["فلفل رومي",V],["جزر",V],["خبز بُر",G]]},
+{id:"d7",n:"شوربة شوفان بالخضار",t:"حبوب",q:"شوربة شوفان",f:"بدون كريمة وبدون مكعبات.",p:["كوب شوربة شوفان بالخضار","سلطة خضراء"],h:"ثلاث ملاعق شوفان مع خضار صغيرة، 15 دقيقة.",i:[["شوفان",G],["جزر",V],["كوسة",V],["بصل",V],["خس",V]]},
+{id:"d8",n:"سلطة حمص ودجاج مشوي",t:"دجاج",q:"سلطة دجاج مشوي وحمص",f:"صوص ليمون وزيت زيتون، بدون صوصات جاهزة.",p:["سلطة كبيرة: خس وطماطم وخيار","3 ملاعق حمص مسلوق","قطع دجاج مشوي","ليمون وزيت زيتون"],h:"يمكن استعمال الدجاج المتبقي من الغداء.",i:[["خس",V],["طماطم",V],["خيار",V],["حمص حب",G],["دجاج",M],["ليمون",V],["زيت زيتون",O]]},
+{id:"d9",n:"شوربة فريكة بالدجاج",t:"حبوب",q:"شوربة فريكة",f:"ربع كوب فريكة للقدر، وبدون سمن.",p:["كوب شوربة فريكة بقطع دجاج","سلطة خضراء"],h:"الفريكة قمح أخضر غني بالألياف.",i:[["فريكة",G],["دجاج",M],["بصل",V],["خس",V]]},
+{id:"d10",n:"حمص بالطحينة وخضار",t:"بقوليات",q:"حمص بالطحينة",f:"ملعقة طحينة واحدة، وأكثري من الخضار.",p:["3 ملاعق حمص بالطحينة","خيار وجزر وفلفل أصابع","ربع رغيف بُر"],h:"اهرسي الحمص المسلوق مع طحينة وليمون وثوم.",i:[["حمص حب",G],["طحينة",O],["ليمون",V],["خيار",V],["جزر",V],["فلفل رومي",V],["خبز بُر",G]]}
+]};
+const byId={};Object.values(POOL).flat().forEach(m=>byId[m.id]=m);
+
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+// رقم ثابت لكل أسبوع (يبدأ السبت)، فيظهر نفس الجدول على كل الجوالات
+const DAY=86400000;
+const now=new Date();
+const todayIdx=(now.getDay()+1)%7;
+const satMid=new Date(now.getFullYear(),now.getMonth(),now.getDate()-todayIdx);
+const EPOCH=new Date(2024,0,6); // السبت 6 يناير 2024
+const thisWeek=Math.round((satMid-EPOCH)/(7*DAY));
+
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffle(a,r){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function baseWeek(wk){
+  const r=rng(wk*7919+13);
+  for(let tries=0;tries<300;tries++){
+    const b=shuffle(POOL.b,r).slice(0,7);
+    if(b.some((m,i)=>i&&m.t===b[i-1].t))continue;
+    const byT=t=>shuffle(POOL.l.filter(m=>m.t===t),r);
+    // الغداء: سمك 2، بقوليات 2، دجاج 2، لحم أحمر 1
+    let l=shuffle([...byT("سمك").slice(0,2),...byT("بقوليات").slice(0,2),...byT("دجاج").slice(0,2),...byT("لحم").slice(0,1)],r);
+    if(l.some((m,i)=>i&&m.t===l[i-1].t))continue;
+    const d=[];const used=new Set();let ok=true;
+    for(let i=0;i<7;i++){
+      const c=shuffle(POOL.d,r).find(m=>!used.has(m.id)&&m.t!==l[i].t&&m.t!==b[i].t);
+      if(!c){ok=false;break}
+      d.push(c);used.add(c.id);
+    }
+    if(!ok)continue;
+    return DAYS.map((_,i)=>({b:b[i].id,l:l[i].id,d:d[i].id}));
+  }
+  return DAYS.map((_,i)=>({b:POOL.b[i].id,l:POOL.l[i].id,d:POOL.d[i].id}));
+}
+function getWeek(wk){
+  const w=baseWeek(wk);
+  const sw=store.get("mm_sw_"+wk)||{};
+  Object.entries(sw).forEach(([day,o])=>Object.entries(o).forEach(([k,id])=>{if(byId[id]&&w[day])w[day][k]=id}));
+  return w;
+}
+
+let sel=todayIdx, view="today", wOff=0;
+let checks=store.get("mm_checks")||{};
+let vids=store.get("mm_vid")||{};
+
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2000)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+const ICON_SEARCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>';
+
+function dateLabel(i,off){const d=new Date(satMid.getTime()+(i+off*7)*DAY);return d.getDate()+"/"+(d.getMonth()+1)}
+
+function renderDays(){
+  const w=document.getElementById("daypick");w.innerHTML="";
+  DAYS.forEach((n,i)=>{const b=document.createElement("button");b.textContent=i===todayIdx?n+" (اليوم)":n;b.setAttribute("aria-pressed",i===sel);b.onclick=()=>{sel=i;renderDays();renderMeals()};w.appendChild(b)});
+}
+function renderMeals(){
+  const week=getWeek(thisWeek);
+  const w=document.getElementById("meals");w.innerHTML="";
+  SLOTS.forEach(s=>{
+    const m=byId[week[sel][s.k]];
+    const q=encodeURIComponent(m.q);
+    const saved=vids[m.id];
+    const c=document.createElement("article");c.className="meal";c.id="card-"+s.k;
+    c.innerHTML=`<div class="mhead"><span class="slot">${s.name} · ${DAYS[sel]} ${dateLabel(sel,0)}</span><span class="time">${s.time}</span></div>
+      <h3>${m.n}<span class="tag">${m.t}</span></h3>
+      <ul>${m.p.map(x=>`<li>${x}</li>`).join("")}</ul>
+      <div class="vidrow">
+        ${saved?`<a class="btn solid" href="${esc(saved)}" target="_blank" rel="noopener">${ICON_PLAY}شاهد فيديو الطريقة</a>`:""}
+        <a class="btn" href="https://www.tiktok.com/search?q=${q}" target="_blank" rel="noopener">${ICON_SEARCH}تيك توك</a>
+        <a class="btn" href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">${ICON_SEARCH}يوتيوب</a>
+      </div>
+      <div class="fix"><b>التعديل الصحي:</b> ${m.f}</div>
+      <details><summary>طريقة مختصرة</summary><p style="margin:.4rem 0 0">${m.h}</p></details>
+      <details><summary>${saved?"تغيير رابط الفيديو":"احفظ رابط فيديو أعجبك"}</summary>
+        <p class="sub" style="margin:.3rem 0">انسخ رابط الفيديو من تيك توك أو يوتيوب (زر مشاركة ثم نسخ الرابط) والصقه هنا.</p>
+        <input type="url" id="vid-${m.id}" placeholder="https://..." value="${saved?esc(saved):""}">
+        <div class="row" style="margin-top:8px"><button class="btn solid" data-savevid="${m.id}">حفظ</button>${saved?`<button class="btn quiet" data-delvid="${m.id}">حذف</button>`:""}</div>
+      </details>
+      <div class="row"><button class="btn" data-swap="${s.k}">غيّر هذه الوجبة</button></div>`;
+    w.appendChild(c);
+  });
+  w.querySelectorAll("[data-swap]").forEach(b=>b.onclick=()=>swap(b.dataset.swap));
+  w.querySelectorAll("[data-savevid]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.savevid;const v=document.getElementById("vid-"+id).value.trim();
+    if(!/^https:\/\/\S+$/.test(v)){toast("الرابط يجب أن يبدأ بـ https://");return}
+    vids[id]=v;store.set("mm_vid",vids);renderMeals();toast("تم حفظ الفيديو لهذه الأكلة");
+  });
+  w.querySelectorAll("[data-delvid]").forEach(b=>b.onclick=()=>{delete vids[b.dataset.delvid];store.set("mm_vid",vids);renderMeals();toast("تم حذف الرابط")});
+}
+function swap(k){
+  const week=getWeek(thisWeek);
+  const cur=byId[week[sel][k]];
+  const inWeek=new Set(week.map(x=>x[k]));
+  const other=k==="d"?byId[week[sel].l].t:(k==="l"?byId[week[sel].d].t:null);
+  let opts=POOL[k].filter(m=>!inWeek.has(m.id)&&m.t!==other);
+  const same=opts.filter(m=>m.t===cur.t);
+  if(k==="l"&&same.length)opts=same;
+  if(!opts.length)opts=POOL[k].filter(m=>m.id!==cur.id&&!inWeek.has(m.id));
+  if(!opts.length)opts=POOL[k].filter(m=>m.id!==cur.id);
+  const n=opts[Math.floor(Math.random()*opts.length)];
+  const sw=store.get("mm_sw_"+thisWeek)||{};
+  sw[sel]=sw[sel]||{};sw[sel][k]=n.id;store.set("mm_sw_"+thisWeek,sw);
+  renderMeals();renderWeek();renderShop();
+  const c=document.getElementById("card-"+k);c.classList.add("flash");setTimeout(()=>c.classList.remove("flash"),600);
+  toast("تم التغيير إلى: "+n.n);
+}
+function renderWeekPicks(){
+  ["weekpick1","weekpick2"].forEach(id=>{
+    const w=document.getElementById(id);w.innerHTML="";
+    [["هذا الأسبوع",0],["الأسبوع القادم",1]].forEach(([t,o])=>{const b=document.createElement("button");b.textContent=t;b.setAttribute("aria-pressed",wOff===o);b.onclick=()=>{wOff=o;renderWeekPicks();renderWeek();renderShop()};w.appendChild(b)});
+  });
+}
+function renderWeek(){
+  const wk=thisWeek+wOff, week=getWeek(wk);
+  const t=document.getElementById("weektable");
+  t.innerHTML=`<thead><tr><th>اليوم</th>${SLOTS.map(s=>`<th>${s.name}<br><small>${s.time}</small></th>`).join("")}</tr></thead><tbody>${
+    DAYS.map((d,i)=>`<tr class="${i===todayIdx&&!wOff?"today":""}"><td>${d}<br><small>${dateLabel(i,wOff)}</small></td>${SLOTS.map(s=>`<td>${byId[week[i][s.k]].n}</td>`).join("")}</tr>`).join("")}</tbody>`;
+  const cnt={};week.forEach(x=>["l","d"].forEach(k=>{const tg=byId[x[k]].t;cnt[tg]=(cnt[tg]||0)+1}));
+  const fish=cnt["سمك"]||0;
+  document.getElementById("balance").innerHTML=`توازن الغداء والعشاء: سمك ${fish}، بقوليات ${cnt["بقوليات"]||0}، دجاج ${cnt["دجاج"]||0}، لحم أحمر ${cnt["لحم"]||0}.`+(fish<2?` <b style="color:var(--warn)">السمك أقل من مرتين، غيّري وجبة إلى سمك.</b>`:"");
+  document.getElementById("resetweek").hidden=!!wOff||!store.get("mm_sw_"+thisWeek);
+}
+function renderShop(){
+  const wk=thisWeek+wOff, week=getWeek(wk);
+  const agg={};
+  week.forEach(x=>SLOTS.forEach(s=>byId[x[s.k]].i.forEach(([n,c])=>{agg[c]=agg[c]||{};agg[c][n]=(agg[c][n]||0)+1})));
+  const ck=checks[wk]||{};
+  const w=document.getElementById("shoplist");w.innerHTML="";
+  [V,M,D,G,O].forEach(c=>{if(!agg[c])return;
+    const h=document.createElement("h3");h.textContent=c;w.appendChild(h);
+    Object.entries(agg[c]).sort((a,b)=>b[1]-a[1]).forEach(([n,k],j)=>{
+      const l=document.createElement("label");l.className=ck[n]?"done":"";
+      l.innerHTML=`<input type="checkbox" id="chk-${c.length}-${j}" ${ck[n]?"checked":""}><span>${n}</span><span class="cnt">${k} ${k>2&&k<11?"وجبات":"وجبة"}</span>`;
+      l.querySelector("input").onchange=e=>{checks[wk]=checks[wk]||{};checks[wk][n]=e.target.checked;store.set("mm_checks",checks);l.className=e.target.checked?"done":""};
+      w.appendChild(l);
+    });
+  });
+}
+function renderChannels(){
+  document.getElementById("channels").innerHTML=CHANNELS.map(([g,list])=>`<h3>${g}</h3>`+list.map(([n,h])=>`<a href="https://www.tiktok.com/@${h}" target="_blank" rel="noopener"><span>${n}</span><span>@${h}</span></a>`).join("")).join("");
+}
+document.getElementById("clearshop").onclick=()=>{delete checks[thisWeek+wOff];store.set("mm_checks",checks);renderShop()};
+document.getElementById("resetweek").onclick=()=>{try{localStorage.removeItem("mm_sw_"+thisWeek)}catch(e){}renderMeals();renderWeek();renderShop();toast("رجع الجدول الأساسي لهذا الأسبوع")};
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.removeAttribute("aria-current"));b.setAttribute("aria-current","page");
+  ["today","week","shop","rules"].forEach(v=>document.getElementById("v-"+v).hidden=v!==b.dataset.v);
+  window.scrollTo(0,0);
+});
+renderDays();renderMeals();renderWeekPicks();renderWeek();renderShop();renderChannels();
+
+// تثبيت التطبيق للعمل بدون إنترنت
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
