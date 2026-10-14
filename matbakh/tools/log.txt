@@ -1,0 +1,97 @@
+b1
+  found 4 picked File:Foul Mdammis, Tunisie.jpg
+b2
+  found 4 picked File:Easter breakfast in Serbia (close-up).jpg
+b3
+  found 4 picked File:Shakshuka by Calliopejen1.jpg
+b4
+  found 4 picked File:Samba dasami ghanta 01.jpg
+b5
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  found 4 picked File:Apple cinnamon oatmeal.jpg
+b6
+  found 4 picked File:4pcs Falafel, Petra Restaurant, 2026 (01).jpg
+b7
+  found 2 picked File:Za'atar with labneh manakish at Agasi, Lajpat Nagar, Delhi (2025-08-13).jpg
+b8
+  found 4 picked File:Kisra maker.jpeg
+l1
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  retry 4 <HTTPError 429: 'Too Many Requests'>
+ERROR l1 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Okra+stew+beef+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=360&format=json&formatversion=2')
+l2
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  found 4 picked File:Riz blanc au poisson.jpg
+l3
+  found 4 picked File:Bamia-Ocras tomate (cropped).JPG
+l4
+  found 4 picked File:Etli kuru fasulye.jpg
+l5
+  found 4 picked File:Corchorus olitorius (1459401640).jpg
+l6
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  retry 4 <HTTPError 429: 'Too Many Requests'>
+ERROR l6 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&titles=File%3ADoner+kebab+takeaway+focus+1.jpg&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=800&format=json&formatversion=2')
+l7
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  found 4 picked File:Preparación de guiso de lentejas con verduras y caldo de carne en cocina doméstica argentina.jpg
+l8
+  found 4 picked File:Le Christ chez Marthe et Marie - Joos Goemaere.jpg
+l9
+  found 4 picked File:Tajine marocain.jpg
+l10
+  found 4 picked File:Vorspeise mit Dolma und Tzatziki.jpg
+l11
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  retry 4 <HTTPError 429: 'Too Many Requests'>
+ERROR l11 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&titles=File%3AKabsa.jpg&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=800&format=json&formatversion=2')
+l12
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  found 4 picked File:Mujaddara.jpg
+l13
+  found 0 picked None
+l14
+  found 4 picked File:Fish Sayadieh.jpg
+d1
+  found 4 picked File:Homemade Lentil Soup - Lavash 2025-02-10.jpg
+d2
+  found 4 picked File:Christmas table (Serbian cuisine).jpg
+d3
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  retry 4 <HTTPError 429: 'Too Many Requests'>
+ERROR d3 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Tuna+salad+vegetables+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=360&format=json&formatversion=2')
+d4
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  found 4 picked File:Chicken Vegetable Soup (8731954951).jpg
+d5
+  found 4 picked File:Liat Portal for Foodie Disorder - Herb Omelette with Israeli Salad and Orange Juice.jpg
+d6
+  found 4 picked File:Liat Portal for Foodie Disorder - Grilled Cheese Sandwich with Fresh Salad.jpg
+d7
+  found 4 picked File:Món ăn Đông Hà, Tết 2022 (phở Lý Quốc sư ở công viên Cọ Dầu) (2).jpg
+d8
+  found 4 picked File:Butter chicken rice bowl - chaiiwala 2024-02-10.jpg
+d9
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  retry 2 <HTTPError 429: 'Too Many Requests'>
+  retry 3 <HTTPError 429: 'Too Many Requests'>
+  retry 4 <HTTPError 429: 'Too Many Requests'>
+ERROR d9 RuntimeError('failed: https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=Freekeh+soup+filetype%3Abitmap&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url%7Csize%7Cmime%7Cextmetadata&iiurlwidth=360&format=json&formatversion=2')
+d10
+  retry 1 <HTTPError 429: 'Too Many Requests'>
+  found 4 picked File:Black bean hummus and vegetables - 2021-11-20 - Sarah Stierch.jpg
+done 26 images
