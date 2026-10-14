@@ -1,0 +1,19 @@
+# تنبيهات مواعيد وجبات الوالدة إلى تطبيق ntfy. الأوقات هنا بتوقيت جرينتش (الرياض = +3 ساعات)
+name: matbakh-reminders
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/15 5,6,10,11,15,16 * * *"
+    - cron: "0 17 * * *"
+permissions:
+  contents: read
+concurrency: matbakh-reminders
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: matbakh
+      - run: python3 matbakh/tools/remind.py

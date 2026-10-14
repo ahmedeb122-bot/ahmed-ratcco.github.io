@@ -8,18 +8,19 @@ UA = {"User-Agent": "MatbakhFamilyMealApp/1.0 (github.com/ahmedeb122-bot; person
 API = "https://commons.wikimedia.org/w/api.php"
 
 
-def get(url, tries=4):
+def get(url, tries=5):
     for i in range(tries):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=40) as r:
                 return r.read()
         except Exception as e:
             log("  retry", i + 1, repr(e)[:200])
-            time.sleep(3 * (i + 1))
+            time.sleep(20 * (i + 1))
     raise RuntimeError("failed: " + url)
 
 
 def api(params):
+    time.sleep(1.5)
     params.update(format="json", formatversion="2")
     return json.loads(get(API + "?" + urllib.parse.urlencode(params)))
 
@@ -75,51 +76,52 @@ def log(*a):
 
 def main():
     queries = json.load(open(os.path.join(HERE, "images.json"), encoding="utf-8"))
-    picks_path = os.path.join(HERE, "picks.json")
-    picks = json.load(open(picks_path, encoding="utf-8")) if os.path.exists(picks_path) else {}
+    rd = lambda n, d: json.load(open(os.path.join(HERE, n), encoding="utf-8")) if os.path.exists(os.path.join(HERE, n)) else d
+    picks, redo = rd("picks.json", {}), rd("redo.json", None)
+    report = rd("candidates.json", {})
+    cp = os.path.join(APP, "credits.json")
+    credits = json.load(open(cp, encoding="utf-8")) if os.path.exists(cp) else {}
     cand_dir, img_dir = os.path.join(HERE, "candidates"), os.path.join(APP, "img")
     os.makedirs(cand_dir, exist_ok=True)
     os.makedirs(img_dir, exist_ok=True)
-    report, credits = {}, {}
     for mid, qs in queries.items():
         if mid.startswith("_"):
             continue
         try:
-            one(mid, qs, picks, cand_dir, img_dir, report, credits)
+            if redo is None or mid in redo:
+                find(mid, qs, cand_dir, report)
+            pick = picks.get(mid, 0)
+            title = pick if isinstance(pick, str) else (report.get(mid) or [None] * 9)[pick] if pick < len(report.get(mid) or []) else None
+            if title and credits.get(mid, {}).get("file") != title:
+                chosen = search(title, 800)
+                if chosen:
+                    t, ii = chosen[0]
+                    open(os.path.join(img_dir, f"{mid}.jpg"), "wb").write(get(ii["thumburl"]))
+                    credits[mid] = credit(t, ii)
+            log(mid, "->", credits.get(mid, {}).get("file"))
         except Exception as e:
             log("ERROR", mid, repr(e))
     json.dump(report, open(os.path.join(HERE, "candidates.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
-    json.dump(credits, open(os.path.join(APP, "credits.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(credits, open(cp, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     log("done", len(credits), "images")
     open(os.path.join(HERE, "log.txt"), "w", encoding="utf-8").write("\n".join(LOG))
 
 
-def one(mid, qs, picks, cand_dir, img_dir, report, credits):
-        log(mid)
-        found, seen = [], set()
-        for q in qs:
-            for t, ii in search(q, 360):
-                if t not in seen:
-                    seen.add(t)
-                    found.append((t, ii))
-            if len(found) >= 4:
-                break
-        found = found[:4]
-        report[mid] = [t for t, _ in found]
-        for n, (t, ii) in enumerate(found):
-            open(os.path.join(cand_dir, f"{mid}_{n}.jpg"), "wb").write(get(ii["thumburl"]))
-            time.sleep(0.4)
-        pick = picks.get(mid, 0)
-        if isinstance(pick, str):
-            chosen = search(pick, 800)
-        else:
-            chosen = search(found[pick][0], 800) if pick < len(found) else []
-        if chosen:
-            t, ii = chosen[0]
-            open(os.path.join(img_dir, f"{mid}.jpg"), "wb").write(get(ii["thumburl"]))
-            credits[mid] = credit(t, ii)
-        time.sleep(0.4)
-        log("  found", len(found), "picked", credits.get(mid, {}).get("file"))
+def find(mid, qs, cand_dir, report):
+    found, seen = [], set()
+    for q in qs:
+        for t, ii in search(q, 360):
+            if t not in seen:
+                seen.add(t)
+                found.append((t, ii))
+        if len(found) >= 4:
+            break
+    found = found[:4]
+    report[mid] = [t for t, _ in found]
+    for n, (t, ii) in enumerate(found):
+        open(os.path.join(cand_dir, f"{mid}_{n}.jpg"), "wb").write(get(ii["thumburl"]))
+        time.sleep(1)
+    log(mid, "candidates", len(found))
 
 
 if __name__ == "__main__":
