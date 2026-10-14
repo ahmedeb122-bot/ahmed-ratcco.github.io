@@ -2,6 +2,11 @@
 name: matbakh-reminders
 on:
   workflow_dispatch:
+    inputs:
+      test:
+        description: "أرسل تنبيه تجربة"
+        type: boolean
+        default: true
   schedule:
     - cron: "*/15 5,6,10,11,15,16 * * *"
     - cron: "0 17 * * *"
@@ -17,3 +22,5 @@ jobs:
         with:
           sparse-checkout: matbakh
       - run: python3 matbakh/tools/remind.py
+        env:
+          TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.test && '1' || '0' }}

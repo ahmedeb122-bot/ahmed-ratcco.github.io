@@ -38,6 +38,10 @@ def send(title, message, prio, today, k):
 def main():
     now = datetime.now(RIYADH)
     today = now.strftime("%Y-%m-%d")
+    if os.environ.get("TEST") == "1":
+        send("🔔 تجربة تنبيهات المطبخ", "إذا وصلك هذا التنبيه فالإعداد صحيح. لا تضغطي «تم الطبخ» هنا.", 3, "test", "x")
+        print("test sent")
+        return
     mins = now.hour * 60 + now.minute
     due = [k for k, (_, t) in MEALS.items() if t - BEFORE - 5 <= mins <= t + AFTER + 10]
     if not due:
