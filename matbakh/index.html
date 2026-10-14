@@ -4,156 +4,284 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>المطبخ</title>
-<meta name="theme-color" content="#9b1f3a">
+<meta name="theme-color" content="#efeaf8">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&family=Reem+Kufi:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+<script>try{var t=localStorage.getItem("mm_theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
-/* Layout: one-column phone app, bottom tab bar. Hibiscus (karkadeh) red + okra green on a cool sorghum-grey ground */
+/* Layout: one phone column on a soft three-colour mist; frosted cards, pastel tiles, hand-drawn bowls, floating pill nav */
 :root{
-  --bg:#f3f4ef; --surface:#ffffff; --fg:#1d221c; --muted:#5d665a; --line:#dde1d6;
-  --accent:#9b1f3a; --accent-soft:#f6e3e7; --green:#4f6b2a; --green-soft:#e6eedb; --warn:#a15c00; --warn-soft:#fbefd9;
-  --display:"Reem Kufi","IBM Plex Sans Arabic",Tahoma,sans-serif;
-  --body:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif;
+  --mist1:#f8eef3; --mist2:#eeeafa; --mist3:#e5f0f9;
+  --glass:rgba(255,255,255,.74); --card:#ffffff; --fg:#17161c; --muted:#6a6776; --line:rgba(23,22,28,.08);
+  --accent:#1f8bff; --accent-fg:#ffffff; --ink:#141317; --ink-fg:#ffffff;
+  --t-blue:#d8ebfb; --t-lav:#e6e1fb; --t-mint:#dcf2e2; --t-pink:#f9dbe9; --t-yel:#fbeec4;
+  --ok:#2c7a3a; --ok-soft:#e1f2e3; --warn:#9a5a00; --warn-soft:#fdf0d6; --danger:#c8283c; --danger-soft:#fde3e6;
+  --bowl:#ffffff; --bowl-shade:#e4e6ee; --shadow:rgba(40,30,60,.12);
+  --display:"Alexandria","IBM Plex Sans Arabic",Tahoma,sans-serif;
+  --body:"IBM Plex Sans Arabic","Alexandria",Tahoma,sans-serif;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root{
-  --bg:#141713; --surface:#1d211b; --fg:#ebeee6; --muted:#a3ab9e; --line:#30362c;
-  --accent:#e2768d; --accent-soft:#3a1d24; --green:#a9c77e; --green-soft:#263220; --warn:#e9b25c; --warn-soft:#352812; color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --mist1:#1c1720; --mist2:#18171f; --mist3:#141a21;
+  --glass:rgba(38,36,46,.78); --card:#24232c; --fg:#f2f1f6; --muted:#aaa7b5; --line:rgba(255,255,255,.09);
+  --accent:#4aa3ff; --accent-fg:#0b1420; --ink:#f2f1f6; --ink-fg:#17161c;
+  --t-blue:#1d2d3d; --t-lav:#2a253f; --t-mint:#1e3326; --t-pink:#3a2331; --t-yel:#383020;
+  --ok:#8fd39b; --ok-soft:#1d3323; --warn:#f0bb64; --warn-soft:#382a14; --danger:#ff7a88; --danger-soft:#3a1d22;
+  --bowl:#ecebf1; --bowl-shade:#bcb9c7; --shadow:rgba(0,0,0,.4); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --mist1:#1c1720; --mist2:#18171f; --mist3:#141a21;
+  --glass:rgba(38,36,46,.78); --card:#24232c; --fg:#f2f1f6; --muted:#aaa7b5; --line:rgba(255,255,255,.09);
+  --accent:#4aa3ff; --accent-fg:#0b1420; --ink:#f2f1f6; --ink-fg:#17161c;
+  --t-blue:#1d2d3d; --t-lav:#2a253f; --t-mint:#1e3326; --t-pink:#3a2331; --t-yel:#383020;
+  --ok:#8fd39b; --ok-soft:#1d3323; --warn:#f0bb64; --warn-soft:#382a14; --danger:#ff7a88; --danger-soft:#3a1d22;
+  --bowl:#ecebf1; --bowl-shade:#bcb9c7; --shadow:rgba(0,0,0,.4); color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.7;padding-top:env(safe-area-inset-top,0px)}
-.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:18px 110px}
-h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.3}
-h1{font-size:1.75rem;color:var(--accent)}
-.sub{color:var(--muted);font-size:.95rem;margin:.2rem 0 1rem}
-.pills{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
-.pills button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:inherit;font-size:.95rem;padding:6px 14px;border-radius:999px;cursor:pointer}
-.pills button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.meal{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:10px;margin-bottom:12px}
-.mhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
-.slot{font-size:.85rem;color:var(--muted);letter-spacing:.02em}
-.time{font-variant-numeric:tabular-nums;font-weight:700;color:var(--green);background:var(--green-soft);padding:2px 10px;border-radius:999px;font-size:.9rem}
-.meal h3{font-size:1.3rem}
-.meal ul{margin:0;padding-inline-start:1.2rem}
-.tag{display:inline-block;font-size:.8rem;padding:1px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-inline-start:6px;vertical-align:middle;font-family:var(--body)}
-.fix{background:var(--green-soft);color:var(--fg);border-radius:10px;padding:8px 12px;font-size:.93rem}
-.fix b{color:var(--green)}
-details{border-top:1px dashed var(--line);padding-top:6px}
-summary{cursor:pointer;color:var(--accent);font-weight:500;min-height:32px}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.btn{font:inherit;font-size:.98rem;border:1.5px solid var(--accent);color:var(--accent);background:transparent;border-radius:10px;padding:8px 14px;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-.btn.solid{background:var(--accent);color:#fff}
-.btn.quiet{border-color:var(--line);color:var(--fg)}
-.btn svg{width:18px;height:18px;flex:none}
-.btn:focus-visible,.pills button:focus-visible,nav button:focus-visible,input:focus-visible{outline:3px solid var(--green);outline-offset:2px}
-.vidrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.vidrow .btn{justify-content:center}
-.vidrow .btn.solid{grid-column:1/-1}
-input[type=url]{width:100%;font:inherit;font-size:.95rem;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);direction:ltr;text-align:left}
-.note{background:var(--warn-soft);color:var(--fg);border-radius:12px;padding:12px 14px;font-size:.95rem;border-inline-start:4px solid var(--warn)}
-.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
-th,td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:right;vertical-align:top}
-th{font-family:var(--display);background:var(--green-soft);color:var(--green);font-weight:700}
-td:first-child{font-weight:700;color:var(--accent);white-space:nowrap}
-tr.today td{background:var(--accent-soft)}
-.shop h3{font-size:1.1rem;color:var(--green);margin:16px 0 6px}
-.shop label{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
-.shop input{width:22px;height:22px;accent-color:var(--accent);flex:none}
-.shop .cnt{margin-inline-start:auto;color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums;white-space:nowrap}
-.shop label.done span:first-of-type{text-decoration:line-through;color:var(--muted)}
-.rules section{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
-.rules h2{font-size:1.2rem;color:var(--accent);margin-bottom:6px}
-.rules ul{margin:0;padding-inline-start:1.2rem}
-.danger{border:2px solid var(--accent)!important}
-.big{font-size:1.6rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
-.plate{display:grid;grid-template-columns:1fr 1fr;gap:4px;max-width:260px;margin:8px 0}
-.plate div{padding:8px;border-radius:8px;text-align:center;font-size:.9rem}
-.plate .v{grid-row:span 2;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-weight:700}
-.plate .p{background:var(--accent-soft);color:var(--accent);font-weight:700}
-.plate .c{background:var(--warn-soft);color:var(--warn);font-weight:700}
-.chan h3{font-size:1rem;color:var(--green);margin:10px 0 4px}
-.chan a{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
-.chan a span:last-child{color:var(--muted);direction:ltr;font-size:.85rem}
-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
-nav button{flex:1;border:0;background:none;color:var(--muted);font:inherit;font-size:.85rem;padding:6px 2px;cursor:pointer;display:grid;justify-items:center;gap:2px;min-height:48px}
-nav button svg{width:24px;height:24px}
-nav button[aria-current="page"]{color:var(--accent);font-weight:700}
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 18px;border-radius:999px;font-size:.95rem;max-width:90vw;text-align:center}
+body{margin:0;color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.65;padding-top:env(safe-area-inset-top,0px);
+  background:var(--mist2);background-image:radial-gradient(120% 60% at 100% 0%,var(--mist1) 0%,transparent 60%),radial-gradient(120% 70% at 0% 100%,var(--mist3) 0%,transparent 60%);background-attachment:fixed;min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 130px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.3;text-wrap:balance;font-weight:600}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sub{color:var(--muted);font-size:.93rem;margin:.2rem 0 1rem}
+.glass{background:var(--glass);box-shadow:0 4px 20px var(--shadow);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+/* أزرار دائرية وعناوين */
+.round{width:46px;height:46px;border-radius:50%;border:0;background:var(--glass);display:grid;place-items:center;box-shadow:0 2px 10px var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);flex:none;color:var(--fg)}
+.round svg{width:20px;height:20px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.date{font-size:.88rem;color:var(--muted)}
+.hello{margin:16px 0 2px;color:var(--muted);font-size:1rem}
+.big{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.big h1{font-size:1.9rem;font-weight:500;letter-spacing:-.01em}
+.badge{font-family:var(--display);font-size:1.5rem;font-weight:600;padding:2px 14px;border-radius:16px;background:var(--glass);box-shadow:0 2px 10px var(--shadow)}
+.ptitle{font-size:1.7rem;font-weight:500;margin:6px 0 4px}
+.search{margin-top:16px;display:flex;align-items:center;gap:10px;background:var(--glass);border-radius:999px;padding:6px 18px;box-shadow:0 2px 12px var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.search svg{width:20px;height:20px;color:var(--muted);flex:none}
+.search input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--fg);padding:8px 0;outline:0}
+.search input::placeholder{color:var(--muted)}
+.panel{margin-top:16px;background:var(--glass);border-radius:28px;padding:16px;box-shadow:0 4px 20px var(--shadow);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.phead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.phead .ic,.tile .ti,.fact .ti{width:34px;height:34px;border-radius:50%;background:var(--card);display:grid;place-items:center;flex:none}
+.phead .ic svg,.tile .ti svg,.fact .ti svg{width:18px;height:18px}
+.phead h2{font-size:1.08rem;font-weight:500}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{border-radius:20px;padding:12px 12px 10px;display:grid;gap:3px;align-content:start;border:0;text-align:start;color:var(--fg)}
+.tile .ti{margin-bottom:6px}
+.tile small{font-size:.82rem;opacity:.85}
+.tile b{font-family:var(--display);font-size:1.7rem;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.tile b span{font-size:.85rem;font-weight:500;opacity:.65}
+.blue{background:var(--t-blue)}.lav{background:var(--t-lav)}.mint{background:var(--t-mint)}.pink{background:var(--t-pink)}.yel{background:var(--t-yel)}
+.sec{display:flex;justify-content:space-between;align-items:baseline;margin:24px 0 10px;gap:10px}
+.sec h2{font-size:1.25rem;font-weight:500}
+.sec button{border:0;background:none;color:var(--muted);font-size:.92rem;padding:6px 0}
+/* أزرار الأيام والاختيارات */
+.pills{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin:0 -2px 6px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pills button{flex:none;border:0;background:var(--glass);border-radius:999px;padding:9px 16px;font-size:.93rem;box-shadow:0 1px 6px var(--shadow);color:var(--fg)}
+.pills button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
+.pills button small{opacity:.6;margin-inline-start:4px;font-variant-numeric:tabular-nums}
+/* بطاقات الوجبات */
+.rail{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 14px;margin:0 -2px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.mcard{flex:0 0 172px;scroll-snap-align:start;border:0;background:var(--card);border-radius:26px;padding:10px 10px 14px;text-align:center;box-shadow:0 4px 16px var(--shadow);display:grid;gap:2px;position:relative;overflow:hidden;color:var(--fg)}
+.mcard::before{content:"";position:absolute;inset:0 0 auto 0;height:58%;background:linear-gradient(180deg,var(--tint,var(--t-lav)),transparent)}
+.mcard>*{position:relative}
+.mcard.now{box-shadow:0 0 0 2.5px var(--accent),0 6px 18px var(--shadow)}
+.mcard.done{opacity:.62}
+.slot{justify-self:center;font-size:.78rem;padding:3px 12px;border-radius:999px;background:var(--card);box-shadow:0 1px 4px var(--shadow)}
+.slot.hot{background:var(--accent);color:var(--accent-fg)}
+.mcard.done .slot.hot{background:var(--ok);color:var(--card)}
+svg.food{width:100%;height:auto;aspect-ratio:184/112;max-width:100%;display:block}
+.mcard h3{font-size:.98rem;font-weight:500;min-height:2.6em;display:grid;place-items:center;line-height:1.35}
+.when{display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.when svg{width:14px;height:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid .mcard{flex:auto}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:30px 0}
 /* الوجبة القادمة */
-.hero{background:var(--accent-soft);border:2px solid var(--accent);border-radius:16px;padding:14px 16px;margin-bottom:14px;display:grid;gap:6px}
-.hero .lbl{font-size:.9rem;color:var(--muted)}
-.hero h2{font-size:1.45rem;color:var(--accent)}
-.hero .eta{font-weight:700;color:var(--green)}
-.meal.now{border:2px solid var(--accent)}
-.nowtag{font-size:.8rem;background:var(--accent);color:#fff;padding:1px 9px;border-radius:999px}
-@media (prefers-color-scheme:dark){.nowtag{color:#1d211b}}
-.meal.done{opacity:.6}
-.meal.done h3::after{content:" ✓";color:var(--green)}
-.btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.actions .btn{justify-content:center}
-/* نافذة تغيير الوجبة */
-dialog{border:0;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));width:100%;max-width:640px;margin:auto auto 0;background:var(--surface);color:var(--fg);max-height:88vh;overflow-y:auto}
-dialog::backdrop{background:rgba(0,0,0,.45)}
-dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.chips button{font:inherit;font-size:1rem;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 14px;min-height:46px;cursor:pointer}
-.chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
-.opt{display:block;width:100%;text-align:right;font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
-.opt b{font-size:1.05rem}
+.hero{background:var(--card);border-radius:30px;padding:14px;box-shadow:0 6px 24px var(--shadow);position:relative;overflow:hidden;margin-top:18px}
+.hero::before{content:"";position:absolute;inset:0 0 auto 0;height:60%;background:linear-gradient(180deg,var(--tint,var(--t-pink)),transparent)}
+.hero>*{position:relative}
+.hero .open{display:block;width:100%;border:0;background:none;padding:0;text-align:center;color:var(--fg)}
+.hero .lbl{position:absolute;top:4px;inset-inline-start:2px;font-size:.8rem;padding:4px 12px;border-radius:999px;background:var(--card);z-index:1}
+.hero .corner{position:absolute;top:0;inset-inline-end:0;width:46px;height:46px;border-radius:50%;background:var(--ink);color:var(--ink-fg);display:grid;place-items:center;z-index:1}
+.hero .corner svg{width:20px;height:20px}
+.hero svg.food{width:80%;margin:8px auto 0}
+.hero h2{font-size:1.5rem;font-weight:500;margin-top:2px}
+.meta{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:8px}
+.meta span{font-size:.82rem;padding:3px 12px;border-radius:999px;background:var(--mist2);display:inline-flex;gap:5px;align-items:center;font-variant-numeric:tabular-nums}
+.meta span.eta{background:var(--t-blue);font-weight:600}
+.meta svg{width:13px;height:13px}
+.hero .row{justify-content:center;margin-top:12px}
+.tipcard{margin-top:16px;display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:22px;background:var(--t-mint)}
+.tipcard .ti{width:40px;height:40px;border-radius:50%;background:var(--card);display:grid;place-items:center;flex:none}
+.tipcard .ti svg{width:20px;height:20px;color:var(--ok)}
+.tipcard p{margin:0;font-size:.94rem;line-height:1.55}
+/* صفحة تفاصيل الوجبة */
+.dtop{display:flex;justify-content:space-between;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:3;padding-block:4px}
+.stage{position:relative;margin:2px -6px 0}
+.bub{position:absolute;font-size:.8rem;padding:5px 12px;border-radius:999px;background:var(--glass);box-shadow:0 2px 10px var(--shadow);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);white-space:nowrap}
+.bub b{font-weight:700}
+.b1{top:6%;inset-inline-end:3%}.b2{top:42%;inset-inline-start:0}.b3{bottom:6%;inset-inline-end:8%}
+.kind{display:flex;justify-content:center;margin-top:4px}
+.kind span{font-size:.85rem;padding:4px 14px;border-radius:999px;background:var(--card);box-shadow:0 1px 6px var(--shadow)}
+.dtitle{text-align:center;font-size:1.7rem;font-weight:600;margin-top:8px}
+.dsub{text-align:center;color:var(--muted);margin:6px auto 0;max-width:34ch;font-size:.95rem}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}
+.fact{border-radius:22px;padding:12px 4px;text-align:center;display:grid;justify-items:center;gap:1px}
+.fact .ti{margin-bottom:4px}
+.fact small{font-size:.74rem;opacity:.75}
+.fact b{font-family:var(--display);font-size:.98rem;font-weight:600;line-height:1.3}
+.list{background:var(--card);border-radius:24px;padding:4px 14px;box-shadow:0 3px 14px var(--shadow)}
+.list div{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.list div:last-child{border-bottom:0}
+.list i{width:30px;height:30px;border-radius:50%;background:var(--mist2);display:grid;place-items:center;flex:none;font-style:normal;font-family:var(--display);font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.kid{margin-top:12px;font-size:.92rem;color:var(--muted);display:flex;gap:8px;align-items:flex-start}
+.kid svg{width:18px;height:18px;flex:none;margin-top:4px}
+.box{background:var(--card);border-radius:24px;padding:14px 16px;box-shadow:0 3px 14px var(--shadow);display:grid;gap:10px;margin-top:12px}
+.box h3{font-size:1rem;font-weight:500}
+.cta{position:fixed;left:0;right:0;bottom:0;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(0deg,var(--mist2) 60%,transparent);z-index:5}
+.cta a{display:flex;max-width:488px;margin:0 auto;justify-content:center;align-items:center;gap:8px;background:var(--accent);color:var(--accent-fg);text-decoration:none;font-weight:600;border-radius:999px;padding:16px;font-size:1rem;box-shadow:0 8px 24px var(--shadow)}
+.cta svg{width:18px;height:18px}
+/* الأزرار العامة */
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:.96rem;border:0;color:var(--fg);background:var(--glass);box-shadow:0 2px 10px var(--shadow);border-radius:18px;padding:10px 16px;cursor:pointer;min-height:48px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn.solid{background:var(--accent);color:var(--accent-fg)}
+.btn.ok{background:var(--ok);color:var(--card)}
+.btn.quiet{background:var(--card);box-shadow:0 1px 6px var(--shadow)}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
+.btn svg{width:18px;height:18px;flex:none}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions .wide{grid-column:1/-1}
+.fix{background:var(--ok-soft);border-radius:22px;padding:14px 16px;margin-top:14px}
+.fix h3{font-size:.95rem;color:var(--ok);font-weight:600;margin-bottom:2px}
+.fix p{margin:0;font-size:.96rem}
+.fix b{color:var(--ok)}
+.tag{display:inline-block;font-size:.78rem;padding:1px 9px;border-radius:999px;background:var(--mist2);color:var(--fg);margin-inline-start:6px;vertical-align:middle;font-family:var(--body);font-weight:400}
+details summary{cursor:pointer;color:var(--accent);font-weight:500;min-height:36px;display:flex;align-items:center}
+input[type=url]{width:100%;font:inherit;font-size:.95rem;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--mist2);color:var(--fg);direction:ltr;text-align:left}
+.note{background:var(--warn-soft);color:var(--fg);border-radius:20px;padding:12px 16px;font-size:.95rem}
+/* الأسبوع */
+.tablewrap{overflow-x:auto;background:var(--card);border-radius:24px;box-shadow:0 4px 18px var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:10px 12px;text-align:right;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+th{font-family:var(--display);background:var(--t-lav);font-weight:500}
+th small,td small{color:var(--muted);font-weight:400}
+td:first-child{font-weight:600;white-space:nowrap}
+tr.today td{background:var(--t-blue)}
+.rated{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.rated:last-child{border-bottom:0}
+.rated span{flex:1}
+.rated button{font:inherit;font-size:.85rem;border:0;background:var(--mist2);color:var(--fg);border-radius:12px;padding:4px 12px;cursor:pointer;min-height:38px}
+/* المشتريات */
+.shop>h2{font-size:1.7rem;font-weight:500;margin:6px 0 4px}
+.aisle{background:var(--card);border-radius:22px;padding:6px 14px 4px;margin-bottom:10px;box-shadow:0 3px 14px var(--shadow)}
+.aisle h3{display:flex;justify-content:space-between;align-items:center;margin:8px 0 2px;font-size:1.05rem;font-weight:500}
+.aisle h3 small{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:400}
+.aisle.complete{opacity:.7;padding:4px 14px}
+.aisle.complete summary{color:var(--ok);font-weight:600;padding:6px 0}
+.it{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+.aisle .it:last-child{border-bottom:0}
+.it label{flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:42px}
+.it input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.it .qty{font-weight:600;color:var(--fg);background:var(--t-mint);padding:2px 10px;border-radius:999px;font-size:.88rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.it .homeb{font:inherit;border:0;background:var(--mist2);border-radius:12px;min-width:44px;min-height:42px;cursor:pointer;color:var(--fg)}
+.it.done .nm{text-decoration:line-through;color:var(--muted)}
+.it.done .qty{background:var(--mist2);color:var(--muted)}
+.it small{display:block;color:var(--muted);font-size:.8rem;line-height:1.4}
+.homes{margin-top:16px;background:var(--glass);border-radius:22px;padding:6px 14px;box-shadow:0 2px 10px var(--shadow)}
+.homes summary{color:var(--ok)}
+.prog{height:10px;background:var(--card);border-radius:999px;overflow:hidden;margin:6px 0 4px;box-shadow:inset 0 0 0 1px var(--line)}
+.prog div{height:100%;background:linear-gradient(90deg,var(--accent),var(--ok));border-radius:999px;transition:width .3s}
+.ord{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+.ord span{flex:1}
+.ord button{font:inherit;border:0;background:var(--mist2);color:var(--fg);border-radius:12px;min-width:44px;min-height:42px;cursor:pointer}
+/* نصائح */
+.rules section{background:var(--card);border-radius:24px;padding:16px 18px;margin-bottom:12px;box-shadow:0 3px 14px var(--shadow)}
+.rules h2{font-size:1.15rem;font-weight:500;margin-bottom:6px}
+.rules ul{margin:0;padding-inline-start:1.2rem}
+.rules .danger{background:var(--danger-soft);box-shadow:0 0 0 2px var(--danger)}
+.rules .danger h2{color:var(--danger)}
+.bignum{font-family:var(--display);font-size:1.8rem;font-weight:700;color:var(--danger);font-variant-numeric:tabular-nums}
+.plate{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:280px;margin:8px 0}
+.plate div{padding:10px;border-radius:16px;text-align:center;font-size:.9rem;font-weight:600}
+.plate .v{grid-row:span 2;background:var(--t-mint);display:grid;place-items:center}
+.plate .p{background:var(--t-pink)}
+.plate .c{background:var(--t-yel)}
+.chan h3{font-size:.98rem;color:var(--muted);font-weight:500;margin:12px 0 4px}
+.chan a{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);color:var(--fg);text-decoration:none}
+.chan a span:last-child{color:var(--muted);direction:ltr;font-size:.85rem}
+/* الشريط السفلي */
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:4px;padding:6px;border-radius:999px;background:var(--glass);box-shadow:0 8px 30px var(--shadow);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:6}
+nav button{width:62px;height:58px;border-radius:999px;border:0;background:transparent;color:var(--fg);display:grid;place-items:center;align-content:center;gap:1px;font-size:.7rem;transition:background .2s,color .2s}
+nav button svg{width:22px;height:22px}
+nav button[aria-current="page"]{background:var(--accent);color:var(--accent-fg)}
+nav button.spark{background:conic-gradient(from 200deg,var(--t-pink),var(--t-lav),var(--t-blue),var(--t-yel),var(--t-pink));border-radius:50%;width:58px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--ink-fg);padding:9px 18px;border-radius:999px;font-size:.92rem;z-index:20;max-width:88vw;text-align:center}
+/* نافذة التغيير والترتيب */
+dialog{border:0;border-radius:28px 28px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom,0px));width:100%;max-width:520px;margin:auto auto 0;background:var(--card);color:var(--fg);max-height:88vh;overflow-y:auto}
+dialog::backdrop{background:rgba(20,15,30,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+dialog h2{font-size:1.25rem;font-weight:600;margin-bottom:4px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chips button{font:inherit;font-size:.96rem;border:0;background:var(--mist2);color:var(--fg);border-radius:999px;padding:9px 16px;min-height:44px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
+.opt{display:block;width:100%;text-align:right;font:inherit;border:0;background:var(--mist2);color:var(--fg);border-radius:18px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.opt b{font-size:1.04rem;font-weight:600}
 .opt small{display:block;color:var(--muted)}
 .opt .w{color:var(--warn)}
-.rated{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
-.rated span{flex:1}
-.rated button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:none;color:var(--muted);border-radius:8px;padding:4px 10px;cursor:pointer;min-height:36px}
-/* المشتريات */
-.it{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
-.it label{flex:1;display:flex;align-items:center;gap:10px;cursor:pointer;min-height:40px;padding:0;border:0}
-.it .qty{font-weight:700;color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}
-.it .homeb{font:inherit;border:1px solid var(--line);background:none;border-radius:8px;min-width:44px;min-height:40px;cursor:pointer;color:var(--fg)}
-.it.done .nm{text-decoration:line-through;color:var(--muted)}
-.it.done .qty{color:var(--muted)}
-.it small{display:block;color:var(--muted);font-size:.8rem;line-height:1.4}
-.homes{margin-top:18px;background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:6px 12px}
-.homes summary{color:var(--green)}
-.aisle{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 12px 2px;margin-bottom:10px}
-.aisle h3{display:flex;justify-content:space-between;align-items:center;margin:8px 0 2px!important}
-.aisle h3 small{font-family:var(--body);font-size:.8rem;color:var(--muted);font-weight:400}
-.aisle.complete{opacity:.65;padding:2px 12px}
-.aisle.complete summary{color:var(--green);font-weight:700;padding:6px 0}
-.prog{height:10px;background:var(--line);border-radius:999px;overflow:hidden;margin:4px 0 2px}
-.prog div{height:100%;background:var(--green);border-radius:999px;transition:width .3s}
-.ord{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
-.ord span{flex:1}
-.ord button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;min-width:44px;min-height:40px;cursor:pointer}
-[hidden]{display:none!important}
-@media (prefers-reduced-motion:no-preference){.meal{transition:background .3s}.meal.flash{background:var(--green-soft)}}
+.mcard,.hero .open,.pills button,.round,.btn,.tile{transition:transform .15s}
+.mcard:active,.hero .open:active,.pills button:active,.round:active,.btn:active,.tile:active{transform:scale(.97)}
+@media (prefers-reduced-motion:no-preference){
+  .view{animation:in .3s ease-out}
+  @keyframes in{from{opacity:.5;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .mcard.flash{animation:fl .6s}
+  @keyframes fl{50%{box-shadow:0 0 0 4px var(--ok)}}
+}
+@media (max-width:370px){.facts{grid-template-columns:repeat(2,1fr)}.big h1{font-size:1.6rem}nav button{width:54px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>المطبخ</h1>
-    <p class="sub" id="sub">وجبات الوالدة: صحية لمريض السكري، ومناسبة للقلب والمخ</p>
-  </header>
-
   <main>
-    <section id="v-today">
+    <section id="v-today" class="view">
+      <div class="top">
+        <div class="date" id="today-date"></div>
+        <button class="round" id="theme-btn" aria-label="الوضع الليلي أو النهاري"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+      </div>
+      <p class="hello" id="hello">صباح الخير</p>
+      <div class="big"><span class="badge">المطبخ</span><h1>ماذا نطبخ اليوم؟</h1></div>
+      <label class="search" for="home-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg><input id="home-search" type="search" placeholder="ابحثي عن أكلة، مثلاً: بامية" autocomplete="off"></label>
       <div id="now" class="hero" hidden></div>
+      <div class="panel">
+        <div class="phead"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span><h2>هذا الأسبوع بنظرة</h2></div>
+        <div class="tiles" id="tiles"></div>
+      </div>
+      <div class="sec"><h2>وجبات اليوم</h2><button id="to-all">كل الأكلات</button></div>
       <div class="pills" id="daypick" role="group" aria-label="اختر اليوم"></div>
-      <div id="meals"></div>
-      <div class="note">المهم <b>لا تتأخر الوجبات</b> عن مواعيدها، وتمشي الوالدة 10 دقائق بعد الغداء والعشاء.</div>
+      <div class="rail" id="meals"></div>
+      <div class="tipcard"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="13" cy="4.5" r="1.8"/><path d="M10 21l2-6-2-3 1-4 3 3h3M8 11l2-3"/></svg></span><p><b>لا تتأخر الوجبات</b> عن مواعيدها، وتمشي الوالدة <b>10 دقائق</b> بعد الغداء والعشاء.</p></div>
     </section>
 
-    <section id="v-week" hidden>
-      <h2 style="margin-bottom:8px">جدول الأسبوع</h2>
+    <section id="v-recipes" class="view" hidden>
+      <div class="top"><button class="round" id="rback" aria-label="رجوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button><span class="date" id="rcount"></span></div>
+      <h1 class="ptitle">كل الأكلات</h1>
+      <label class="search" for="r-search" style="margin-top:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg><input id="r-search" type="search" placeholder="ابحثي عن أكلة" autocomplete="off"></label>
+      <div class="pills" id="rcats" role="group" aria-label="نوع الوجبة" style="margin-top:14px"></div>
+      <div class="grid" id="rgrid"></div>
+    </section>
+
+    <section id="v-detail" class="view" hidden></section>
+
+    <section id="v-week" class="view" hidden>
+      <h1 class="ptitle">جدول الأسبوع</h1>
       <div class="pills" id="weekpick1" role="group" aria-label="اختر الأسبوع"></div>
       <p class="sub">نفس الجدول يظهر على كل الجوالات تلقائياً. خذ لقطة شاشة واطبعها للثلاجة.</p>
       <div class="tablewrap"><table id="weektable"></table></div>
-      <p class="sub" style="margin-top:10px" id="balance"></p>
+      <p class="sub" style="margin-top:12px" id="balance"></p>
       <div class="row"><button class="btn quiet" id="resetweek">إلغاء تغييراتي في هذا الأسبوع</button></div>
       <section class="rules" style="margin-top:16px"><section>
         <h2>الأكلات التي قيّمتِها</h2>
@@ -161,8 +289,7 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
         <div id="ratings"></div>
       </section></section>
     </section>
-
-    <section id="v-shop" class="shop" hidden>
+    <section id="v-shop" class="shop view" hidden>
       <h2>قائمة المشتريات</h2>
       <div class="pills" id="shopdays" role="group" aria-label="مدة القائمة" style="margin-top:8px"></div>
       <p class="sub" id="shoprange"></p>
@@ -179,7 +306,7 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
       </div>
     </section>
 
-    <section id="v-rules" class="rules" hidden>
+    <section id="v-rules" class="rules view" hidden>
       <section>
         <h2>شكل الطبق الصحيح</h2>
         <div class="plate"><div class="v">نصف الطبق<br>خضار</div><div class="p">ربع: بروتين</div><div class="c">ربع: نشويات</div></div>
@@ -230,7 +357,7 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
           <li><b>الذراع:</b> ضعف أو تنميل في ذراع أو رجل.</li>
           <li><b>الكلام:</b> كلام ثقيل أو غير مفهوم.</li>
         </ul>
-        <p style="margin:.4rem 0 0">الهلال الأحمر السعودي: <span class="big">997</span></p>
+        <p style="margin:.4rem 0 0">الهلال الأحمر السعودي: <span class="bignum">997</span></p>
         <p class="sub" style="margin:0">لا تنتظر حتى تختفي الأعراض، حتى لو استمرت دقائق فقط.</p>
       </section>
       <section>
@@ -251,10 +378,11 @@ dialog h2{font-size:1.25rem;color:var(--accent);margin-bottom:4px}
 </div>
 
 <nav aria-label="الأقسام">
-  <button data-v="today" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>اليوم</button>
-  <button data-v="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>الأسبوع</button>
-  <button data-v="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16l-2 10H6z"/><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/></svg>المشتريات</button>
-  <button data-v="rules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>نصائح</button>
+  <button data-v="today" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>اليوم</button>
+  <button data-v="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>الأسبوع</button>
+  <button data-v="next" class="spark" aria-label="الوجبة القادمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3c1 4 3 6 7 7-4 1-6 3-7 7-1-4-3-6-7-7 4-1 6-3 7-7z"/></svg></button>
+  <button data-v="shop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/></svg>المشتريات</button>
+  <button data-v="rules"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>نصائح</button>
 </nav>
 <div class="toast" id="toast" hidden></div>
 <dialog id="sheet" aria-labelledby="sheet-title"></dialog>
@@ -389,53 +517,162 @@ const ICON_SEARCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 
 function dateLabel(i,off){const d=new Date(satMid.getTime()+(i+off*7)*DAY);return d.getDate()+"/"+(d.getMonth()+1)}
 
+/* ===== رسم صحن لكل أكلة (بالكود، يعمل بدون إنترنت) ===== */
+// [شكل الإناء، لون الأكل الفاتح، لون الأكل الغامق، [الإضافات وعددها]]
+const ART={
+b1:["bowl","#a2683a","#7a4826",[["swirl",1],["cumin",12],["tomato",2],["leaf",3]]],
+b2:["plate","#f3efe2","#e2dcc8",[["egg",3],["cuke",4],["tomato",3]]],
+b3:["bowl","#d9482f","#a93220",[["egg",2],["pepper",5],["leaf",4]]],
+b4:["bowl","#ead4a2","#cfae72",[["chickpea",22],["cumin",8],["leaf",2]]],
+b5:["bowl","#efe2c8","#d8c39b",[["apple",4],["cumin",14,"#8a4b22"]]],
+b6:["plate","#bfdc9f","#8fb86a",[["falafel",5],["tomato",3],["leaf",5]]],
+b7:["bowl","#f8f6ef","#e3dccb",[["swirl",1],["cumin",16,"#4f6b2a"],["cuke",2]]],
+b8:["plate","#d9a461","#b67c3c",[["dollop",1],["cuke",3],["leaf",2]]],
+l1:["bowl","#6f5a2a","#4a3a1a",[["meat",4],["leaf",3]]],
+l2:["plate","#f1e9d2","#dccfae",[["grain",46,"#c9a35c"],["fish",1],["lemon",2],["leaf",3]]],
+l3:["bowl","#7b8f34","#56661f",[["okra",9],["chicken",2]]],
+l4:["bowl","#c9542f","#9c3d1e",[["bean",14],["carrot",4],["leaf",2]]],
+l5:["bowl","#41612a","#2a4318",[["chicken",2],["leaf",2,"#7cb342"]]],
+l6:["plate","#c7e0a8","#93ba6e",[["meat",6],["tomato",3],["cuke",3],["leaf",3]]],
+l7:["bowl","#e08a2c","#b86414",[["carrot",4],["leaf",3],["cumin",6]]],
+l8:["plate","#f0b35a","#cf8c33",[["chicken",3],["carrot",4],["pepper",4],["leaf",3]]],
+l9:["bowl","#d4502f","#a93a1d",[["fish",1],["pepper",4],["lemon",1]]],
+l10:["plate","#e8d6ad","#cdb683",[["zuc",4],["egp",3],["tomato",2]]],
+l11:["plate","#e7ac58","#c78732",[["grain",54,"#f6d290"],["chicken",2],["carrot",3],["leaf",3]]],
+l12:["plate","#a98656","#7f6036",[["grain",46,"#c9a874"],["onion",6],["leaf",2]]],
+l13:["plate","#ead5a6","#cfb57c",[["kofta",4],["tomato",3],["pepper",3]]],
+l14:["plate","#c69355","#9c6c34",[["grain",46,"#e2b878"],["fish",1],["lemon",1],["leaf",2]]],
+d1:["bowl","#f0a033","#cf7d16",[["swirl",1],["leaf",3],["lemon",1]]],
+d2:["bowl","#f7f6f0","#e1dfd2",[["cuke",5],["leaf",5,"#3f8a4a"],["egg",1]]],
+d3:["plate","#c7e0a8","#93ba6e",[["leaf",7],["tuna",4],["tomato",3],["cuke",3],["lemon",1]]],
+d4:["bowl","#e7b65c","#c79232",[["carrot",6],["zuc",2],["chicken",2]]],
+d5:["plate","#f5cf55","#dcab2c",[["leaf",9,"#4f9a3a"],["tomato",3]]],
+d6:["plate","#f3efe2","#ddd6c0",[["cheese",4],["carrot",3],["cuke",3],["pepper",3]]],
+d7:["bowl","#eadcbc","#cfbb8f",[["carrot",5],["zuc",2],["leaf",3]]],
+d8:["plate","#c7e0a8","#93ba6e",[["leaf",7],["chicken",3],["chickpea",6],["tomato",3]]],
+d9:["bowl","#a58a4a","#7a6430",[["grain",28,"#8aa55a"],["chicken",2],["leaf",2]]],
+d10:["bowl","#ead6a6","#cdb47e",[["swirl",1],["chickpea",5],["cumin",10,"#c4402a"],["leaf",2]]]
+};
+let gid=0;
+function seedOf(s){let h=7;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h}
+const T={
+ leaf:(x,y,r,c)=>`<ellipse cx="${x}" cy="${y}" rx="5.5" ry="2.4" transform="rotate(${r()*180|0} ${x} ${y})" fill="${c||(r()<.5?"#5f9e3a":"#7cb342")}"/>`,
+ tomato:(x,y)=>`<circle cx="${x}" cy="${y}" r="4.6" fill="#e2453c"/><circle cx="${x-1.4}" cy="${y-1.6}" r="1.2" fill="#ff9a8a"/>`,
+ egg:(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="10" ry="6.5" fill="#fffdf6" stroke="#e8e1cf" stroke-width=".8"/><circle cx="${x+1}" cy="${y-.5}" r="3.8" fill="#f6b417"/>`,
+ okra:(x,y)=>`<circle cx="${x}" cy="${y}" r="3.8" fill="#86a83a" stroke="#d6e8a0" stroke-width="1.3"/><circle cx="${x}" cy="${y}" r="1" fill="#f4f7dc"/>`,
+ chickpea:(x,y)=>`<circle cx="${x}" cy="${y}" r="3.1" fill="#e6c88e" stroke="#c49c5a" stroke-width=".7"/>`,
+ bean:(x,y,r)=>`<ellipse cx="${x}" cy="${y}" rx="3.6" ry="2.2" transform="rotate(${r()*180|0} ${x} ${y})" fill="#f4ecd8" stroke="#d8c9a6" stroke-width=".6"/>`,
+ grain:(x,y,r,c)=>`<ellipse cx="${x}" cy="${y}" rx="2" ry=".9" transform="rotate(${r()*180|0} ${x} ${y})" fill="${c}"/>`,
+ meat:(x,y)=>`<rect x="${x-6}" y="${y-4}" width="12" height="8" rx="3" fill="#6e3a20"/><rect x="${x-5}" y="${y-4}" width="9" height="3" rx="1.5" fill="#9a5733"/>`,
+ chicken:(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="10" ry="6.5" fill="#c98a3e"/><ellipse cx="${x-2}" cy="${y-2}" rx="5" ry="2.4" fill="#e3ab5d"/>`,
+ fish:(x,y)=>`<g transform="translate(${x-26} ${y-9})"><path d="M2 9 Q20 -3 42 6 L52 0 L50 9 L52 18 L42 12 Q20 21 2 9z" fill="#d29a4b"/><path d="M14 4l4 10M22 3l4 12M30 4l4 10" stroke="#9c6a2a" stroke-width="1.4" fill="none" opacity=".7"/><circle cx="8" cy="8" r="1.4" fill="#3a2a1a"/></g>`,
+ cuke:(x,y)=>`<circle cx="${x}" cy="${y}" r="4.8" fill="#e3f2cc" stroke="#4f8a2c" stroke-width="1.3"/>`,
+ lemon:(x,y)=>`<path d="M${x-6} ${y} a6 6 0 0 1 12 0z" fill="#ffd84a" stroke="#f0b81c" stroke-width="1"/>`,
+ carrot:(x,y)=>`<circle cx="${x}" cy="${y}" r="3.3" fill="#f28b2d" stroke="#d96c12" stroke-width=".7"/>`,
+ swirl:(x,y)=>`<path d="M${x-26} ${y+2} q10 -8 22 -2 q12 6 24 -3" stroke="#e7c75a" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".9"/>`,
+ cumin:(x,y,r,c)=>`<circle cx="${x}" cy="${y}" r=".9" fill="${c||"#6a3c18"}"/>`,
+ pepper:(x,y,r)=>`<rect x="${x-4}" y="${y-1.6}" width="8" height="3.2" rx="1.6" transform="rotate(${r()*180|0} ${x} ${y})" fill="${r()<.5?"#3fa34d":"#f2c230"}"/>`,
+ apple:(x,y,r)=>`<path d="M${x-6} ${y} a6 4 0 0 0 12 0 a6 2 0 0 1 -12 0z" fill="#f6dfb2" stroke="#d84a3a" stroke-width="1.2" transform="rotate(${r()*60-30|0} ${x} ${y})"/>`,
+ falafel:(x,y)=>`<circle cx="${x}" cy="${y}" r="7" fill="#7b5526"/><circle cx="${x-2}" cy="${y-2}" r="3" fill="#9d7238"/>`,
+ dollop:(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="18" ry="8" fill="#fbfaf4" stroke="#e5e0cf" stroke-width=".8"/>`,
+ zuc:(x,y,r)=>`<rect x="${x-9}" y="${y-3.5}" width="18" height="7" rx="3.5" transform="rotate(${r()*40-20|0} ${x} ${y})" fill="#6c9a3a" stroke="#4a7322" stroke-width=".8"/>`,
+ egp:(x,y,r)=>`<rect x="${x-8}" y="${y-4}" width="16" height="8" rx="4" transform="rotate(${r()*40-20|0} ${x} ${y})" fill="#5d2c5f"/>`,
+ onion:(x,y,r)=>`<path d="M${x-5} ${y} q5 -4 10 0" stroke="#8a4a1a" stroke-width="1.6" fill="none" transform="rotate(${r()*90-45|0} ${x} ${y})"/>`,
+ kofta:(x,y,r)=>`<rect x="${x-11}" y="${y-3.5}" width="22" height="7" rx="3.5" transform="rotate(${r()*30-15|0} ${x} ${y})" fill="#6b391e"/>`,
+ tuna:(x,y)=>`<ellipse cx="${x}" cy="${y}" rx="6" ry="3.6" fill="#d9a48c"/>`,
+ cheese:(x,y,r)=>`<rect x="${x-5}" y="${y-5}" width="10" height="9" rx="1.5" transform="rotate(${r()*30-15|0} ${x} ${y})" fill="#fffef8" stroke="#e2dcc8" stroke-width=".8"/>`
+};
+function drawFood(id){
+  const [kind,c1,c2,tops]=ART[id]||ART.d1;const g="g"+(++gid);const r=rng(seedOf(id));
+  const plate=kind==="plate";
+  const S=1.3,cx=100,cy=plate?84:72,rx=(plate?54:58)/S,ry=(plate?22:12)/S;
+  const items=[];
+  tops.forEach(([n,cnt,col])=>{for(let i=0;i<cnt;i++){
+    let x,y;if(cnt===1){x=cx+(r()-.5)*16;y=cy+(r()-.5)*4}
+    else{const a=r()*Math.PI*2,d=Math.sqrt(r());x=cx+Math.cos(a)*rx*d;y=cy+Math.sin(a)*ry*d}
+    items.push({n,x:+x.toFixed(1),y:+y.toFixed(1),col,big:n==="fish"||n==="swirl"||n==="dollop"?0:1});
+  }});
+  items.sort((a,b)=>(a.big-b.big)||(a.y-b.y));
+  const tp=`<g transform="translate(${cx} ${cy}) scale(${S}) translate(${-cx} ${-cy})">`+items.map(t=>T[t.n](t.x,t.y,r,t.col)).join("")+`</g>`;
+  const defs=`<defs><radialGradient id="${g}f" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient><linearGradient id="${g}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--bowl)"/><stop offset="1" style="stop-color:var(--bowl-shade)"/></linearGradient></defs>`;
+  const base=plate
+   ?`<ellipse cx="100" cy="130" rx="86" ry="10" style="fill:var(--shadow)"/><ellipse cx="100" cy="114" rx="94" ry="27" style="fill:var(--bowl-shade)"/><ellipse cx="100" cy="110" rx="92" ry="25" style="fill:var(--bowl)"/><ellipse cx="100" cy="112" rx="66" ry="17" style="fill:var(--bowl-shade)" opacity=".45"/><path d="M34 108 Q36 54 100 50 Q164 54 166 108 Q134 124 100 124 Q66 124 34 108z" fill="url(#${g}f)"/><ellipse cx="88" cy="66" rx="34" ry="9" fill="#fff" opacity=".18"/>`
+   :`<ellipse cx="100" cy="138" rx="62" ry="8" style="fill:var(--shadow)"/><path d="M20 72 Q22 130 100 136 Q178 130 180 72z" fill="url(#${g}b)"/><ellipse cx="100" cy="72" rx="80" ry="21" style="fill:var(--bowl)"/><ellipse cx="100" cy="74" rx="71" ry="16.5" fill="url(#${g}f)"/><ellipse cx="88" cy="70" rx="36" ry="6" fill="#fff" opacity=".16"/>`;
+  return `<svg class="food" viewBox="8 34 184 112" aria-hidden="true">${defs}${base}${tp}</svg>`;
+}
+
+/* ===== أيقونات وألوان ===== */
+const MONTHS=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const SLOT_TINT={b:"var(--t-yel)",l:"var(--t-pink)",d:"var(--t-lav)"};
+const TYPE_TINT={"سمك":"blue","بقوليات":"yel","دجاج":"pink","لحم":"pink","بيض":"yel","حبوب":"mint","ألبان":"lav"};
+const I=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const ICO={
+ clock:I('<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'),
+ arrow:I('<path d="M17 7L7 17M8 7h9v9"/>'),
+ back:I('<path d="M9 6l6 6-6 6"/>'),
+ fish:I('<path d="M3 12c4-6 10-6 14 0-4 6-10 6-14 0zM17 12l4-3v6z"/>'),
+ bean:I('<path d="M8 5c4-2 9 1 9 6s-4 9-8 8-6-5-4-8c1-2 3-2 3-4 0-1-1-1 0-2z"/>'),
+ bag:I('<path d="M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0"/>'),
+ bowl:I('<path d="M3 11h18a9 9 0 0 1-18 0zM8 7c0-1.5 1-2 1-3M12 7c0-1.5 1-2 1-3"/>'),
+ tag:I('<path d="M3 12V4h8l9 9-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>'),
+ bolt:I('<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'),
+ salt:I('<path d="M8 9h8l-1 11H9zM9 9l1-5h4l1 5"/><path d="M11 6h.01M13 6h.01"/>'),
+ swap:I('<path d="M4 8h13l-3-3M20 16H7l3 3"/>'),
+ check:I('<path d="M5 12l5 5 9-10"/>'),
+ baby:I('<circle cx="12" cy="9" r="5"/><path d="M6 21c1-4 3-5 6-5s5 1 6 5"/>'),
+ search:I('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>')
+};
+const slotOf={};["b","l","d"].forEach(k=>POOL[k].forEach(m=>slotOf[m.id]=k));
+let detail=null, lastView="today", rcat="all";
+
+/* ===== التنقل بين الصفحات ===== */
+const VIEWS=["today","recipes","detail","week","shop","rules"];
+function show(v){
+  VIEWS.forEach(x=>document.getElementById("v-"+x).hidden=x!==v);
+  if(v!=="detail"){lastView=v;detail=null}
+  document.querySelectorAll("nav button").forEach(b=>{if(b.dataset.v===(v==="recipes"?"today":v))b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  document.querySelector("nav").hidden=v==="detail";
+  window.scrollTo(0,0);
+}
+
+/* ===== الصفحة الرئيسية ===== */
 function renderDays(){
   const w=document.getElementById("daypick");w.innerHTML="";
-  DAYS.forEach((n,i)=>{const b=document.createElement("button");b.textContent=i===todayIdx?n+" (اليوم)":n;b.setAttribute("aria-pressed",i===sel);b.onclick=()=>{sel=i;renderDays();renderMeals()};w.appendChild(b)});
+  DAYS.forEach((n,i)=>{const b=document.createElement("button");b.textContent=i===todayIdx?"اليوم":n;b.setAttribute("aria-pressed",i===sel);b.onclick=()=>{sel=i;renderDays();renderMeals()};w.appendChild(b)});
+}
+function renderHead(){
+  const d=new Date();
+  document.getElementById("today-date").textContent=DAYS[todayIdx]+" "+d.getDate()+" "+MONTHS[d.getMonth()];
+  document.getElementById("hello").textContent=d.getHours()<12?"صباح الخير":"مساء الخير";
+  const week=getWeek(thisWeek),cnt={};
+  week.forEach(x=>["l","d"].forEach(k=>{const t=byId[x[k]].t;cnt[t]=(cnt[t]||0)+1}));
+  let left=0;try{const mk=marks();left=shopItems().filter(it=>!mk.home[it.n]&&!mk.buy[it.n]).length}catch(e){}
+  const fish=cnt["سمك"]||0;
+  document.getElementById("tiles").innerHTML=
+   `<button class="tile blue" data-go="week"><span class="ti">${ICO.fish}</span><small>سمك ${fish<2?"(قليل!)":""}</small><b>${fish}<span> مرات</span></b></button>`+
+   `<button class="tile lav" data-go="week"><span class="ti">${ICO.bean}</span><small>بقوليات</small><b>${cnt["بقوليات"]||0}<span> مرات</span></b></button>`+
+   `<button class="tile mint" data-go="shop"><span class="ti">${ICO.bag}</span><small>باقي للشراء</small><b>${left}<span> صنف</span></b></button>`;
+  document.querySelectorAll("#tiles [data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
+}
+function card(m,o){
+  return `<button class="mcard${o.cls||""}" ${o.id?`id="${o.id}"`:""} data-open="${m.id}" ${o.k?`data-k="${o.k}"`:""} style="--tint:${o.tint}">${o.label?`<span class="slot${o.flag?" hot":""}">${o.label}${o.flag?" · "+o.flag:""}</span>`:""}${drawFood(m.id)}<h3>${m.n}${prefs[m.id]===1?" ⭐":""}</h3><span class="when">${o.time?ICO.clock+o.time:m.t}</span></button>`;
 }
 function renderMeals(){
+  renderHead();
   const week=getWeek(thisWeek);
-  const w=document.getElementById("meals");w.innerHTML="";
-  SLOTS.forEach(s=>{
-    const m=byId[week[sel][s.k]];
-    const q=encodeURIComponent(m.q);
-    const saved=vids[m.id];
-    const isToday=sel===todayIdx, isDone=isToday&&!!done[todayKey][s.k], isNext=isToday&&nextSlot()===s.k;
-    const c=document.createElement("article");c.className="meal"+(isDone?" done":"")+(isNext?" now":"");c.id="card-"+s.k;
-    c.innerHTML=`<div class="mhead"><span class="slot">${s.name} · ${DAYS[sel]} ${dateLabel(sel,0)}</span>${isNext?`<span class="nowtag">القادمة</span>`:""}<span class="time">${s.time}</span></div>
-      <h3>${m.n}${prefs[m.id]===1?" ⭐":""}<span class="tag">${m.t}</span></h3>
-      <ul>${m.p.map(x=>`<li>${x}</li>`).join("")}</ul>
-      <div class="vidrow">
-        ${saved?`<a class="btn solid" href="${esc(saved)}" target="_blank" rel="noopener">${ICON_PLAY}شاهد فيديو الطريقة</a>`:""}
-        <a class="btn" href="https://www.tiktok.com/search?q=${q}" target="_blank" rel="noopener">${ICON_SEARCH}تيك توك</a>
-        <a class="btn" href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">${ICON_SEARCH}يوتيوب</a>
-      </div>
-      <div class="fix"><b>التعديل الصحي:</b> ${m.f}</div>
-      <details><summary>طريقة مختصرة</summary><p style="margin:.4rem 0 0">${m.h}</p></details>
-      <details><summary>${saved?"تغيير رابط الفيديو":"احفظ رابط فيديو أعجبك"}</summary>
-        <p class="sub" style="margin:.3rem 0">انسخ رابط الفيديو من تيك توك أو يوتيوب (زر مشاركة ثم نسخ الرابط) والصقه هنا.</p>
-        <input type="url" id="vid-${m.id}" placeholder="https://..." value="${saved?esc(saved):""}">
-        <div class="row" style="margin-top:8px"><button class="btn solid" data-savevid="${m.id}">حفظ</button>${saved?`<button class="btn quiet" data-delvid="${m.id}">حذف</button>`:""}</div>
-      </details>
-      <div class="actions">
-        ${isToday?`<button class="btn ${isDone?"quiet":"solid"}" data-done="${s.k}" style="grid-column:1/-1">${isDone?"↩ لم تُطبخ بعد":"✓ تم الطبخ"}</button>`:""}
-        <button class="btn" data-swap="${s.k}" style="grid-column:1/-1">🔄 غيّري هذه الوجبة</button>
-        <button class="btn quiet" data-rate="${m.id}" data-v="1" aria-pressed="${prefs[m.id]===1}">⭐ أحببناها</button>
-        <button class="btn quiet" data-rate="${m.id}" data-v="-1" aria-pressed="${prefs[m.id]===-1}">👎 لا نريدها</button>
-      </div>`;
-    w.appendChild(c);
-  });
-  w.querySelectorAll("[data-swap]").forEach(b=>b.onclick=()=>openSwap(b.dataset.swap));
-  w.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>toggleDone(b.dataset.done));
-  w.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>rate(b.dataset.rate,+b.dataset.v));
+  const w=document.getElementById("meals");
+  w.innerHTML=SLOTS.map(s=>{
+    const m=byId[week[sel][s.k]],isToday=sel===todayIdx,isDone=isToday&&!!done[todayKey][s.k],isNext=isToday&&!isDone&&nextSlot()===s.k;
+    return card(m,{id:"card-"+s.k,k:s.k,label:s.name,time:s.time,tint:SLOT_TINT[s.k],cls:(isDone?" done":"")+(isNext?" now":""),flag:isDone?"✓ تم":isNext?"القادمة":""});
+  }).join("");
+  w.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open,b.dataset.k));
   renderNow();
-  w.querySelectorAll("[data-savevid]").forEach(b=>b.onclick=()=>{
-    const id=b.dataset.savevid;const v=document.getElementById("vid-"+id).value.trim();
-    if(!/^https:\/\/\S+$/.test(v)){toast("الرابط يجب أن يبدأ بـ https://");return}
-    vids[id]=v;store.set("mm_vid",vids);renderMeals();toast("تم حفظ الفيديو لهذه الأكلة");
-  });
-  w.querySelectorAll("[data-delvid]").forEach(b=>b.onclick=()=>{delete vids[b.dataset.delvid];store.set("mm_vid",vids);renderMeals();toast("تم حذف الرابط")});
+  if(detail){
+    if(detail.k&&detail.slot)detail.id=week[sel][detail.k];
+    const a=document.activeElement;if(!(a&&a.tagName==="INPUT"))renderDetail();
+  }
 }
+
 /* ===== الوجبة القادمة حسب الساعة ===== */
 // كل وجبة تبقى "القادمة" حتى تضغطي تم الطبخ، أو حتى يمر وقتها بساعات
 const WIN={b:[540,720],l:[840,1050],d:[1170,1320]}; // [الموعد، نهاية الوقت] بالدقائق من منتصف الليل
@@ -450,17 +687,19 @@ function renderNow(){
   el.hidden=false;
   const k=nextSlot();
   if(!k){
-    const tomorrow=todayIdx===6?getWeek(thisWeek+1)[0]:getWeek(thisWeek)[todayIdx+1];
-    el.innerHTML=`<div class="lbl">انتهت وجبات اليوم 👍</div><h2>فطور الغد: ${byId[tomorrow.b].n}</h2><div class="eta">الساعة 9:00 صباحاً</div>`;
+    const tomorrow=todayIdx===6?getWeek(thisWeek+1)[0]:getWeek(thisWeek)[todayIdx+1],m=byId[tomorrow.b];
+    el.style.setProperty("--tint",SLOT_TINT.b);
+    el.innerHTML=`<button class="open" id="gonow"><span class="lbl">انتهت وجبات اليوم 👍</span><span class="corner">${ICO.arrow}</span>${drawFood(m.id)}<h2>فطور الغد: ${m.n}</h2><div class="meta"><span>${ICO.clock}9:00 صباحاً</span><span>${m.t}</span></div></button>`;
+    document.getElementById("gonow").onclick=()=>openDetail(m.id,null);
     return;
   }
   const s=SLOTS.find(x=>x.k===k),m=byId[getWeek(thisWeek)[todayIdx][k]];
   const t=new Date(),diff=WIN[k][0]-(t.getHours()*60+t.getMinutes());
-  el.innerHTML=`<div class="lbl">الوجبة القادمة · ${s.name} · ${s.time}</div>
-    <h2>${m.n}</h2>
-    <div class="eta">${diff>0?"⏰ بعد "+fmtMins(diff):"⏰ حان وقتها الآن"}</div>
-    <div class="row"><button class="btn solid" id="gonow">افتحي التفاصيل</button><button class="btn" id="donenow">✓ تم الطبخ</button></div>`;
-  document.getElementById("gonow").onclick=()=>document.getElementById("card-"+k).scrollIntoView({behavior:"smooth",block:"start"});
+  el.style.setProperty("--tint",SLOT_TINT[k]);
+  el.innerHTML=`<button class="open" id="gonow"><span class="lbl">الوجبة القادمة · ${s.name}</span><span class="corner">${ICO.arrow}</span>${drawFood(m.id)}<h2>${m.n}</h2>
+    <div class="meta"><span class="eta">${diff>0?"⏰ بعد "+fmtMins(diff):"⏰ حان وقتها الآن"}</span><span>${ICO.clock}${s.time}</span><span>${m.t}</span></div></button>
+    <div class="row"><button class="btn ok" id="donenow">${ICO.check}تم الطبخ</button></div>`;
+  document.getElementById("gonow").onclick=()=>openDetail(m.id,k);
   document.getElementById("donenow").onclick=()=>toggleDone(k);
 }
 function toggleDone(k){
@@ -469,7 +708,87 @@ function toggleDone(k){
 }
 // إذا بقي التطبيق مفتوحاً لليوم التالي، نعيد تحميله
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){if(dkey(new Date())!==todayKey)location.reload();else renderNow()}});
-setInterval(()=>{if(!document.hidden&&dkey(new Date())===todayKey)renderMeals()},5*60*1000);
+setInterval(()=>{if(!document.hidden&&dkey(new Date())===todayKey&&!detail)renderMeals()},5*60*1000);
+
+/* ===== صفحة تفاصيل الوجبة ===== */
+function openDetail(id,k){
+  const week=getWeek(thisWeek);
+  if(k&&week[sel][k]!==id)k=null;
+  detail={id,k:k||slotOf[id],slot:!!k};
+  renderDetail();show("detail");
+}
+function renderDetail(){
+  const y=window.scrollY;
+  const m=byId[detail.id],k=detail.k,s=SLOTS.find(x=>x.k===k),q=encodeURIComponent(m.q),saved=vids[m.id];
+  const isSlot=detail.slot,isToday=isSlot&&sel===todayIdx,isDone=isToday&&!!done[todayKey][k];
+  const el=document.getElementById("v-detail");
+  el.innerHTML=`
+   <div class="dtop"><button class="round" id="dback" aria-label="رجوع">${ICO.back}</button>${isSlot?`<button class="round" data-swap="${k}" aria-label="غيّري هذه الوجبة">${ICO.swap}</button>`:""}</div>
+   <div class="stage">${drawFood(m.id)}<span class="bub b1">خضار <b>½</b></span><span class="bub b2">بروتين <b>¼</b></span><span class="bub b3">نشويات <b>¼</b></span></div>
+   <div class="kind"><span>${isSlot?s.name+" · "+DAYS[sel]+" "+dateLabel(sel,0):s.name+" · "+m.t}${prefs[m.id]===1?" · ⭐":""}</span></div>
+   <h1 class="dtitle">${m.n}</h1>
+   <p class="dsub">${m.h}</p>
+   <div class="facts">
+     <div class="fact pink"><span class="ti">${ICO.clock}</span><small>الموعد</small><b>${s.time.split(" ")[0]}</b></div>
+     <div class="fact blue"><span class="ti">${ICO.bowl}</span><small>النوع</small><b>${m.t}</b></div>
+     <div class="fact mint"><span class="ti">${ICO.bolt}</span><small>التحضير</small><b>${QUICK.has(m.id)?"سريع":"عادي"}</b></div>
+     <div class="fact yel"><span class="ti">${ICO.salt}</span><small>الملح</small><b>قليل</b></div>
+   </div>
+   ${isToday?`<div class="row" style="margin-top:14px"><button class="btn ${isDone?"quiet":"ok"}" data-done="${k}" style="flex:1">${isDone?"↩ لم تُطبخ بعد":ICO.check+"تم الطبخ"}</button></div>`:""}
+   <div class="fix"><h3>التعديل الصحي</h3><p>${m.f}</p></div>
+   <div class="sec"><h2>المكونات</h2><span class="date">${m.p.length} أصناف</span></div>
+   <div class="list">${m.p.map((x,i)=>`<div><i>${i+1}</i><span>${x}</span></div>`).join("")}</div>
+   <p class="kid">${ICO.baby}<span>للطفل: خذي نصيبه <b>قبل إضافة الملح</b>، واهرسيه جيداً.</span></p>
+   <div class="box">
+     <h3>فيديو الطريقة</h3>
+     <div class="actions">
+       <a class="btn quiet" href="https://www.tiktok.com/search?q=${q}" target="_blank" rel="noopener">${ICO.search}تيك توك</a>
+       <a class="btn quiet" href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">${ICO.search}يوتيوب</a>
+     </div>
+     <details><summary>${saved?"تغيير رابط الفيديو المحفوظ":"احفظي رابط فيديو أعجبك"}</summary>
+       <p class="sub" style="margin:.3rem 0">انسخي رابط الفيديو من تيك توك أو يوتيوب (زر مشاركة ثم نسخ الرابط) والصقيه هنا.</p>
+       <input type="url" id="vid-${m.id}" placeholder="https://..." value="${saved?esc(saved):""}">
+       <div class="row" style="margin-top:8px"><button class="btn solid" data-savevid="${m.id}">حفظ</button>${saved?`<button class="btn quiet" data-delvid="${m.id}">حذف</button>`:""}</div>
+     </details>
+   </div>
+   <div class="box">
+     <h3>هل أعجبتكم؟</h3>
+     <div class="actions">
+       <button class="btn quiet" data-rate="${m.id}" data-v="1" aria-pressed="${prefs[m.id]===1}">⭐ أحببناها</button>
+       <button class="btn quiet" data-rate="${m.id}" data-v="-1" aria-pressed="${prefs[m.id]===-1}">👎 لا نريدها</button>
+       ${isSlot?`<button class="btn quiet wide" data-swap="${k}">${ICO.swap}غيّري هذه الوجبة</button>`:""}
+     </div>
+   </div>
+   <div style="height:84px"></div>
+   <div class="cta"><a href="${saved?esc(saved):"https://www.tiktok.com/search?q="+q}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>${saved?"شاهدي فيديو الطريقة":"ابحثي عن الطريقة في تيك توك"}</a></div>`;
+  document.getElementById("dback").onclick=()=>{const v=lastView;show(v);if(v==="today")renderMeals()};
+  el.querySelectorAll("[data-swap]").forEach(b=>b.onclick=()=>openSwap(b.dataset.swap));
+  el.querySelectorAll("[data-done]").forEach(b=>b.onclick=()=>toggleDone(b.dataset.done));
+  el.querySelectorAll("[data-rate]").forEach(b=>b.onclick=()=>rate(b.dataset.rate,+b.dataset.v));
+  el.querySelectorAll("[data-savevid]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.savevid;const v=document.getElementById("vid-"+id).value.trim();
+    if(!/^https:\/\/\S+$/.test(v)){toast("الرابط يجب أن يبدأ بـ https://");return}
+    vids[id]=v;store.set("mm_vid",vids);document.activeElement.blur();renderDetail();toast("تم حفظ الفيديو لهذه الأكلة");
+  });
+  el.querySelectorAll("[data-delvid]").forEach(b=>b.onclick=()=>{delete vids[b.dataset.delvid];store.set("mm_vid",vids);renderDetail();toast("تم حذف الرابط")});
+  window.scrollTo(0,y);
+}
+
+/* ===== كل الأكلات ===== */
+function renderRecipes(){
+  const q=document.getElementById("r-search").value.trim();
+  const cats=[["all","الكل"],["b","فطور"],["l","غداء"],["d","عشاء"]];
+  const rc=document.getElementById("rcats");
+  rc.innerHTML=cats.map(([k,n])=>`<button aria-pressed="${rcat===k}" data-cat="${k}">${n}<small>${k==="all"?Object.keys(byId).length:POOL[k].length}</small></button>`).join("");
+  rc.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{rcat=b.dataset.cat;renderRecipes()});
+  let list=rcat==="all"?Object.values(byId):POOL[rcat];
+  if(q)list=list.filter(m=>(m.n+" "+m.t+" "+m.p.join(" ")).includes(q));
+  document.getElementById("rcount").textContent=Object.keys(byId).length+" أكلة";
+  const g=document.getElementById("rgrid");
+  g.innerHTML=list.length?list.map(m=>card(m,{tint:"var(--t-"+(TYPE_TINT[m.t]||"lav")+")",cls:prefs[m.id]===-1?" done":""})).join(""):`<p class="empty">لا توجد أكلة بهذا الاسم. جرّبي كلمة أقصر.</p>`;
+  g.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openDetail(b.dataset.open,null));
+}
+function openRecipes(text){document.getElementById("r-search").value=text||"";rcat="all";renderRecipes();show("recipes")}
 
 /* ===== التقييم ⭐ و 👎 ===== */
 function rate(id,v){
@@ -708,10 +1027,16 @@ document.getElementById("shareshop").onclick=async()=>{const t=shopText();
   try{await navigator.clipboard.writeText(t);toast("تم نسخ القائمة، الصقيها في واتساب")}catch(e){toast("لم أستطع النسخ")}};
 document.getElementById("resetweek").onclick=()=>{try{localStorage.removeItem("mm_sw_"+thisWeek)}catch(e){}renderMeals();renderWeek();renderShop();toast("رجع الجدول الأساسي لهذا الأسبوع")};
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll("nav button").forEach(x=>x.removeAttribute("aria-current"));b.setAttribute("aria-current","page");
-  ["today","week","shop","rules"].forEach(v=>document.getElementById("v-"+v).hidden=v!==b.dataset.v);
-  window.scrollTo(0,0);
+  const v=b.dataset.v;
+  if(v==="next"){sel=todayIdx;renderDays();renderMeals();const g=document.getElementById("gonow");if(g)g.click();return}
+  if(v==="today")renderMeals();
+  show(v);
 });
+document.getElementById("home-search").addEventListener("input",e=>{const v=e.target.value;e.target.value="";openRecipes(v);const r=document.getElementById("r-search");r.focus();r.setSelectionRange(v.length,v.length)});
+document.getElementById("r-search").addEventListener("input",renderRecipes);
+document.getElementById("to-all").onclick=()=>openRecipes("");
+document.getElementById("rback").onclick=()=>{renderMeals();show("today")};
+document.getElementById("theme-btn").onclick=()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark";try{localStorage.setItem("mm_theme",r.dataset.theme)}catch(e){}};
 renderDays();renderMeals();renderWeekPicks();renderWeek();renderShop();renderChannels();renderRatings();
 
 // تثبيت التطبيق للعمل بدون إنترنت
