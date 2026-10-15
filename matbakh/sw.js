@@ -1,5 +1,5 @@
 // يحفظ ملفات التطبيق في الجوال حتى يعمل بدون إنترنت
-const CACHE = "matbakh-v8";
+const CACHE = "matbakh-v9";
 const FILES = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./icon-maskable.png"];
 const IDS = ["b1","b2","b3","b4","b5","b6","b7","b8","l1","l2","l3","l4","l5","l6","l7","l8","l9","l10","l11","l12","l13","l14",
   "d1","d2","d3","d4","d5","d6","d7","d8","d9","d10"];

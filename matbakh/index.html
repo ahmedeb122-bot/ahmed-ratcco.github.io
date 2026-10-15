@@ -535,15 +535,21 @@ let done=store.get("mm_done")||{};done={[todayKey]:done[todayKey]||{}};store.set
 try{Object.keys(localStorage).forEach(k=>{const m=k.match(/^mm_(base|sw)_(-?\d+)$/);if(m&&+m[2]<thisWeek-4)localStorage.removeItem(k)})}catch(e){}
 
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2000)}
-// روابط تيك توك: في أندرويد نطلب من الجوال فتحها في تطبيق تيك توك.
-// لتيك توك نسختان في المتجر بأسماء داخلية مختلفة؛ نجرب الأولى، ثم الثانية، ثم المتصفح.
-const TK_PKGS=["com.zhiliaoapp.musically","com.ss.android.ugc.trill"];
-function tkIntent(u,pkg,fb){const x=new URL(u);
-  return "intent://"+x.host+x.pathname+x.search+"#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package="+pkg+";S.browser_fallback_url="+encodeURIComponent(fb)+";end"}
+// روابط تيك توك: في أندرويد نطلب من الجوال فتحها في تطبيق تيك توك بدل المتصفح.
+// لتيك توك نسختان في المتجر بأسماء داخلية مختلفة، ولكل نسخة «عنوان خاص» يفتحها.
+// نجرب الطرق واحدة بعد الأخرى، ونحفظ الطريقة التي نجحت لنبدأ بها في المرة القادمة.
+const TK=[["com.zhiliaoapp.musically","snssdk1233"],["com.ss.android.ugc.trill","snssdk1180"],["com.zhiliaoapp.musically","https"],["com.ss.android.ugc.trill","https"]];
 function isTk(u){try{return /(^|\.)tiktok\.com$/.test(new URL(u).hostname)}catch(e){return false}}
-function openTk(u){
-  const back=location.origin+location.pathname+"#tk2="+encodeURIComponent(u);
-  location.href=tkIntent(u,TK_PKGS[0],back);
+function tkOrder(){let w=-1;try{w=+localStorage.getItem("mm_tk")}catch(e){}const o=[0,1,2,3];if(w>=0&&w<4){o.splice(o.indexOf(w),1);o.unshift(w)}return o}
+function tkIntent(u,i,fb){const x=new URL(u),[pkg,sch]=TK[i],q=x.searchParams.get("q");
+  const path=sch==="https"?x.host+x.pathname+x.search:(q?"search?keyword="+encodeURIComponent(q):"main");
+  return "intent://"+path+"#Intent;scheme="+sch+";package="+pkg+";S.browser_fallback_url="+encodeURIComponent(fb)+";end"}
+function tkTry(u,order){
+  const i=order[0],rest=order.slice(1);
+  const fb=rest.length?location.origin+location.pathname+"#tk2="+rest.join(",")+"|"+encodeURIComponent(u):u;
+  const t0=Date.now(),ok=()=>{if(document.hidden&&Date.now()-t0<4000){try{localStorage.setItem("mm_tk",i)}catch(e){}}document.removeEventListener("visibilitychange",ok)};
+  document.addEventListener("visibilitychange",ok);
+  location.href=tkIntent(u,i,fb);
 }
 document.addEventListener("click",e=>{
   const a=e.target.closest&&e.target.closest("a[href]");if(!a||!/Android/i.test(navigator.userAgent)||!isTk(a.href))return;
@@ -551,14 +557,19 @@ document.addEventListener("click",e=>{
   const q=new URL(a.href).searchParams.get("q");
   if(q&&navigator.clipboard)navigator.clipboard.writeText(q).catch(()=>{});
   toast("جاري فتح تطبيق تيك توك…");
-  openTk(a.href);
+  tkTry(a.href,tkOrder());
 },true);
-// إذا لم تنجح المحاولة الأولى يرجع الجوال هنا، فنجرب النسخة الثانية ثم المتصفح
-(function(){const m=location.hash.match(/^#tk2=(.+)$/);if(!m)return;
-  const u=decodeURIComponent(m[1]);history.replaceState(null,"",location.pathname);
+// إذا لم تنجح طريقة يرجع الجوال هنا، فنجرب الطريقة التالية
+(function(){const m=location.hash.match(/^#tk2=([\d,]+)\|(.+)$/);if(!m)return;
+  const order=m[1].split(",").map(Number),u=decodeURIComponent(m[2]);history.replaceState(null,"",location.pathname);
   if(!isTk(u))return;
-  location.href=tkIntent(u,TK_PKGS[1],u);
-  setTimeout(()=>{if(!document.hidden)location.href=u},2500);
+  tkTry(u,order);
+  // إذا منع الجوال المحاولة التلقائية نعرض زرّين للاختيار
+  setTimeout(()=>{if(document.hidden)return;const d=document.createElement("div");
+    d.style.cssText="position:fixed;inset:auto 12px 90px 12px;z-index:99;background:#222;color:#fff;padding:14px;border-radius:16px;display:flex;gap:8px;flex-wrap:wrap;font:inherit";
+    d.innerHTML='<b style="width:100%">افتح الفيديو في:</b><button class="btn solid" style="flex:1">تطبيق تيك توك</button><button class="btn quiet" style="flex:1">المتصفح</button>';
+    const [b1,b2]=d.querySelectorAll("button");b1.onclick=()=>{d.remove();tkTry(u,order)};b2.onclick=()=>{d.remove();location.href=u};
+    document.body.appendChild(d)},1500);
 })();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ICON_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
