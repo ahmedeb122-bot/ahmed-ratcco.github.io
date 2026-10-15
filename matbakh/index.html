@@ -535,6 +535,16 @@ let done=store.get("mm_done")||{};done={[todayKey]:done[todayKey]||{}};store.set
 try{Object.keys(localStorage).forEach(k=>{const m=k.match(/^mm_(base|sw)_(-?\d+)$/);if(m&&+m[2]<thisWeek-4)localStorage.removeItem(k)})}catch(e){}
 
 function toast(t){const e=document.getElementById("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2000)}
+// روابط تيك توك: في أندرويد نطلب من الجوال فتحها في تطبيق تيك توك، وإذا لم يوجد التطبيق تفتح في المتصفح
+function tkIntent(u){try{const x=new URL(u);if(!/(^|\.)tiktok\.com$/.test(x.hostname))return null;
+  return "intent://"+x.host+x.pathname+x.search+"#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url="+encodeURIComponent(u)+";end"}catch(e){return null}}
+document.addEventListener("click",e=>{
+  const a=e.target.closest&&e.target.closest("a[href]");if(!a||!/Android/i.test(navigator.userAgent))return;
+  const it=tkIntent(a.href);if(!it)return;e.preventDefault();
+  const q=new URL(a.href).searchParams.get("q");
+  if(q&&navigator.clipboard)navigator.clipboard.writeText(q).then(()=>toast("نسختُ اسم الأكلة، الصقيه في بحث تيك توك إن احتجتِ")).catch(()=>{});
+  location.href=it;
+},true);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const ICON_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
 const ICON_SEARCH='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>';
