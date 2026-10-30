@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>لوحة المشرف – دليل الموردين</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#1b2a6b">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="مشرف Elec">
+<script>
+/* ===================== الإعدادات ===================== */
+const CONFIG = {
+  API_URL: '',   // نفس رابط Google Apps Script الموجود في index.html
+};
+/* ===================================================== */
+</script>
+<style>
+@font-face{font-family:'Plex Arabic';font-weight:400;font-display:swap;src:url(fonts/plex-ar-400.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:'Plex Arabic';font-weight:500;font-display:swap;src:url(fonts/plex-ar-500.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:'Plex Arabic';font-weight:700;font-display:swap;src:url(fonts/plex-ar-700.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:'Plex Arabic';font-weight:400;font-display:swap;src:url(fonts/plex-lat-400.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2190-21FF}
+@font-face{font-family:'Plex Arabic';font-weight:500;font-display:swap;src:url(fonts/plex-lat-500.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2190-21FF}
+@font-face{font-family:'Plex Arabic';font-weight:700;font-display:swap;src:url(fonts/plex-lat-700.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2190-21FF}
+:root{--ink:#151c3a;--ink-2:#4a5375;--ink-3:#8a91ab;--paper:#eef1f8;--sheet:#fff;--rule:#e3e7f2;--wa:#1fa855;--ok:#1f8a5b;--warn:#cf3f45;--accent:#2b3c8f;--gold:#c48a00;--navy:#1b2a6b;--volt:#ffc93c;--r:18px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#e8ecf3;--ink-2:#b3bccb;--ink-3:#8790a1;--paper:#111726;--sheet:#182033;--rule:#2a3449;--accent:#7ea6ec}}
+:root[data-theme="dark"]{--ink:#e8ecf3;--ink-2:#b3bccb;--ink-3:#8790a1;--paper:#111726;--sheet:#182033;--rule:#2a3449;--accent:#7ea6ec}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 'Plex Arabic',system-ui,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+.cable{display:flex;height:6px}.cable i{flex:1}
+.cable i:nth-child(1){background:#7b4a26}.cable i:nth-child(2){background:#1d2129}.cable i:nth-child(3){background:#8d949c}.cable i:nth-child(4){background:#2a5bb0}
+.cable i:nth-child(5){background:repeating-linear-gradient(90deg,#3f9142 0 14px,#e1bd2c 14px 28px)}
+header{background:var(--navy);color:#fff;border-radius:0 0 24px 24px;position:relative;overflow:hidden}
+header::before{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:var(--volt);top:-70px;inset-inline-end:-40px}
+header .top{position:relative;padding:16px 18px 18px}
+.cable{display:none!important}
+.top{display:flex;justify-content:space-between;align-items:center;padding:12px 0}
+.top h1{margin:0;font-size:1.15rem}
+.top small{color:rgba(255,255,255,.8);display:block;font-size:.82rem}
+.top h1{padding-inline-start:0}
+.link{position:relative;border:0;background:var(--navy);color:#fff;border-radius:999px;cursor:pointer;padding:5px 12px}
+nav{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+nav .wrap{display:flex}
+nav button{flex:1;border:0;background:none;padding:12px 2px;font-weight:600;color:var(--ink-3);border-bottom:3px solid transparent;cursor:pointer}
+nav button[aria-selected=true]{color:var(--navy);border-bottom-color:var(--volt)}
+.pill{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff;font-size:.78rem;line-height:20px}
+.pill.zero{background:var(--rule);color:var(--ink-3)}
+main{padding:14px 0 60px}
+.card{background:var(--sheet);border:0;box-shadow:0 1px 0 var(--rule);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.card h3{margin:0 0 2px;font-size:1.05rem;overflow-wrap:anywhere}
+.sub{color:var(--ink-3);font-size:.85rem;margin-bottom:8px}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.92rem;margin:6px 0 10px}
+.dl dt{color:var(--ink-3)} .dl dd{margin:0;overflow-wrap:anywhere}
+.num{direction:ltr;unicode-bidi:isolate}
+.by{background:#fff3cf;color:#5a3d00;border-radius:8px;padding:8px 10px;font-size:.88rem;margin-bottom:10px}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1px solid var(--rule);background:var(--paper);border-radius:999px;padding:10px 14px;font-weight:600;cursor:pointer;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-size:.92rem}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.no{border-color:var(--warn);color:var(--warn)}
+.btn.wa{background:var(--wa);border-color:var(--wa);color:#fff}
+.btn.ghost{border-color:var(--rule)}
+.btn[disabled]{opacity:.5}
+.btn.big{width:100%;justify-content:center;padding:13px;background:var(--navy);color:#fff;border-color:var(--navy)}
+input,select,textarea{width:100%;border:1.5px solid var(--rule);background:var(--paper);border-radius:14px;padding:10px 12px;font-size:.95rem}
+label{display:block;font-weight:600;font-size:.88rem;margin:8px 0 3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.empty{text-align:center;color:var(--ink-3);padding:30px 10px}
+.msg{border-radius:8px;padding:10px 12px;margin-top:10px;font-size:.92rem}
+.msg.err{background:color-mix(in srgb,var(--warn) 12%,transparent);color:var(--warn)}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 12px;border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:0}
+.row b{display:block;overflow-wrap:anywhere}
+.list{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.del{opacity:.55}
+.tag{font-size:.75rem;padding:1px 8px;border-radius:999px;background:color-mix(in srgb,var(--warn) 14%,transparent);color:var(--warn);font-weight:600}
+.stars{color:var(--gold)}
+.toast{position:fixed;bottom:16px;left:16px;right:16px;max-width:520px;margin:auto;z-index:30;background:var(--ink);color:var(--sheet);border-radius:10px;padding:12px 14px;text-align:center}
+.board li{margin:4px 0}
+[hidden]{display:none!important}
+@media (max-width:400px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="cable" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="wrap top">
+    <div><h1>لوحة المشرف</h1><small id="who">دليل موردي الكهرباء – Elec in KSA</small></div>
+    <button class="link" id="logout" hidden>خروج</button>
+  </div>
+</header>
+
+<!-- login -->
+<main class="wrap" id="login-view">
+  <form class="card" id="login" novalidate>
+    <h3>دخول المشرف</h3>
+    <p class="sub">اكتب كلمة السر الخاصة بك. يتذكرها هذا الجوال فلا تكتبها كل مرة.</p>
+    <label for="pass">كلمة السر</label>
+    <input id="pass" type="password" autocomplete="current-password" required>
+    <div style="height:12px"></div>
+    <button class="btn big" type="submit">دخول</button>
+    <div id="login-msg" aria-live="polite"></div>
+  </form>
+</main>
+
+<div id="app" hidden>
+  <nav><div class="wrap">
+    <button data-tab="pending" aria-selected="true">بانتظارك <span class="pill" id="c-pend">0</span></button>
+    <button data-tab="requests" aria-selected="false">الطلبات <span class="pill zero" id="c-req">0</span></button>
+    <button data-tab="all" aria-selected="false">كل الموردين</button>
+  </div></nav>
+  <main class="wrap">
+    <section id="tab-pending"></section>
+    <section id="tab-requests" hidden></section>
+    <section id="tab-all" hidden>
+      <input id="q" type="search" placeholder="ابحث لتعديل أو حذف مورد" autocomplete="off">
+      <div style="height:10px"></div>
+      <div class="list" id="all-list"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const split = s => String(s||'').split(/\s*;\s*/).filter(Boolean);
+let PASS = '';
+try { PASS = localStorage.getItem('admin_pass') || ''; } catch(e){}
+let DATA = {pending:[], reviews:[], requests:[], suppliers:[]};
+let editing = null;
+
+function tel(raw){
+  let d = String(raw||'').replace(/\D/g,'');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (/^05\d{8}$/.test(d)) d = '966' + d.slice(1);
+  if (/^5\d{8}$/.test(d)) d = '966' + d;
+  return d.length >= 9 ? d : '';
+}
+
+async function api(action, extra = {}){
+  if (!CONFIG.API_URL) return {ok:false, error:'no_api'};
+  try {
+    const res = await fetch(CONFIG.API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(Object.assign({type:'admin', pass:PASS, action}, extra))});
+    return await res.json();
+  } catch(e) { return {ok:false, error:'net'}; }
+}
+const ERR = {wrong_password:'كلمة السر غير صحيحة.', blocked:'محاولات كثيرة خاطئة. انتظر 15 دقيقة.', net:'لا يوجد اتصال. تأكد من الإنترنت.',
+  no_api:'لم يُضف رابط API_URL في هذا الملف بعد (راجع دليل الإعداد).', not_found:'العنصر غير موجود، ربما عدّله مشرف آخر.'};
+const errText = r => ERR[r.error] || 'حدث خطأ، حاول مرة أخرى.';
+function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
+
+/* ---------- login ---------- */
+$('#login').addEventListener('submit', async e => {
+  e.preventDefault();
+  PASS = $('#pass').value.trim();
+  const btn = e.target.querySelector('button'); btn.disabled = true;
+  const r = await api('load'); btn.disabled = false;
+  if (!r.ok) { $('#login-msg').innerHTML = `<div class="msg err">${esc(errText(r))}</div>`; return; }
+  try { localStorage.setItem('admin_pass', PASS); } catch(e){}
+  start(r);
+});
+$('#logout').addEventListener('click', () => { try { localStorage.removeItem('admin_pass'); } catch(e){} location.reload(); });
+
+function start(r){
+  $('#login-view').hidden = true; $('#app').hidden = false; $('#logout').hidden = false;
+  $('#who').textContent = 'أهلاً ' + r.admin + ' · Elec in KSA';
+  setData(r);
+}
+async function refresh(){ const r = await api('load'); if (r.ok) setData(r); else toast(errText(r)); }
+function setData(r){
+  DATA = r;
+  const n = r.pending.length + r.reviews.length;
+  $('#c-pend').textContent = n; $('#c-pend').classList.toggle('zero', !n);
+  $('#c-req').textContent = r.requests.length; $('#c-req').classList.toggle('zero', !r.requests.length);
+  document.title = (n ? `(${n}) ` : '') + 'لوحة المشرف';
+  renderPending(); renderRequests(); renderAll();
+}
+
+/* ---------- pending ---------- */
+function thankLink(name, phone, supplier){
+  const d = tel(phone); if (!d) return '';
+  const msg = `أهلاً ${name || ''} 👋\nشكراً لإضافتك «${supplier}» في دليل موردي الكهرباء – Elec in KSA. تمت الموافقة وأصبح ظاهراً للجميع 🌟`;
+  return `<a class="btn wa" href="https://wa.me/${d}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">اشكره على واتساب</a>`;
+}
+function supplierCard(s){
+  const line = (k, v) => v ? `<dt>${k}</dt><dd>${v}</dd>` : '';
+  const req = s.Request_ID ? (DATA.requests.find(r => r.ID === s.Request_ID) || {}).Text : '';
+  return `<div class="card" id="c-${esc(s.ID)}">
+    <h3>${esc(s.Name)}</h3>
+    <div class="sub">${esc([s.Type, s.Category, s.City].filter(Boolean).join(' · '))} · ${esc(s.Date)}</div>
+    ${req ? `<div class="by">ردّ على طلب: «${esc(req)}»</div>` : ''}
+    <dl class="dl">
+      ${line('الماركات', esc(s.Brands))}${line('التخصص', esc(s.Specialty))}${line('المسؤول', esc(s.Contacts))}
+      ${line('جوال', split(s.Mobiles).map(p => `<a class="num" href="tel:+${tel(p)}">${esc(p)}</a>`).join('<br>'))}
+      ${line('هاتف', split(s.Phones).map(p => `<span class="num">${esc(p)}</span>`).join('<br>'))}
+      ${line('إيميل', esc(s.Emails))}${line('العنوان', esc(s.Address))}${line('ملاحظات', esc(s.Notes))}
+    </dl>
+    <div class="by">أضافه: <b>${esc(s.Submitted_By || 'بدون اسم')}</b>${s.Submitter_Phone ? ` · <span class="num">${esc(s.Submitter_Phone)}</span>` : ''}</div>
+    <div class="acts">
+      <button class="btn ok" data-act="approve" data-sheet="Suppliers" data-id="${esc(s.ID)}">✅ موافقة</button>
+      <button class="btn" data-edit="${esc(s.ID)}">✏️ تعديل</button>
+      <button class="btn no" data-act="reject" data-sheet="Suppliers" data-id="${esc(s.ID)}">❌ رفض</button>
+    </div>
+  </div>`;
+}
+function reviewCard(r){
+  return `<div class="card" id="c-${esc(r.ID)}">
+    <h3>تقييم على: ${esc(r.SupplierName)}</h3>
+    <div class="sub">${esc(r.Date)}</div>
+    <p>${r.Rating ? `<span class="stars">${'★'.repeat(+r.Rating)}${'☆'.repeat(5 - r.Rating)}</span><br>` : ''}${esc(r.Comment)}</p>
+    <div class="by">من: <b>${esc(r.Name || 'بدون اسم')}</b></div>
+    <div class="acts">
+      <button class="btn ok" data-act="approve" data-sheet="Reviews" data-id="${esc(r.ID)}">✅ نشر</button>
+      <button class="btn no" data-act="reject" data-sheet="Reviews" data-id="${esc(r.ID)}">❌ رفض</button>
+    </div></div>`;
+}
+function renderPending(){
+  const p = DATA.pending, rv = DATA.reviews;
+  $('#tab-pending').innerHTML = (!p.length && !rv.length)
+    ? `<div class="empty">لا شيء بانتظارك الآن 👌<br><button class="btn ghost" id="reload" style="margin-top:12px">تحديث</button></div>`
+    : p.map(supplierCard).join('') + rv.map(reviewCard).join('') + `<button class="btn ghost" id="reload">تحديث</button>`;
+}
+
+/* ---------- edit form ---------- */
+const FIELDS = [['Name','اسم المورد'],['Name_AR','الاسم بالعربي'],['Brands','الماركات'],['Category','التصنيف'],['Type','النوع'],['Specialty','التخصص'],
+  ['City','المدينة'],['Contacts','المسؤول'],['Mobiles','الجوال (افصل بـ ; )'],['Phones','هاتف المكتب'],['Fax','الفاكس'],['Emails','الإيميل'],['Address','العنوان'],['Notes','ملاحظات']];
+async function openEdit(id, fromAll){
+  let s = DATA.pending.find(x => x.ID === id);
+  if (!s) { const r = await api('get', {id}); if (!r.ok) return toast(errText(r)); s = r.item; }
+  editing = {id, pending: s.Status === 'pending'};
+  const box = document.createElement('div');
+  box.className = 'card'; box.id = 'c-' + id;
+  box.innerHTML = `<h3>تعديل: ${esc(s.Name)}</h3>
+    <form id="edit-form">${FIELDS.map(([k, l]) => `<label for="e-${k}">${l}</label><input id="e-${k}" value="${esc(s[k])}" ${/Mobiles|Phones|Fax|Emails/.test(k) ? 'dir="ltr"' : ''}>`).join('')}
+    <div style="height:12px"></div>
+    <div class="acts">
+      ${editing.pending ? `<button class="btn ok" type="submit" data-mode="edit_approve">💾 حفظ وموافقة</button>` : `<button class="btn ok" type="submit" data-mode="edit">💾 حفظ</button>`}
+      <button class="btn ghost" type="button" id="cancel-edit">إلغاء</button>
+    </div></form>`;
+  const old = document.getElementById('c-' + id);
+  if (old) old.replaceWith(box); else { const list = $('#tab-' + (fromAll ? 'all' : 'pending')); list.prepend(box); }
+  box.scrollIntoView({block:'start', behavior:'smooth'});
+}
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'edit-form') return;
+  e.preventDefault();
+  const mode = e.submitter ? e.submitter.dataset.mode : 'edit';
+  const data = {}; FIELDS.forEach(([k]) => data[k] = $('#e-' + k).value.trim());
+  e.submitter && (e.submitter.disabled = true);
+  const r = await api(mode, {sheet:'Suppliers', id:editing.id, data});
+  if (!r.ok) { e.submitter && (e.submitter.disabled = false); return toast(errText(r)); }
+  toast(mode === 'edit_approve' ? 'تم الحفظ والموافقة ✅' : 'تم الحفظ ✅');
+  editing = null; refresh();
+});
+
+/* ---------- requests ---------- */
+function renderRequests(){
+  const rq = DATA.requests;
+  $('#tab-requests').innerHTML = rq.length ? rq.map(r => `<div class="card" id="c-${esc(r.ID)}">
+      <h3>${esc(r.Text)}</h3>
+      <div class="sub">${esc([r.City, r.Name, r.Date].filter(Boolean).join(' · '))}</div>
+      ${r.Phone && tel(r.Phone) ? `<p class="sub">رقم صاحب الطلب: <a class="num" href="https://wa.me/${tel(r.Phone)}" target="_blank" rel="noopener">${esc(r.Phone)}</a></p>` : ''}
+      <div class="acts">
+        <button class="btn" data-act="close" data-sheet="Requests" data-id="${esc(r.ID)}">✔️ تم الرد</button>
+        <button class="btn no" data-act="reject" data-sheet="Requests" data-id="${esc(r.ID)}">🙈 إخفاء</button>
+      </div></div>`).join('') : `<div class="empty">لا توجد طلبات مفتوحة.</div>`;
+}
+
+/* ---------- all suppliers ---------- */
+const norm = s => String(s||'').toLowerCase().replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+function renderAll(){
+  const q = norm($('#q').value.trim());
+  const list = DATA.suppliers.filter(s => !q || norm([s.Name, s.Name_AR, s.Category, s.City, s.Brands, s.Mobiles, s.ID].join(' ')).includes(q));
+  $('#all-list').innerHTML = list.slice(0, 80).map(s => `<div class="row ${s.Status === 'deleted' ? 'del' : ''}" id="c-${esc(s.ID)}">
+      <div><b>${esc(s.Name)} ${s.Status === 'deleted' ? '<span class="tag">محذوف</span>' : ''}</b><span class="sub">${esc([s.Category, s.City].filter(Boolean).join(' · '))}</span></div>
+      <div class="acts">${s.Status === 'deleted'
+        ? `<button class="btn" data-act="restore" data-sheet="Suppliers" data-id="${esc(s.ID)}">↩️ إرجاع</button>`
+        : `<button class="btn ghost" data-edit-all="${esc(s.ID)}">✏️</button><button class="btn no" data-act="delete" data-sheet="Suppliers" data-id="${esc(s.ID)}" aria-label="حذف">🗑</button>`}</div>
+    </div>`).join('') + (list.length > 80 ? `<div class="row sub">يظهر 80 من ${list.length} — اكتب في البحث لتضييق النتائج</div>` : '') ||
+    `<div class="row sub">لا نتائج</div>`;
+}
+$('#q').addEventListener('input', renderAll);
+
+/* ---------- clicks ---------- */
+const CONFIRM = {reject:'رفض هذا العنصر؟', delete:'حذف هذا المورد من الموقع؟ (يمكنك إرجاعه لاحقاً)'};
+const DONE = {approve:'تمت الموافقة ✅', reject:'تم الرفض', delete:'تم الحذف', restore:'تم الإرجاع ✅', close:'تم إغلاق الطلب'};
+document.addEventListener('click', async e => {
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', b === tab));
+    ['pending','requests','all'].forEach(n => $('#tab-' + n).hidden = n !== tab.dataset.tab); return; }
+  if (e.target.closest('#reload')) return refresh();
+  if (e.target.closest('#cancel-edit')) { editing = null; return refresh(); }
+  const ed = e.target.closest('[data-edit]'); if (ed) return openEdit(ed.dataset.edit, false);
+  const ea = e.target.closest('[data-edit-all]'); if (ea) return openEdit(ea.dataset.editAll, true);
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const {act, sheet, id} = b.dataset;
+  if (CONFIRM[act] && !confirm(CONFIRM[act])) return;
+  b.disabled = true;
+  const r = await api(act, {sheet, id});
+  if (!r.ok) { b.disabled = false; return toast(errText(r)); }
+  toast(DONE[act] || 'تم');
+  const card = document.getElementById('c-' + id);
+  if (act === 'approve' && sheet === 'Suppliers') {
+    const s = DATA.pending.find(x => x.ID === id);
+    const thanks = s && thankLink(s.Submitted_By, s.Submitter_Phone, s.Name);
+    if (card && thanks) { card.innerHTML = `<h3>✅ ${esc(s.Name)}</h3><p class="sub">تمت الموافقة. أرسل شكراً للعضو ليتشجع أكثر:</p><div class="acts">${thanks}<button class="btn ghost" id="reload">التالي</button></div>`;
+      DATA.pending = DATA.pending.filter(x => x.ID !== id); return; }
+  }
+  refresh();
+});
+
+if (PASS) api('load').then(r => { if (r.ok) start(r); else { try { localStorage.removeItem('admin_pass'); } catch(e){} } });
+})();
+</script>
+</body>
+</html>

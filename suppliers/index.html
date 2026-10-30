@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>دليل موردي الكهرباء – Elec in KSA</title>
+<meta name="description" content="دليل موردي ومصنعي المواد الكهربائية في السعودية — يجمعه أعضاء قروب Elec in KSA">
+<meta property="og:title" content="دليل موردي الكهرباء – Elec in KSA">
+<meta property="og:description" content="ابحث عن مورد، ماركة أو منتج — واتصل مباشرة">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Elec in KSA">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preload" href="fonts/plex-ar-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/plex-ar-700.woff2" as="font" type="font/woff2" crossorigin>
+<script>
+/* ===================== الإعدادات — غيّر هذه فقط ===================== */
+const CONFIG = {
+  GROUP_NAME: 'Elec in KSA',                       // اسم القروب
+  JOIN_LINK: 'https://chat.whatsapp.com/GJl9mvCQb9FBPI4gyP44y6', // رابط الانضمام
+  API_URL: '',                                     // رابط Google Apps Script Web App (من دليل الإعداد)
+  SITE_URL: location.origin + location.pathname.replace(/index\.html$/, ''), // لا تغيّره
+};
+/* ==================================================================== */
+</script>
+<style>
+@font-face{font-family:'Plex Arabic';font-weight:400;font-display:swap;src:url(fonts/plex-ar-400.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:'Plex Arabic';font-weight:500;font-display:swap;src:url(fonts/plex-ar-500.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:'Plex Arabic';font-weight:700;font-display:swap;src:url(fonts/plex-ar-700.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:'Plex Arabic';font-weight:400;font-display:swap;src:url(fonts/plex-lat-400.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2190-21FF}
+@font-face{font-family:'Plex Arabic';font-weight:500;font-display:swap;src:url(fonts/plex-lat-500.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2190-21FF}
+@font-face{font-family:'Plex Arabic';font-weight:700;font-display:swap;src:url(fonts/plex-lat-700.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC,U+2122,U+2190-21FF}
+
+/* Two colours only: navy (brand) and volt yellow (energy), on neutral surfaces */
+:root{
+  --navy:#1b2a6b; --volt:#ffc93c;
+  --accent:#1b2a6b;          /* text/icon accent: navy on light, yellow on dark */
+  --accent-soft:#eceff8;     /* icon circles, chips */
+  --on-accent:#fff;
+  --bg:#f4f5f7; --card:#ffffff; --card-2:#f0f1f4;
+  --ink:#121521; --ink-2:#4b5060; --ink-3:#8b90a0; --line:#e6e8ee;
+  --wa:#1fa855; --warn:#c8393f;
+  --r-l:22px; --r-m:16px;
+  --nav-h:72px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --accent:#ffc93c; --accent-soft:#2a2a2e; --on-accent:#121212;
+    --bg:#000000; --card:#1c1c1e; --card-2:#2a2a2e;
+    --ink:#f4f4f6; --ink-2:#c3c5cc; --ink-3:#8e9099; --line:#2c2c30;
+  }
+}
+:root[data-theme="dark"]{
+  --accent:#ffc93c; --accent-soft:#2a2a2e; --on-accent:#121212;
+  --bg:#000000; --card:#1c1c1e; --card-2:#2a2a2e;
+  --ink:#f4f4f6; --ink-2:#c3c5cc; --ink-3:#8e9099; --line:#2c2c30;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 'Plex Arabic',system-ui,sans-serif;padding-bottom:calc(var(--nav-h) + 20px + env(safe-area-inset-bottom))}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--volt);outline-offset:2px}
+svg{display:block}
+.app{max-width:560px;margin:0 auto}
+
+/* ---------- top / search ---------- */
+.top{padding:calc(16px + env(safe-area-inset-top)) 20px 0}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:15px;background:var(--navy);display:grid;place-items:center}
+.logo svg{width:26px;height:26px}
+.brand b{display:block;font-size:1.02rem;font-weight:700}
+.brand small{display:block;font-size:.8rem;color:var(--ink-3)}
+.lang{border:0;background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:.85rem;font-weight:500}
+.hello{margin:22px 0 4px;font-size:1.75rem;line-height:1.2;font-weight:700;letter-spacing:-.3px}
+.by{margin:0;color:var(--ink-3);font-size:.92rem}
+.by b{color:var(--ink);font-weight:500}
+.sbox{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--r-l);padding:0 18px;margin-top:18px;border:1.5px solid transparent}
+.sbox svg{width:22px;height:22px;color:var(--accent);flex-shrink:0}
+.sbox input{flex:1;border:0;background:none;padding:17px 0;font-size:1.02rem;min-width:0}
+.sbox input:focus{outline:none}
+.sbox input::placeholder{color:var(--ink-3)}
+.sbox:focus-within{border-color:var(--accent)}
+
+/* ---------- sections ---------- */
+.sec{margin-top:28px}
+.sec-h{display:flex;align-items:center;justify-content:space-between;margin:0 20px 14px}
+.sec-h h2{margin:0;font-size:1.3rem;font-weight:700}
+.see{border:0;background:none;color:var(--accent);font-weight:500;font-size:.95rem;display:flex;align-items:center;gap:4px;padding:4px}
+.see svg{width:16px;height:16px}
+[dir=rtl] .see svg{transform:scaleX(-1)}
+
+/* quick access (horizontal pills) */
+.quick{display:flex;gap:10px;overflow-x:auto;padding:0 20px 2px;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.qp{flex-shrink:0;display:flex;align-items:center;gap:10px;background:var(--card);border:0;border-radius:var(--r-m);padding:13px 18px;font-size:1rem;font-weight:500;text-decoration:none;color:var(--ink)}
+.qp svg{width:22px;height:22px;color:var(--accent)}
+.qp.wa svg{color:var(--wa)}
+
+/* star of month */
+.star{display:flex;align-items:center;gap:14px;margin:0 20px;padding:16px 18px;border-radius:var(--r-l);background:var(--card);border:0;width:calc(100% - 40px);text-align:start}
+.star .medal{width:52px;height:52px;border-radius:50%;background:var(--volt);display:grid;place-items:center;flex-shrink:0;color:#121212}
+.star .medal svg{width:26px;height:26px}
+.star small{display:block;font-size:.84rem;color:var(--ink-3)}
+.star b{display:block;font-size:1.12rem}
+.star .go{margin-inline-start:auto;color:var(--ink-3)}
+.star .go svg{width:18px;height:18px}
+[dir=rtl] .star .go svg{transform:scaleX(-1)}
+
+/* category grid — one neutral style for all */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 20px}
+.tile{border:0;background:var(--card);border-radius:var(--r-l);padding:18px 8px 16px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;color:var(--ink);min-height:148px}
+.tile .ti{width:60px;height:60px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent)}
+.tile .ti svg{width:28px;height:28px}
+.tile b{font-size:.95rem;font-weight:500;line-height:1.35}
+.tile small{color:var(--ink-3);font-size:.8rem;margin-top:-8px}
+
+/* recent */
+.rlist{margin:0 20px;background:var(--card);border-radius:var(--r-l);overflow:hidden}
+.ri{display:flex;align-items:center;gap:14px;width:100%;border:0;background:none;padding:14px 16px;text-align:start;border-bottom:1px solid var(--line)}
+.ri:last-child{border-bottom:0}
+.ri .ti{width:46px;height:46px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent);flex-shrink:0}
+.ri .ti svg{width:22px;height:22px}
+.ri span.m{flex:1;min-width:0}
+.ri b{display:block;font-size:1rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ri small{color:var(--ink-3);font-size:.84rem}
+.ri .when{color:var(--ink-3);font-size:.8rem;flex-shrink:0}
+
+/* install */
+.install{display:flex;align-items:center;gap:12px;margin:18px 20px 0;background:var(--card);border-radius:var(--r-l);padding:14px 16px}
+.install .logo{width:46px;height:46px}
+.install div{flex:1;font-size:.86rem;color:var(--ink-2)}
+.install b{display:block;font-size:1rem;color:var(--ink)}
+.install .x{border:0;background:none;color:var(--ink-3);font-size:1.4rem;padding:4px}
+
+/* ---------- inner views ---------- */
+.view[hidden]{display:none!important}
+.topbar{position:sticky;top:0;z-index:6;background:var(--bg);padding:calc(12px + env(safe-area-inset-top)) 20px 12px;display:flex;align-items:center;gap:12px}
+.back{width:44px;height:44px;border-radius:50%;border:0;background:var(--card);display:grid;place-items:center;flex-shrink:0;color:var(--ink)}
+.back svg{width:20px;height:20px}
+[dir=rtl] .back svg{transform:scaleX(-1)}
+.topbar h2{margin:0;font-size:1.3rem;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-tools{padding:0 20px}
+.list-tools .sbox{margin-top:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:0;background:var(--card);border-radius:999px;padding:8px 16px;font-size:.9rem;white-space:nowrap;color:var(--ink-2)}
+.chip[aria-pressed=true]{background:var(--accent);color:var(--on-accent);font-weight:500}
+.count{color:var(--ink-3);font-size:.88rem;margin:8px 20px}
+
+/* supplier cards */
+.cards{margin:0 20px;display:grid;gap:10px}
+.sc{background:var(--card);border-radius:var(--r-l);overflow:hidden}
+.sc-head{display:flex;align-items:center;gap:14px;padding:14px;width:100%;border:0;background:none;text-align:start}
+.av{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:var(--accent-soft);color:var(--accent)}
+.av svg{width:24px;height:24px}
+.sc-main{flex:1;min-width:0}
+.sc-main b{display:block;font-size:1.02rem;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.sc-main .ar{display:block;font-size:.86rem;color:var(--ink-2)}
+.sc-main small{display:block;color:var(--ink-3);font-size:.84rem;margin-top:2px}
+.badge{display:inline-block;font-size:.72rem;font-weight:500;border-radius:999px;padding:1px 9px;margin-inline-start:6px;vertical-align:2px;background:var(--card-2);color:var(--ink-2)}
+.b-off{color:var(--warn)}
+.stars{color:#e3a800;font-size:.82rem;letter-spacing:1px}
+.qa{display:flex;gap:8px;flex-shrink:0}
+.rb{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:0;background:var(--accent-soft);color:var(--accent);text-decoration:none}
+.rb.wa{background:var(--wa);color:#fff}
+.rb svg{width:20px;height:20px}
+.detail{display:none;padding:0 16px 16px}
+.sc.open .detail{display:block}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.95rem;margin:4px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
+.dl dt{color:var(--ink-3)} .dl dd{margin:0;overflow-wrap:anywhere}
+.dl a{text-decoration:none;font-weight:500;color:var(--accent)}
+.num{direction:ltr;unicode-bidi:isolate;display:inline-block;white-space:nowrap}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:0;border-radius:999px;padding:11px 18px;font-weight:500;font-size:.95rem;background:var(--card-2);color:var(--ink);display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn svg{width:18px;height:18px}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.volt{background:var(--volt);color:#121212}
+.btn.block{width:100%;justify-content:center;padding:15px}
+.reviews{margin-top:14px;font-size:.92rem}
+.rv{background:var(--card-2);border-radius:var(--r-m);padding:10px 14px;margin-top:8px}
+.rv b{font-weight:500}
+.muted{color:var(--ink-3);font-size:.86rem}
+.more{display:block;margin:14px auto 0}
+
+.empty{margin:10px 20px;background:var(--card);border-radius:var(--r-l);padding:30px 20px;text-align:center}
+.empty .big{width:68px;height:68px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;margin:0 auto 12px;color:var(--accent)}
+.empty .big svg{width:30px;height:30px}
+.empty h3{margin:0 0 6px;font-size:1.12rem}
+.empty p{margin:0 0 16px;color:var(--ink-2);font-size:.95rem}
+.empty .acts{justify-content:center}
+
+/* forms */
+.panel{background:var(--card);border-radius:var(--r-l);padding:18px;margin:0 20px 14px}
+.panel h3{margin:0 0 6px;font-size:1.12rem}
+.panel > p{margin:0 0 14px;color:var(--ink-2);font-size:.92rem}
+.f{margin-bottom:14px}
+.f label{display:block;font-weight:500;font-size:.9rem;margin-bottom:6px}
+.h{color:var(--ink-3);font-size:.8rem;font-weight:400}
+.f input,.f select,.f textarea{width:100%;border:1.5px solid transparent;background:var(--card-2);border-radius:var(--r-m);padding:13px 15px;font-size:1rem}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trap{position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0;padding:0;margin:-1px}
+.note{background:var(--accent-soft);color:var(--ink-2);border-radius:var(--r-m);padding:12px 14px;font-size:.9rem;margin-bottom:14px}
+.msg{border-radius:var(--r-m);padding:12px 14px;margin-top:12px;font-size:.92rem;background:var(--card-2)}
+.msg.ok{color:#1f8a5b} .msg.err{color:var(--warn)}
+.rate{display:flex;gap:4px;direction:ltr;justify-content:flex-end}
+.rate button{border:0;background:none;font-size:1.8rem;color:var(--line);padding:0 2px}
+.rate button.on{color:#e3a800}
+
+/* requests */
+.req{background:var(--card);border-radius:var(--r-l);padding:16px;margin:0 20px 10px}
+.req p{margin:0 0 6px;font-weight:500;font-size:1.02rem}
+.req .muted{margin-bottom:12px}
+.pill{display:inline-block;font-size:.75rem;font-weight:500;border-radius:999px;padding:1px 10px;background:var(--card-2);color:var(--ink-2)}
+.p-open{background:var(--volt);color:#121212}
+
+/* leaderboard */
+.podium{margin:0 20px;background:var(--navy);color:#fff;border-radius:var(--r-l);padding:20px 16px}
+.podium h3{margin:0 0 2px;font-size:1.15rem}
+.podium p{margin:0 0 14px;font-size:.88rem;opacity:.75}
+.pod{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end}
+.pod > div{background:rgba(255,255,255,.08);border-radius:var(--r-m);padding:12px 6px;text-align:center}
+.pod .m{font-size:1.5rem}
+.pod b{display:block;font-size:.92rem;overflow-wrap:anywhere}
+.pod small{opacity:.75;font-size:.78rem}
+.pod .first{background:var(--volt);color:#121212;padding-top:18px}
+.rank{margin:12px 20px 0;background:var(--card);border-radius:var(--r-l);padding:4px 16px}
+.rank ol{list-style:none;margin:0;padding:0}
+.rank li{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.rank li:last-child{border-bottom:0}
+.rank .n{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;font-weight:700;font-size:.9rem;color:var(--accent);flex-shrink:0}
+.rank .who{flex:1;font-weight:500;overflow-wrap:anywhere}
+.rank .who small{display:block;font-weight:400;color:var(--ink-3);font-size:.8rem}
+.rank .c{font-size:.86rem;color:var(--ink-2);white-space:nowrap}
+
+footer{margin:30px 20px 0;color:var(--ink-3);font-size:.82rem;text-align:center}
+footer p{margin:0 0 6px}
+
+/* bottom nav — flat, like national apps */
+.nav{position:fixed;inset-inline:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.nav-in{max-width:560px;margin:0 auto;height:var(--nav-h);display:grid;grid-template-columns:repeat(5,1fr);align-items:center}
+.nav button{border:0;background:none;color:var(--ink-3);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.78rem;font-weight:500;padding:6px 0;position:relative}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current=page]{color:var(--accent)}
+.nav .plus .pi{width:48px;height:48px;border-radius:16px;background:var(--volt);color:#121212;display:grid;place-items:center}
+.nav .plus .pi svg{width:24px;height:24px}
+.nav .dotn{position:absolute;top:0;inset-inline-end:calc(50% - 20px);min-width:18px;height:18px;border-radius:9px;background:var(--warn);color:#fff;font-size:.68rem;font-weight:700;display:grid;place-items:center;padding:0 5px}
+
+.toast{position:fixed;bottom:calc(var(--nav-h) + 24px);left:20px;right:20px;max-width:500px;margin:auto;z-index:30;background:var(--ink);color:var(--bg);border-radius:var(--r-m);padding:13px 16px;text-align:center;font-size:.92rem}
+[hidden]{display:none!important}
+@media (max-width:370px){.tiles{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.hello{font-size:1.5rem}}
+@media (prefers-reduced-motion:no-preference){.sc.open .detail{animation:open .2s ease-out}@keyframes open{from{opacity:0;transform:translateY(-4px)}}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ================= HOME ================= -->
+<section class="view" id="v-home">
+  <div class="top">
+    <div class="top-row">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2 5 13.5h6l-1.5 8.5L19 10.5h-6z" fill="#ffc93c"/></svg></span>
+        <div><b>Elec in KSA</b><small data-t="brand_sub">قروب مهندسي الكهرباء</small></div>
+      </div>
+      <button class="lang" id="lang" type="button">EN</button>
+    </div>
+    <h1 class="hello" data-t="title">دليل موردي الكهرباء</h1>
+    <p class="by" id="by"></p>
+    <label class="sbox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q-home" type="search" enterkeyhint="search" autocomplete="off" data-tp="search_ph" placeholder="ابحث في الدليل" aria-label="Search">
+    </label>
+  </div>
+
+  <div class="install" id="install" hidden>
+    <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13.5 2 5 13.5h6l-1.5 8.5L19 10.5h-6z" fill="#ffc93c"/></svg></span>
+    <div><b data-t="inst_h">ثبّت الدليل على جوالك</b><span id="inst-p" data-t="inst_p">أيقونة بجانب واتساب، تفتح مثل التطبيق</span></div>
+    <button class="btn volt" id="inst-btn" data-t="inst_btn">تثبيت</button>
+    <button class="x" id="inst-x" aria-label="close">×</button>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2 data-t="quick_h">الوصول السريع</h2></div>
+    <div class="quick">
+      <button class="qp" type="button" data-go="requests"><span data-icon="chat"></span><span data-t="q_ask">اطلب مورداً</span></button>
+      <button class="qp" type="button" data-go="add"><span data-icon="plus"></span><span data-t="q_add">أضف مورداً</span></button>
+      <button class="qp" type="button" data-go="board"><span data-icon="trophy"></span><span data-t="n_board">المساهمون</span></button>
+      <a class="qp wa" id="join" target="_blank" rel="noopener"><span data-icon="wa"></span><span data-t="q_join">انضم للقروب</span></a>
+    </div>
+  </div>
+
+  <div class="sec" id="star-sec" hidden>
+    <button class="star" id="star" data-go="board">
+      <span class="medal" data-icon="trophy"></span>
+      <span><small data-t="month_h">نجم الشهر</small><b id="star-name"></b><small id="star-n"></small></span>
+      <span class="go" data-icon="back"></span>
+    </button>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><h2 data-t="cats_h">استكشف التصنيفات</h2><button class="see" type="button" id="more-cats"><span id="more-cats-t" data-t="see_all_cats">عرض الكل</span><span data-icon="back"></span></button></div>
+    <div class="tiles" id="tiles"></div>
+  </div>
+
+  <div class="sec" id="recent-sec" hidden>
+    <div class="sec-h"><h2 data-t="recent_h">آخر الإضافات</h2><button class="see" type="button" data-go="list"><span data-t="see_all">كل الموردين</span><span data-icon="back"></span></button></div>
+    <div class="rlist" id="recent"></div>
+  </div>
+
+  <footer>
+    <p id="copy"></p>
+    <p data-t="disclaimer">البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.</p>
+  </footer>
+</section>
+
+<!-- ================= LIST ================= -->
+<section class="view" id="v-list" hidden>
+  <div class="topbar">
+    <button class="back" data-go="home" aria-label="back" data-icon="back"></button>
+    <h2 id="list-title" data-t="all_sup">كل الموردين</h2>
+  </div>
+  <div class="list-tools">
+    <label class="sbox">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" enterkeyhint="search" autocomplete="off" data-tp="search_ph" placeholder="ابحث" aria-label="Search">
+    </label>
+    <div class="chips" id="city-chips"></div>
+  </div>
+  <div class="count" id="count" aria-live="polite"></div>
+  <div class="cards" id="list"></div>
+  <button class="btn more" id="more" hidden></button>
+  <div class="empty" id="empty" hidden>
+    <div class="big" data-icon="search"></div>
+    <h3 data-t="empty_h">لم نجد مورداً بهذا البحث</h3>
+    <p data-t="empty_p">اطلبه من الأعضاء، وعندما يرد أحدهم يُضاف إلى الدليل للجميع.</p>
+    <div class="acts"><button class="btn primary" id="empty-ask" data-t="ask_btn">اطلب هذا المورد</button><button class="btn" id="empty-add" data-t="add_btn">أعرف مورداً، أضيفه</button></div>
+  </div>
+</section>
+
+<!-- ================= REQUESTS ================= -->
+<section class="view" id="v-requests" hidden>
+  <div class="topbar"><button class="back" data-go="home" aria-label="back" data-icon="back"></button><h2 data-t="tab_req">طلبات الأعضاء</h2></div>
+  <form class="panel" id="f-req" novalidate>
+    <h3 data-t="req_h">تبحث عن مورد ولم تجده؟</h3>
+    <p data-t="req_p">اكتب طلبك. من يعرف المورد يضغط «أعرف المورد» ويضيف بياناته.</p>
+    <div class="f"><label for="rq-text" data-t="req_text">ماذا تبحث عنه؟</label><textarea id="rq-text" rows="2" maxlength="500" data-tp="req_text_ph" placeholder="مثال: مورد أكسس كنترول Kantech في الرياض"></textarea></div>
+    <div class="two">
+      <div class="f"><label for="rq-city" data-t="city">المدينة</label><input id="rq-city" type="text" maxlength="60"></div>
+      <div class="f"><label for="rq-name" data-t="your_name">اسمك</label><input id="rq-name" type="text" maxlength="60" autocomplete="name"></div>
+    </div>
+    <div class="f"><label for="rq-phone"><span data-t="your_phone">رقمك</span> <span class="h" data-t="optional_phone">(اختياري — لا يظهر لأحد)</span></label><input id="rq-phone" type="tel" maxlength="30" dir="ltr"></div>
+    <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <button class="btn primary block" type="submit" data-t="req_send">انشر الطلب</button>
+    <div id="rq-msg" aria-live="polite"></div>
+  </form>
+  <div class="sec-h"><h2 id="req-count"></h2></div>
+  <div id="req-list"></div>
+</section>
+
+<!-- ================= BOARD ================= -->
+<section class="view" id="v-board" hidden>
+  <div class="topbar"><button class="back" data-go="home" aria-label="back" data-icon="back"></button><h2 data-t="tab_board">المساهمون</h2></div>
+  <div class="podium">
+    <h3>⭐ <span data-t="month_h">نجم الشهر</span></h3>
+    <p data-t="month_p">الأكثر إضافة للموردين هذا الشهر</p>
+    <div class="pod" id="pod"></div>
+  </div>
+  <div class="sec-h" style="margin-top:22px"><h2 data-t="board_h">لوحة الشرف</h2></div>
+  <p class="muted" style="margin:-4px 18px 0" data-t="board_p">تُحسب الإضافات بعد موافقة المشرف.</p>
+  <div class="rank"><ol id="board"></ol></div>
+  <div style="margin:16px 18px 0"><button class="btn volt block" data-go="add" data-t="board_cta">أضف مورداً وانضم للوحة</button></div>
+</section>
+
+<!-- ================= ADD ================= -->
+<section class="view" id="v-add" hidden>
+  <div class="topbar"><button class="back" data-go="home" aria-label="back" data-icon="back"></button><h2 data-t="add_h">أضف مورداً</h2></div>
+  <form class="panel" id="f-add" novalidate>
+    <p data-t="add_p">يظهر المورد للجميع بعد موافقة المشرف. الحقول المعلّمة بـ * مطلوبة.</p>
+    <div class="note" id="answering" hidden></div>
+    <div class="f"><label for="a-name"><span data-t="f_name">اسم الشركة أو المورد</span> *</label><input id="a-name" type="text" maxlength="120"></div>
+    <div class="f"><label for="a-brands"><span data-t="f_brands">الماركات التي يوردها</span> <span class="h" data-t="f_brands_h">(مثل Honeywell, Bosch)</span></label><input id="a-brands" type="text" maxlength="200" dir="ltr"></div>
+    <div class="two">
+      <div class="f"><label for="a-cat" data-t="f_cat">التصنيف</label><select id="a-cat"></select></div>
+      <div class="f"><label for="a-type" data-t="f_type">النوع</label><select id="a-type"><option value="Supplier" data-t="t_sup">مورد / وكيل</option><option value="Manufacturer" data-t="t_mfr">مصنع</option><option value="Contractor" data-t="t_con">مقاول</option></select></div>
+    </div>
+    <div class="f"><label for="a-spec" data-t="f_spec">المنتجات أو التخصص</label><input id="a-spec" type="text" maxlength="200"></div>
+    <div class="two">
+      <div class="f"><label for="a-contact" data-t="f_contact">اسم الشخص المسؤول</label><input id="a-contact" type="text" maxlength="200"></div>
+      <div class="f"><label for="a-city" data-t="city">المدينة</label><input id="a-city" type="text" maxlength="60"></div>
+    </div>
+    <div class="two">
+      <div class="f"><label for="a-mob"><span data-t="f_mob">الجوال / واتساب</span> *</label><input id="a-mob" type="tel" maxlength="200" dir="ltr" placeholder="05XXXXXXXX"></div>
+      <div class="f"><label for="a-tel" data-t="f_tel">هاتف المكتب</label><input id="a-tel" type="tel" maxlength="200" dir="ltr"></div>
+    </div>
+    <div class="f"><label for="a-email" data-t="f_email">الإيميل</label><input id="a-email" type="email" maxlength="250" dir="ltr"></div>
+    <div class="f"><label for="a-addr" data-t="f_addr">العنوان</label><input id="a-addr" type="text" maxlength="250"></div>
+    <div class="f"><label for="a-notes" data-t="f_notes">ملاحظات</label><input id="a-notes" type="text" maxlength="300"></div>
+    <div class="note" data-t="why_phone">اكتب اسمك ورقمك ليُحسب كل ما تضيفه باسمك في لوحة الشرف. الرقم اختياري ولا يظهر لأحد.</div>
+    <div class="two">
+      <div class="f"><label for="a-by" data-t="your_name">اسمك</label><input id="a-by" type="text" maxlength="60" autocomplete="name"></div>
+      <div class="f"><label for="a-byph"><span data-t="your_phone">رقمك</span> <span class="h" data-t="optional">(اختياري)</span></label><input id="a-byph" type="tel" maxlength="30" dir="ltr"></div>
+    </div>
+    <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <p class="muted" data-t="mob_or">* يكفي رقم واحد أو إيميل.</p>
+    <button class="btn primary block" type="submit" data-t="add_send">أرسل للمراجعة</button>
+    <div id="a-msg" aria-live="polite"></div>
+  </form>
+</section>
+
+</div>
+
+<nav class="nav" aria-label="main">
+  <div class="nav-in">
+    <button data-go="home" aria-current="page"><span data-icon="home"></span><span data-t="n_home">الرئيسية</span></button>
+    <button data-go="list"><span data-icon="list"></span><span data-t="n_list">الموردون</span></button>
+    <button data-go="add" class="plus" aria-label="add"><span class="pi" data-icon="plus"></span></button>
+    <button data-go="requests"><span data-icon="chat"></span><span data-t="n_req">الطلبات</span><span class="dotn" id="n-req" hidden></span></button>
+    <button data-go="board"><span data-icon="trophy"></span><span data-t="n_board">المساهمون</span></button>
+  </div>
+</nav>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const G = CONFIG.GROUP_NAME;
+
+/* ---------- icons ---------- */
+const P = {
+ search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+ home:'<path d="M3 11 12 3l9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14.5h4"/>',
+ trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+ back:'<path d="M15 6l-6 6 6 6"/>',
+ call:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
+ share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
+ star:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.6l6.2-.9z"/>',
+ cable:'<path d="M3 6h5a3 3 0 0 1 0 6H7a3 3 0 0 0 0 6h11"/><path d="M18 15v6M21 16v4"/>',
+ bolt:'<path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/>',
+ bulb:'<path d="M9 18h6M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-3.8 11.8c.5.4.8 1 .8 1.6V16h6v-.1c0-.6.3-1.2.8-1.6A6.5 6.5 0 0 0 12 2.5z"/>',
+ fire:'<path d="M12 22c4 0 7-2.8 7-6.8 0-3.5-2.4-5.6-3.6-8.2-.9 1.7-1.9 2.6-2.9 2.8.2-2.6-.9-5-3-6.8.2 4.1-4.5 6.6-4.5 12.2C5 19.2 8 22 12 22z"/>',
+ camera:'<rect x="2.5" y="7" width="13" height="10" rx="2"/><path d="m15.5 11 6-3.5v9l-6-3.5"/>',
+ wifi:'<path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1"/>',
+ plug:'<path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/>',
+ earth:'<path d="M12 3v9M5 12h14M8 16h8M10.5 20h3"/>',
+ tools:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-.4-.4-2.6z"/>',
+ shield:'<path d="M12 2.5 4.5 5.5v5.6c0 4.6 3.2 8.6 7.5 10.4 4.3-1.8 7.5-5.8 7.5-10.4V5.5z"/><path d="m9 12 2 2 4-4"/>',
+ tower:'<path d="M12 2 8 22M12 2l4 20M6 8h12M5 13h14M9 18h6"/>',
+ socket:'<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9.5 8.5v4M14.5 8.5v4M12 16.5v.5"/>',
+ net:'<rect x="9" y="2.5" width="6" height="5" rx="1"/><rect x="2.5" y="16.5" width="6" height="5" rx="1"/><rect x="15.5" y="16.5" width="6" height="5" rx="1"/><path d="M12 7.5V12M5.5 16.5V12h13v4.5"/>',
+ transformer:'<circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/>',
+ ups:'<rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M11.5 9.5l-2 3h3l-2 3"/>',
+ panel:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h3M13 11h3M8 15h3M13 15h3"/>',
+};
+const icon = (n, extra = '') => n === 'wa'
+  ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2m0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2m4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3"/></svg>'
+  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[n] || P.bolt}</svg>`;
+const paintIcons = (root = document) => root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
+
+/* category → icon + colour */
+const CAT_STYLE = [
+  [/fire|vesda/i, 'fire'], [/^led|light(ing)?,|lighting|fixture|poles/i, 'bulb'], [/lightning|earthing/i, 'earth'],
+  [/cctv|camera/i, 'camera'], [/access|parking|check in/i, 'shield'],
+  [/data|telephony|signage|clock/i, 'net'], [/low current|public address|audio/i, 'wifi'],
+  [/substation|switch ?gear|rmu|sbu/i, 'tower'], [/transformer/i, 'transformer'], [/ups/i, 'ups'],
+  [/generator|ats/i, 'bolt'], [/cable|tray|conduit|trunking|busway/i, 'cable'],
+  [/panel|disconnect/i, 'panel'], [/wiring/i, 'socket'], [/materials|supplies/i, 'plug'],
+  [/bms|control/i, 'shield'], [/mep|contract|o&m|works|rental|safety/i, 'tools'],
+];
+const catStyle = c => { for (const [re, ic] of CAT_STYLE) if (re.test(c || '')) return {ic}; return {ic:'bolt'}; };
+
+/* ---------- words ---------- */
+const T = {
+ ar:{title:'دليل موردي الكهرباء',brand_sub:'قروب مهندسي الكهرباء',byline:`يجمعه أعضاء قروب ${G}`,search_ph:'ابحث: Honeywell، كابلات، مولدات…',
+  st_sup:n=>`<b>${n}</b> مورد`,st_cat:n=>`<b>${n}</b> تصنيف`,q_ask:'اطلب مورداً',q_add:'أضف مورداً',q_join:'انضم للقروب',
+  inst_h:'ثبّت الدليل على جوالك',inst_p:'أيقونة بجانب واتساب، تفتح مثل التطبيق',inst_btn:'تثبيت',inst_ios:'اضغط زر المشاركة ⬆️ ثم «إضافة إلى الشاشة الرئيسية»',
+  cats_h:'استكشف التصنيفات',quick_h:'الوصول السريع',see_all_cats:'عرض الكل',by_line:(n,c)=>`<b>${n}</b> مورد في <b>${c}</b> تصنيف · يجمعه أعضاء قروب ${G}`,see_all:'كل الموردين',all_cats:n=>`عرض كل التصنيفات (${n})`,less_cats:'عرض أقل',recent_h:'آخر الإضافات',all_sup:'كل الموردين',
+  n_home:'الرئيسية',n_list:'الموردون',n_req:'الطلبات',n_board:'المساهمون',all_city:'كل المدن',
+  found:n=>`${n} مورد`,showing:(a,b)=>`يظهر ${a} من ${b}`,more:'عرض المزيد',sup_n:n=>`${n} مورد`,
+  empty_h:'لم نجد مورداً بهذا البحث',empty_p:'اطلبه من الأعضاء، وعندما يرد أحدهم يُضاف إلى الدليل للجميع.',ask_btn:'اطلب هذا المورد',add_btn:'أعرف مورداً، أضيفه',
+  contact:'المسؤول',mobile:'جوال',phone:'هاتف',fax:'فاكس',email:'إيميل',address:'العنوان',brands:'الماركات',notes:'ملاحظات',city:'المدينة',spec:'التخصص',
+  call:'اتصال',whatsapp:'واتساب',share:'مشاركة',copied:'تم النسخ — الصقه في القروب',rate:'قيّم',
+  mfr:'مصنع',sup:'مورد',con:'مقاول',inactive:'غير نشط',added_by:'أضافه',no_reviews:'لا توجد تقييمات بعد.',
+  rv_h:'تقييمك',rv_comment:'تعليقك (مثال: الأسعار ممتازة، أو الرقم لا يرد)',rv_send:'أرسل التقييم',
+  tab_req:'طلبات الأعضاء',req_h:'تبحث عن مورد ولم تجده؟',req_p:'اكتب طلبك. من يعرف المورد يضغط «أعرف المورد» ويضيف بياناته.',req_text:'ماذا تبحث عنه؟',
+  req_text_ph:'مثال: مورد أكسس كنترول Kantech في الرياض',your_name:'اسمك',your_phone:'رقمك',optional_phone:'(اختياري — لا يظهر لأحد)',optional:'(اختياري)',
+  why_phone:'اكتب اسمك ورقمك ليُحسب كل ما تضيفه باسمك في لوحة الشرف. الرقم اختياري ولا يظهر لأحد.',req_send:'انشر الطلب',
+  req_n:n=>`الطلبات (${n})`,req_open:'بانتظار رد',req_done:'تم الرد',i_know:'أعرف المورد',see_answer:'عرض المورد',no_req:'لا توجد طلبات حالياً.',
+  tab_board:'المساهمون',month_h:'نجم الشهر',month_p:'الأكثر إضافة للموردين هذا الشهر',board_h:'لوحة الشرف',board_p:'الأكثر إضافة منذ إطلاق الدليل. تُحسب الإضافات بعد موافقة المشرف.',
+  board_cta:'أضف مورداً وانضم للوحة',month_empty:'لا أحد بعد هذا الشهر — كن أنت!',board_empty:'اللوحة فارغة. أول من يضيف مورداً يتصدر!',
+  adds:n=>n==1?'إضافة واحدة':n==2?'إضافتان':`${n} ${n<=10?'إضافات':'إضافة'}`,answers_n:n=>n==1?'ردّ على طلب واحد':n==2?'ردّ على طلبين':`ردّ على ${n} ${n<=10?'طلبات':'طلباً'}`,
+  add_h:'أضف مورداً',add_p:'يظهر المورد للجميع بعد موافقة المشرف. الحقول المعلّمة بـ * مطلوبة.',
+  f_name:'اسم الشركة أو المورد',f_brands:'الماركات التي يوردها',f_brands_h:'(مثل Honeywell, Bosch)',f_cat:'التصنيف',f_type:'النوع',choose:'اختر…',
+  t_sup:'مورد / وكيل',t_mfr:'مصنع',t_con:'مقاول',f_spec:'المنتجات أو التخصص',f_contact:'اسم الشخص المسؤول',f_mob:'الجوال / واتساب',
+  f_tel:'هاتف المكتب',f_email:'الإيميل',f_addr:'العنوان',f_notes:'ملاحظات',mob_or:'* يكفي رقم واحد أو إيميل.',add_send:'أرسل للمراجعة',
+  other:'أخرى',answering:t=>`أنت ترد على الطلب: «${t}»`,
+  sent_sup:'وصلنا المورد ✅ سيظهر بعد موافقة المشرف. شكراً لمساهمتك.',sent_req:'تم نشر طلبك ✅ شارك رابط الدليل في القروب ليرد الأعضاء.',
+  sent_rv:'وصلنا تقييمك ✅ سيظهر بعد موافقة المشرف.',need_name:'اكتب اسم المورد.',need_contact:'أضف رقم جوال أو هاتف أو إيميل.',need_text:'اكتب ماذا تبحث عنه.',
+  need_rate:'اختر عدد النجوم أو اكتب تعليقاً.',busy:'الخدمة مشغولة الآن، حاول بعد دقائق.',neterr:'لم يصل الإرسال. تأكد من الإنترنت وحاول مرة أخرى.',
+  not_connected:'الإضافة غير مفعّلة بعد — المشرف يكمل الإعداد.',sending:'جارٍ الإرسال…',
+  copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
+  share_text:s=>`${s}\n\n📒 من دليل موردي الكهرباء — قروب ${G}`,join_short:'للانضمام للقروب:',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
+ en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',byline:`Collected by ${G} group members`,search_ph:'Search: Honeywell, cables, generators…',
+  st_sup:n=>`<b>${n}</b> suppliers`,st_cat:n=>`<b>${n}</b> categories`,q_ask:'Ask',q_add:'Add supplier',q_join:'Join group',
+  inst_h:'Install on your phone',inst_p:'An icon next to WhatsApp, opens like an app',inst_btn:'Install',inst_ios:'Tap Share ⬆️ then “Add to Home Screen”',
+  cats_h:'Explore categories',quick_h:'Quick access',see_all_cats:'See all',by_line:(n,c)=>`<b>${n}</b> suppliers in <b>${c}</b> categories · collected by ${G} members`,see_all:'All suppliers',all_cats:n=>`Show all categories (${n})`,less_cats:'Show less',recent_h:'Recently added',all_sup:'All suppliers',
+  n_home:'Home',n_list:'Suppliers',n_req:'Requests',n_board:'Top',all_city:'All cities',
+  found:n=>`${n} suppliers`,showing:(a,b)=>`Showing ${a} of ${b}`,more:'Show more',sup_n:n=>`${n} suppliers`,
+  empty_h:'No supplier found',empty_p:'Ask the members. When someone answers, it is added for everyone.',ask_btn:'Ask for it',add_btn:'I know one, add it',
+  contact:'Contact',mobile:'Mobile',phone:'Phone',fax:'Fax',email:'E-mail',address:'Address',brands:'Brands',notes:'Notes',city:'City',spec:'Specialty',
+  call:'Call',whatsapp:'WhatsApp',share:'Share',copied:'Copied — paste it in the group',rate:'Rate',
+  mfr:'Manufacturer',sup:'Supplier',con:'Contractor',inactive:'Not active',added_by:'Added by',no_reviews:'No reviews yet.',
+  rv_h:'Your rating',rv_comment:'Your comment (e.g. good prices, or number not answering)',rv_send:'Send review',
+  tab_req:'Member requests',req_h:'Looking for a supplier?',req_p:'Post what you need. Members who know one tap “I know a supplier”.',req_text:'What are you looking for?',
+  req_text_ph:'e.g. Kantech access control supplier in Riyadh',your_name:'Your name',your_phone:'Your phone',optional_phone:'(optional — never shown)',optional:'(optional)',
+  why_phone:'Add your name and number so what you add counts for you on the leaderboard. The number is optional and never shown.',req_send:'Post request',
+  req_n:n=>`Requests (${n})`,req_open:'Waiting',req_done:'Answered',i_know:'I know a supplier',see_answer:'See supplier',no_req:'No requests yet.',
+  tab_board:'Contributors',month_h:'Star of the month',month_p:'Most suppliers added this month',board_h:'Leaderboard',board_p:'Most suppliers added since launch. Counted after admin approval.',
+  board_cta:'Add a supplier and join the board',month_empty:'Nobody yet this month — be the first!',board_empty:'The board is empty. The first to add a supplier leads!',
+  adds:n=>`${n} added`,answers_n:n=>`answered ${n} requests`,
+  add_h:'Add a supplier',add_p:'Shown to everyone after the admin approves it. Fields marked * are required.',
+  f_name:'Company / supplier name',f_brands:'Brands supplied',f_brands_h:'(e.g. Honeywell, Bosch)',f_cat:'Category',f_type:'Type',choose:'Choose…',
+  t_sup:'Supplier / agent',t_mfr:'Manufacturer',t_con:'Contractor',f_spec:'Products or specialty',f_contact:'Contact person',f_mob:'Mobile / WhatsApp',
+  f_tel:'Office phone',f_email:'E-mail',f_addr:'Address',f_notes:'Notes',mob_or:'* One phone number or e-mail is enough.',add_send:'Send for review',
+  other:'Other',answering:t=>`You are answering: “${t}”`,
+  sent_sup:'Received ✅ It will appear after the admin approves it. Thank you.',sent_req:'Request posted ✅ Share the link in the group so members can answer.',
+  sent_rv:'Review received ✅ It will appear after approval.',need_name:'Enter the supplier name.',need_contact:'Add a mobile, phone or e-mail.',need_text:'Write what you are looking for.',
+  need_rate:'Pick stars or write a comment.',busy:'Busy right now, try again in a few minutes.',neterr:'Not sent. Check your connection and try again.',
+  not_connected:'Adding is not switched on yet — the admin is finishing setup.',sending:'Sending…',
+  copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
+  share_text:s=>`${s}\n\n📒 From the Electrical Suppliers Directory — ${G} group`,join_short:'Join the group:',ago_today:'today',ago_days:n=>`${n}d ago`}
+};
+let lang = 'ar';
+try { lang = localStorage.getItem('lang') || 'ar'; } catch(e){}
+const t = (k, ...a) => { const v = (T[lang] && T[lang][k] !== undefined) ? T[lang][k] : T.ar[k]; return typeof v === 'function' ? v(...a) : (v ?? k); };
+
+/* ---------- search ---------- */
+const normAr = s => String(s||'').toLowerCase()
+  .replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي')
+  .replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+const SYN = {
+ 'كابل':'cable','كابلات':'cable','كيبل':'cable','مولد':'generator','مولدات':'generator','جنريتر':'generator','انارة':'lighting','اناره':'lighting','اضاءه':'lighting','كشافات':'lighting',
+ 'كاميرات':'cctv','كاميرا':'cctv','مراقبه':'cctv','حريق':'fire','انذار':'alarm','محول':'transformer','محولات':'transformer','لوحات':'panel','لوحه':'panel','طبلون':'panel',
+ 'تاريض':'earthing','ارضي':'earthing','صواعق':'lightning','اكسس':'access','دخول':'access','بوابات':'gate','مواقف':'parking','صوت':'audio','مفاتيح':'switch','افياش':'wiring',
+ 'مواسير':'conduit','حوامل':'tray','تري':'tray','باسواي':'busway','بطاريات':'ups','شبكات':'data','خفيف':'low current',
+ 'الرياض':'riyadh','رياض':'riyadh','الدمام':'dammam','دمام':'dammam','الخبر':'khobar','خبر':'khobar','جده':'jeddah','الشرقيه':'eastern','الجبيل':'jubail',
+ 'هانيويل':'honeywell','بوش':'bosch','سيمنس':'siemens','شنايدر':'schneider','اشنايدر':'schneider','الفنار':'fanar','فنار':'fanar','ليجراند':'legrand','السويدي':'sewedy','كانتك':'kantech','فيليبس':'philips','ابب':'abb'
+};
+const tokens = q => normAr(q).split(' ').filter(Boolean).map(w => [w, SYN[w]].filter(Boolean));
+
+/* ---------- phones ---------- */
+function tel(raw){
+  let d = String(raw).replace(/ext.*$/i,'').replace(/\D/g,'');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.startsWith('966')) d = '966' + d.slice(3).replace(/^0+/,'');
+  else if (/^05\d{8}$/.test(d)) d = '966' + d.slice(1);
+  else if (/^5\d{8}$/.test(d)) d = '966' + d;
+  else if (/^01\d{8}$/.test(d)) d = '966' + d.slice(1);
+  return d.length >= 9 ? d : '';
+}
+const isMobileKSA = d => /^9665\d{8}$/.test(d);
+const split = s => String(s||'').split(/\s*;\s*/).filter(Boolean);
+
+/* ---------- state ---------- */
+let DATA = {suppliers:[], reviews:[], requests:[], board:null};
+let byId = {}, revBy = {}, shownLimit = 30, answerReq = null, filt = {cat:'', city:''}, allCats = false;
+let ME = {name:'', phone:''};
+try { ME = JSON.parse(localStorage.getItem('me') || 'null') || ME; } catch(e){}
+
+/* ---------- load ---------- */
+async function load(){
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem('dir_cache') || 'null'); } catch(e){}
+  if (cached) setData(cached);
+  try {
+    const url = CONFIG.API_URL ? CONFIG.API_URL + '?t=' + Date.now() : 'suppliers.json';
+    const res = await fetch(url, {cache:'no-store'});
+    if (!res.ok) throw new Error(res.status);
+    let j = await res.json();
+    if (Array.isArray(j)) j = {suppliers:j};
+    setData(j);
+    try { localStorage.setItem('dir_cache', JSON.stringify(j)); } catch(e){}
+  } catch(e) {}
+}
+function setData(j){
+  DATA = {suppliers:j.suppliers||[], reviews:j.reviews||[], requests:j.requests||[], board:j.board||null};
+  byId = {}; revBy = {};
+  DATA.suppliers.forEach(s => {
+    s._hay = normAr([s.Name,s.Name_AR,s.Category,s.Category_AR,s.Specialty,s.Brands,s.City,s.Contacts,s.Notes,s.Address,s.Emails].join(' '));
+    byId[s.ID] = s;
+  });
+  DATA.reviews.forEach(r => (revBy[r.sid] = revBy[r.sid] || []).push(r));
+  renderAll();
+  route();
+}
+function renderAll(){ renderHome(); fillForms(); renderList(); renderRequests(); renderBoard(); }
+
+/* ---------- home ---------- */
+const SHORT = {"Lighting, Fixtures & Poles": ["الإنارة", "Lighting"], "Electrical Materials (1ST & 2ND Fix)": ["مواد كهربائية", "Electrical materials"], "LV & MV Panel Boards": ["اللوحات الكهربائية", "Panel boards"], "Generators & ATS": ["المولدات", "Generators"], "Low Current Systems & Cables": ["التيار الخفيف", "Low current"], "Package Substations & Panel Boards": ["المحطات المدمجة", "Substations"], "Fire Alarm, VESDA & Fire Protection": ["إنذار الحريق", "Fire alarm"], "Data & IP Telephony Systems": ["البيانات والشبكات", "Data & IP"], "Wiring Devices & Floor Box": ["الأفياش والمفاتيح", "Wiring devices"], "Cables": ["الكابلات", "Cables"], "Transformer": ["المحولات", "Transformers"], "Disconnecting Switches": ["مفاتيح الفصل", "Disconnect switches"], "Cable Tray & Accessories": ["حوامل الكابلات", "Cable trays"], "UPS": ["أجهزة UPS", "UPS"], "RMU": ["وحدات RMU", "RMU"], "BMS System": ["أنظمة BMS", "BMS"], "CCTV System": ["كاميرات المراقبة", "CCTV"], "Busway": ["Busway", "Busway"], "Cable Accessories (LV & MV)": ["ملحقات الكابلات", "Cable accessories"], "PVC Conduits and Accessories": ["مواسير PVC", "PVC conduits"], "Electrical Supplies & IT Solutions": ["مستلزمات وحلول تقنية", "Supplies & IT"], "Lightning Protection & Earthing": ["الصواعق والتأريض", "Earthing"], "Car Parking System & Gate Barrier System": ["المواقف والبوابات", "Parking & gates"], "IP Clock Display System": ["الساعات الشبكية", "IP clocks"], "Electrical & Mechanical Works / Safety": ["أعمال كهروميكانيكية", "E&M works"], "Medium Voltage Switch Gear 33KV": ["مفاتيح 33KV", "MV switchgear"], "Public Address System": ["النداء العام", "Public address"], "Switchgear Business Unit / SBU": ["وحدة SBU", "Switchgear SBU"], "Access Control System": ["التحكم بالدخول", "Access control"], "Audio Visual & Auditorium Systems": ["الصوت والصورة", "Audio visual"], "ATS": ["مفاتيح ATS", "ATS"], "Control System (BMS – Integrated)": ["التحكم المتكامل", "Integrated control"], "IP CCTV, Audio Visual & Public Address": ["كاميرات وصوتيات", "IP CCTV & AV"], "IP Digital Signage System": ["الشاشات الرقمية", "Digital signage"], "LED Lights (USA Made)": ["إنارة LED", "LED lights"], "O&M & General Contracting": ["تشغيل وصيانة", "O&M"], "Under Floor Trunking & Raised Floor Cable Tray": ["مجاري الأرضيات", "Floor trunking"], "Check In & Check Out System": ["الحضور والانصراف", "Check in/out"], "Equipment Rental": ["تأجير المعدات", "Equipment rental"], "Full MEP Works Contractors": ["مقاولو MEP", "MEP contractors"]};
+const shortLabel = (key, full) => (SHORT[key] ? SHORT[key][lang === "ar" ? 0 : 1] : full);
+
+const catLabel = s => lang === 'ar' && s.Category_AR ? s.Category_AR : s.Category;
+function categories(){
+  const m = {};
+  DATA.suppliers.forEach(s => { if (!s.Category) return; (m[s.Category] = m[s.Category] || {key:s.Category, label:catLabel(s), n:0}).n++; });
+  return Object.values(m).sort((a, b) => b.n - a.n);
+}
+function renderHome(){
+  const cats = categories();
+  const shown = allCats ? cats : cats.slice(0, 9);
+  $('#tiles').innerHTML = shown.map(c => `<button class="tile" data-cat="${esc(c.key)}"><span class="ti">${icon(catStyle(c.key).ic)}</span><b>${esc(shortLabel(c.key, c.label))}</b><small>${t('sup_n', c.n)}</small></button>`).join('');
+  $('#more-cats').hidden = cats.length <= 9;
+  $('#more-cats-t').textContent = allCats ? t('less_cats') : t('see_all_cats');
+  $('#by').innerHTML = t('by_line', DATA.suppliers.length, cats.length);
+  // star of month
+  const b = DATA.board, star = b && b.monthTop && b.monthTop[0];
+  $('#star-sec').hidden = !star;
+  if (star) { $('#star-name').textContent = star.name; $('#star-n').textContent = t('adds', star.month); }
+  // recent member additions
+  const recent = DATA.suppliers.filter(s => s.Submitted_By && !/^القائمة الأولى/.test(s.Submitted_By))
+    .sort((a, b) => String(b.Date).localeCompare(String(a.Date))).slice(0, 5);
+  $('#recent-sec').hidden = !recent.length;
+  const today = new Date();
+  $('#recent').innerHTML = recent.map(s => {
+    const d = Math.max(0, Math.round((today - new Date(String(s.Date).replace(' ', 'T'))) / 864e5));
+    return `<button class="ri" data-open="${esc(s.ID)}"><span class="ti">${icon(catStyle(s.Category).ic)}</span><span class="m"><b>${esc(s.Name)}</b><small>${esc([catLabel(s), s.Submitted_By].filter(Boolean).join(' · '))}</small></span><span class="when">${isNaN(d) ? '' : d === 0 ? t('ago_today') : t('ago_days', d)}</span></button>`;
+  }).join('');
+}
+
+/* ---------- list ---------- */
+function filtered(){
+  const q = tokens($('#q').value);
+  return DATA.suppliers.filter(s => (!filt.cat || s.Category === filt.cat) && (!filt.city || s.City === filt.city) &&
+    q.every(alts => alts.some(w => s._hay.includes(w))));
+}
+function renderCityChips(){
+  const pool = DATA.suppliers.filter(s => !filt.cat || s.Category === filt.cat);
+  const cities = {}; pool.forEach(s => { if (s.City) cities[s.City] = (cities[s.City] || 0) + 1; });
+  const list = Object.entries(cities).sort((a, b) => b[1] - a[1]).map(([c]) => c);
+  if (filt.city && !list.includes(filt.city)) filt.city = '';
+  $('#city-chips').innerHTML = [`<button class="chip" data-city="" aria-pressed="${!filt.city}">${t('all_city')}</button>`]
+    .concat(list.map(c => `<button class="chip" data-city="${esc(c)}" aria-pressed="${filt.city === c}">${esc(c)}</button>`)).join('');
+}
+const stars = n => { const r = Math.round(n); return '★'.repeat(r) + '☆'.repeat(5 - r); };
+const typeLabel = x => ({Manufacturer:t('mfr'), Supplier:t('sup'), Contractor:t('con')}[x] || '');
+function cardHTML(s){
+  const st = catStyle(s.Category), mobs = split(s.Mobiles), phones = split(s.Phones);
+  const first = tel(mobs[0] || phones[0] || ''), waNum = mobs.map(tel).find(isMobileKSA);
+  const rated = (revBy[s.ID] || []).filter(r => r.rating), avg = rated.length ? rated.reduce((a, r) => a + r.rating, 0) / rated.length : 0;
+  const inactive = /NOT ACTIVE/i.test(s.Notes || '');
+  return `<article class="sc" id="r-${esc(s.ID)}">
+    <div class="sc-head" role="button" tabindex="0" aria-expanded="false" data-id="${esc(s.ID)}">
+      <span class="av">${icon(st.ic)}</span>
+      <span class="sc-main"><b><bdi>${esc(s.Name)}</bdi>${s.Type === 'Manufacturer' ? `<span class="badge">${t('mfr')}</span>` : ''}${inactive ? `<span class="badge b-off">${t('inactive')}</span>` : ''}</b>
+        ${s.Name_AR ? `<span class="ar">${esc(s.Name_AR)}</span>` : ''}
+        <small>${esc([filt.cat ? typeLabel(s.Type) : catLabel(s), s.City].filter(Boolean).join(' · '))}${rated.length ? ` · <span class="stars">${stars(avg)}</span>` : ''}</small></span>
+      <span class="qa">
+        ${first ? `<a class="rb" href="tel:+${first}" aria-label="${t('call')}" data-stop>${icon('call')}</a>` : ''}
+        ${waNum ? `<a class="rb wa" href="https://wa.me/${waNum}" target="_blank" rel="noopener" aria-label="${t('whatsapp')}" data-stop>${icon('wa')}</a>` : ''}
+      </span>
+    </div>
+    <div class="detail"></div>
+  </article>`;
+}
+function detailHTML(s){
+  const line = (k, v) => v ? `<dt>${t(k)}</dt><dd>${v}</dd>` : '';
+  const ph = list => split(list).map(p => { const d = tel(p); return d ? `<a class="num" href="tel:+${d}">${esc(p)}</a>` : `<span class="num">${esc(p)}</span>`; }).join('<br>');
+  const mob = split(s.Mobiles).map(p => { const d = tel(p);
+    return d ? `<a class="num" href="tel:+${d}">${esc(p)}</a>${isMobileKSA(d) ? ` · <a href="https://wa.me/${d}" target="_blank" rel="noopener">${t('whatsapp')}</a>` : ''}` : `<span class="num">${esc(p)}</span>`; }).join('<br>');
+  const rv = revBy[s.ID] || [], notes = (s.Notes || '').replace(/NOT ACTIVE/i, '').trim();
+  return `<dl class="dl">
+    ${line('contact', esc(s.Contacts).replace(/ ; /g, '، '))}${line('mobile', mob)}${line('phone', ph(s.Phones))}
+    ${line('fax', split(s.Fax).map(f => `<span class="num">${esc(f)}</span>`).join('<br>'))}
+    ${line('email', split(s.Emails).map(e => `<a href="mailto:${esc(e)}" dir="ltr">${esc(e)}</a>`).join('<br>'))}
+    ${line('brands', esc(s.Brands))}${line('spec', esc(s.Specialty))}${line('address', esc(s.Address))}${line('notes', esc(notes))}
+   </dl>
+   <div class="acts"><button class="btn primary" data-share="${esc(s.ID)}">${icon('share')}${t('share')}</button><button class="btn" data-rate="${esc(s.ID)}">${icon('star')}${t('rate')}</button></div>
+   <div class="reviews">
+    ${rv.length ? rv.slice(-20).reverse().map(r => `<div class="rv">${r.rating ? `<span class="stars">${stars(r.rating)}</span> ` : ''}<b>${esc(r.name || '')}</b> <span class="muted">${esc((r.date || '').slice(0, 10))}</span><div>${esc(r.comment)}</div></div>`).join('') : `<div class="muted">${t('no_reviews')}</div>`}
+    <form class="rv-form" data-sid="${esc(s.ID)}" hidden novalidate style="margin-top:10px">
+      <div class="f"><label>${t('rv_h')}</label><div class="rate">${[1,2,3,4,5].map(n => `<button type="button" data-star="${n}" aria-label="${n}">★</button>`).join('')}</div></div>
+      <div class="f"><textarea rows="2" maxlength="400" placeholder="${esc(t('rv_comment'))}"></textarea></div>
+      <div class="f"><input type="text" maxlength="60" placeholder="${esc(t('your_name'))}" value="${esc(ME.name)}"></div>
+      <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button class="btn primary" type="submit">${t('rv_send')}</button>
+      <div class="rv-msg" aria-live="polite"></div>
+    </form>
+   </div>
+   ${s.Submitted_By ? `<p class="muted" style="margin:10px 0 0">${t('added_by')}: ${esc(s.Submitted_By)}</p>` : ''}`;
+}
+function renderList(){
+  renderCityChips();
+  const list = filtered();
+  $('#list-title').textContent = filt.cat ? (catLabel(DATA.suppliers.find(s => s.Category === filt.cat) || {Category:filt.cat})) : t('all_sup');
+  $('#count').textContent = list.length > shownLimit ? t('showing', shownLimit, list.length) : t('found', list.length);
+  $('#list').innerHTML = list.slice(0, shownLimit).map(cardHTML).join('');
+  $('#empty').hidden = !!list.length;
+  $('#count').hidden = !list.length;
+  $('#more').hidden = list.length <= shownLimit; $('#more').textContent = t('more');
+}
+function toggleCard(head){
+  const card = head.closest('.sc'), open = !card.classList.contains('open');
+  card.classList.toggle('open', open); head.setAttribute('aria-expanded', open);
+  const s = byId[head.dataset.id];
+  if (open && s) card.querySelector('.detail').innerHTML = detailHTML(s);
+}
+
+/* ---------- requests ---------- */
+function renderRequests(){
+  const rq = DATA.requests.slice().reverse();
+  const open = rq.filter(r => !r.answers.length && r.status === 'open').length;
+  $('#n-req').hidden = !open; $('#n-req').textContent = open;
+  $('#req-count').textContent = rq.length ? t('req_n', rq.length) : '';
+  $('#req-list').innerHTML = rq.length ? rq.map(r => {
+    const done = r.answers.length || r.status === 'closed';
+    return `<div class="req"><p>${esc(r.text)}</p>
+      <div class="muted"><span class="pill ${done ? 'p-done' : 'p-open'}">${done ? t('req_done') : t('req_open')}</span> ${[r.city, r.name, (r.date || '').slice(0, 10)].filter(Boolean).map(esc).join(' · ')}</div>
+      <div class="acts">${r.answers.map(id => byId[id] ? `<button class="btn" data-open="${esc(id)}">${t('see_answer')}: ${esc(byId[id].Name)}</button>` : '').join('')}
+        <button class="btn ${done ? '' : 'volt'}" data-answer="${esc(r.id)}">${t('i_know')}</button></div></div>`;
+  }).join('') : `<div class="empty"><p>${t('no_req')}</p></div>`;
+}
+
+/* ---------- board ---------- */
+function renderBoard(){
+  const b = DATA.board || {top:[], monthTop:[]};
+  const mt = b.monthTop || [], M = ['🥇','🥈','🥉'];
+  $('#pod').innerHTML = mt.length ? [1, 0, 2].map(i => mt[i] ? `<div class="${i === 0 ? 'first' : ''}"><div class="m">${M[i]}</div><b>${esc(mt[i].name)}</b><small>${t('adds', mt[i].month)}</small></div>` : '<span></span>').join('')
+    : `<div style="grid-column:span 3">${t('month_empty')}</div>`;
+  $('#board').innerHTML = b.top && b.top.length ? b.top.map((p, i) => `<li><span class="n">${M[i] || i + 1}</span><span class="who">${esc(p.name)}${p.answers ? `<small>${t('answers_n', p.answers)}</small>` : ''}</span><span class="c">${t('adds', p.total)}</span></li>`).join('')
+    : `<li><span class="who" style="font-weight:400;color:var(--ink-3)">${t('board_empty')}</span></li>`;
+}
+
+/* ---------- forms ---------- */
+function fillForms(){
+  const cats = categories();
+  const keep = $('#a-cat').value;
+  $('#a-cat').innerHTML = `<option value="">${t('choose')}</option>` + cats.map(c => `<option value="${esc(c.key)}">${esc(c.label)}</option>`).join('') + `<option value="Other">${t('other')}</option>`;
+  $('#a-cat').value = keep;
+  [['#a-by', ME.name], ['#a-byph', ME.phone], ['#rq-name', ME.name], ['#rq-phone', ME.phone]].forEach(([id, val]) => { const el = $(id); if (el && !el.value) el.value = val || ''; });
+}
+function remember(name, phone){ ME = {name: name || ME.name, phone: phone || ME.phone}; try { localStorage.setItem('me', JSON.stringify(ME)); } catch(e){} }
+async function send(type, data, form){
+  if (form.querySelector('input[name=website]').value) return {ok:true};
+  if (!CONFIG.API_URL) return {ok:false, error:'not_connected'};
+  try {
+    const res = await fetch(CONFIG.API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({type, data})});
+    return await res.json();
+  } catch(e) { return {ok:false, error:'net'}; }
+}
+const showMsg = (el, ok, text) => { el.innerHTML = `<div class="msg ${ok ? 'ok' : 'err'}">${esc(text)}</div>`; };
+const errText = r => r.error === 'not_connected' ? t('not_connected') : r.error === 'busy' ? t('busy') : r.error === 'missing' ? t('need_contact') : t('neterr');
+const v = id => $(id).value.trim();
+
+$('#f-add').addEventListener('submit', async e => {
+  e.preventDefault();
+  const m = $('#a-msg'), btn = e.target.querySelector('[type=submit]');
+  if (!v('#a-name')) return showMsg(m, false, t('need_name'));
+  if (!v('#a-mob') && !v('#a-tel') && !v('#a-email')) return showMsg(m, false, t('need_contact'));
+  const cat = $('#a-cat').value, cs = DATA.suppliers.find(s => s.Category === cat);
+  const data = {Name:v('#a-name'), Brands:v('#a-brands'), Category:cat, Category_AR: cs ? cs.Category_AR : '', Type:$('#a-type').value,
+    Specialty:v('#a-spec'), Contacts:v('#a-contact'), City:v('#a-city'), Mobiles:v('#a-mob').replace(/\s*[,،/]\s*/g, ' ; '),
+    Phones:v('#a-tel').replace(/\s*[,،/]\s*/g, ' ; '), Emails:v('#a-email'), Address:v('#a-addr'), Notes:v('#a-notes'),
+    Submitted_By:v('#a-by'), Submitter_Phone:v('#a-byph'), Request_ID: answerReq ? answerReq.id : ''};
+  btn.disabled = true; m.textContent = t('sending');
+  const r = await send('supplier', data, e.target);
+  btn.disabled = false;
+  if (r.ok) { showMsg(m, true, t('sent_sup')); remember(data.Submitted_By, data.Submitter_Phone); e.target.reset(); fillForms(); setAnswer(null); }
+  else showMsg(m, false, errText(r));
+});
+$('#f-req').addEventListener('submit', async e => {
+  e.preventDefault();
+  const m = $('#rq-msg'), btn = e.target.querySelector('[type=submit]');
+  if (v('#rq-text').length < 3) return showMsg(m, false, t('need_text'));
+  remember(v('#rq-name'), v('#rq-phone'));
+  btn.disabled = true; m.textContent = t('sending');
+  const text = v('#rq-text');
+  const r = await send('request', {Text:text, City:v('#rq-city'), Name:v('#rq-name'), Phone:v('#rq-phone')}, e.target);
+  btn.disabled = false;
+  if (r.ok) { showMsg(m, true, t('sent_req')); $('#rq-text').value = '';
+    DATA.requests.push({id:r.id || '', status:'open', text, city:v('#rq-city'), name:v('#rq-name'), date:new Date().toISOString(), answers:[]}); renderRequests(); }
+  else showMsg(m, false, errText(r));
+});
+document.addEventListener('submit', async e => {
+  const f = e.target.closest('.rv-form'); if (!f) return;
+  e.preventDefault();
+  const m = f.querySelector('.rv-msg'), rating = +(f.dataset.rating || 0), comment = f.querySelector('textarea').value.trim(), name = f.querySelector('input[type=text]').value.trim();
+  if (!rating && !comment) return showMsg(m, false, t('need_rate'));
+  const btn = f.querySelector('[type=submit]'); btn.disabled = true; m.textContent = t('sending');
+  remember(name, ME.phone);
+  const r = await send('review', {Supplier_ID:f.dataset.sid, Rating:rating, Comment:comment, Name:name, Phone:ME.phone}, f);
+  btn.disabled = false;
+  if (r.ok) { showMsg(m, true, t('sent_rv')); f.querySelector('textarea').value = ''; } else showMsg(m, false, errText(r));
+});
+function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req) $('#answering').textContent = t('answering', req.text); }
+
+/* ---------- share ---------- */
+async function share(s){
+  const lines = ['🏢 ' + s.Name + (s.Name_AR ? ' — ' + s.Name_AR : ''), '🗂 ' + catLabel(s) + (s.City ? ' · ' + s.City : '')];
+  if (s.Contacts) lines.push('👤 ' + s.Contacts.replace(/ ; /g, '، '));
+  split(s.Mobiles).forEach(p => lines.push('📱 ' + p));
+  split(s.Phones).forEach(p => lines.push('☎️ ' + p));
+  split(s.Emails).forEach(p => lines.push('✉️ ' + p));
+  const text = t('share_text', lines.join('\n')) + '\n' + CONFIG.SITE_URL + '#s=' + encodeURIComponent(s.ID) + '\n' + t('join_short') + ' ' + CONFIG.JOIN_LINK;
+  if (navigator.share) { try { await navigator.share({text}); return; } catch(e) { if (e.name === 'AbortError') return; } }
+  try { await navigator.clipboard.writeText(text); toast(t('copied')); } catch(e) { prompt('', text); }
+}
+function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+
+/* ---------- navigation (hash routes so the phone back button works) ---------- */
+const VIEWS = ['home', 'list', 'requests', 'board', 'add'];
+function go(view, opts = {}){
+  if (opts.cat !== undefined) { filt.cat = opts.cat; filt.city = ''; }
+  if (view === 'list') { shownLimit = 30; renderList(); }
+  const h = '#' + view + (view === 'list' && filt.cat ? '/' + encodeURIComponent(filt.cat) : '');
+  if (location.hash !== h) location.hash = h; else route();
+}
+function route(){
+  const m = location.hash.match(/^#s=([\w-]+)/);
+  if (m && byId[m[1]]) { openSupplier(m[1]); return; }
+  const [view, cat] = location.hash.slice(1).split('/');
+  const name = VIEWS.includes(view) ? view : 'home';
+  if (name === 'list') { const c = cat ? decodeURIComponent(cat) : ''; if (c !== filt.cat) { filt.cat = c; renderList(); } }
+  if (name !== 'add') setAnswer(null);
+  VIEWS.forEach(n => $('#v-' + n).hidden = n !== name);
+  $$('.nav [data-go]').forEach(b => { if (b.dataset.go === name) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  window.scrollTo(0, 0);
+}
+function openSupplier(id){
+  const s = byId[id]; if (!s) return;
+  filt = {cat:'', city:''}; $('#q').value = s.Name; shownLimit = 30;
+  history.replaceState(null, '', '#list'); route(); renderList();
+  const head = document.querySelector(`#r-${CSS.escape(id)} .sc-head`);
+  if (head) { toggleCard(head); setTimeout(() => head.scrollIntoView({block:'center', behavior:'smooth'}), 60); }
+}
+window.addEventListener('hashchange', route);
+
+/* ---------- events ---------- */
+let timer;
+$('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { shownLimit = 30; renderList(); }, 120); });
+$('#q-home').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#q').value = $('#q-home').value; filt = {cat:'', city:''}; go('list'); } });
+$('#q-home').addEventListener('input', () => { clearTimeout(timer); if ($('#q-home').value.trim().length >= 2) timer = setTimeout(() => { $('#q').value = $('#q-home').value; filt = {cat:'', city:''}; go('list'); setTimeout(() => { const q = $('#q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 30); }, 450); });
+$('#more').addEventListener('click', () => { shownLimit += 40; renderList(); });
+$('#empty-ask').addEventListener('click', () => { $('#rq-text').value = $('#q').value.trim(); go('requests'); });
+$('#empty-add').addEventListener('click', () => { $('#a-name').value = $('#q').value.trim(); go('add'); });
+
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-stop]')) return;
+  const head = e.target.closest('.sc-head'); if (head) return toggleCard(head);
+  const tile = e.target.closest('[data-cat]'); if (tile) { $('#q').value = ''; return go('list', {cat: tile.dataset.cat}); }
+  if (e.target.closest('#more-cats')) { allCats = !allCats; return renderHome(); }
+  const city = e.target.closest('[data-city]'); if (city) { filt.city = city.dataset.city; shownLimit = 30; return renderList(); }
+  const g = e.target.closest('[data-go]'); if (g) { if (g.dataset.go === 'list' && g.closest('.nav')) { filt.cat = ''; } return go(g.dataset.go); }
+  const op = e.target.closest('[data-open]'); if (op) return openSupplier(op.dataset.open);
+  const sh = e.target.closest('[data-share]'); if (sh) return share(byId[sh.dataset.share]);
+  const rt = e.target.closest('[data-rate]'); if (rt) { const f = rt.closest('.detail').querySelector('.rv-form'); f.hidden = !f.hidden; return; }
+  const st = e.target.closest('[data-star]'); if (st) { const f = st.closest('form'); f.dataset.rating = st.dataset.star;
+    f.querySelectorAll('[data-star]').forEach(b => b.classList.toggle('on', +b.dataset.star <= +st.dataset.star)); return; }
+  const ans = e.target.closest('[data-answer]'); if (ans) { const r = DATA.requests.find(x => x.id === ans.dataset.answer); go('add'); setTimeout(() => setAnswer(r), 0); return; }
+});
+document.addEventListener('keydown', e => { const h = e.target.closest && e.target.closest('.sc-head'); if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleCard(h); } });
+
+/* ---------- install as app ---------- */
+let deferred = null;
+const dismissed = () => { try { return localStorage.getItem('inst_x') === '1'; } catch(e) { return false; } };
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; if (!dismissed() && !standalone) $('#install').hidden = false; });
+if (isIOS && !standalone && !dismissed()) { $('#install').hidden = false; $('#inst-btn').hidden = true; $('#inst-p').dataset.t = 'inst_ios'; }
+$('#inst-btn').addEventListener('click', async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $('#install').hidden = true; });
+$('#inst-x').addEventListener('click', () => { $('#install').hidden = true; try { localStorage.setItem('inst_x', '1'); } catch(e){} });
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+
+/* ---------- language ---------- */
+function applyLang(){
+  document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.title = t('title') + ' – ' + G;
+  $$('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+  $$('[data-tp]').forEach(el => el.placeholder = t(el.dataset.tp));
+  $('#lang').textContent = lang === 'ar' ? 'EN' : 'عربي';
+  $('#copy').textContent = t('copy', new Date().getFullYear());
+  renderAll();
+}
+$('#lang').addEventListener('click', () => { lang = lang === 'ar' ? 'en' : 'ar'; try { localStorage.setItem('lang', lang); } catch(e){} applyLang(); });
+
+$('#join').href = CONFIG.JOIN_LINK;
+paintIcons();
+applyLang();
+route();
+load();
+})();
+</script>
+</body>
+</html>
