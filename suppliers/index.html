@@ -511,7 +511,7 @@ const T = {
   need_rate:'اختر عدد النجوم أو اكتب تعليقاً.',busy:'الخدمة مشغولة الآن، حاول بعد دقائق.',neterr:'لم يصل الإرسال. تأكد من الإنترنت وحاول مرة أخرى.',
   not_connected:'الإضافة غير مفعّلة بعد — المشرف يكمل الإعداد.',sending:'جارٍ الإرسال…',
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
-  share_text:s=>`${s}\n\n📒 من دليل موردي الكهرباء — قروب ${G}`,join_short:'للانضمام للقروب:',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
+  share_text:s=>`${s}\n\n📒 من دليل موردي الكهرباء — قروب ${G}`,join_short:'للانضمام للقروب:',join_line:'🔹 للانضمام إلى قروب الواتساب:',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
  en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',byline:`Collected by ${G} group members`,search_ph:'Search: Honeywell, cables, generators…',
   st_sup:n=>`<b>${n}</b> suppliers`,st_cat:n=>`<b>${n}</b> categories`,q_ask:'Ask',q_add:'Add supplier',q_join:'Join group',
   inst_h:'Install on your phone',inst_p:'An icon next to WhatsApp, opens like an app',inst_btn:'Install',inst_ios:'Tap Share ⬆️ then “Add to Home Screen”',
@@ -540,7 +540,7 @@ const T = {
   need_rate:'Pick stars or write a comment.',busy:'Busy right now, try again in a few minutes.',neterr:'Not sent. Check your connection and try again.',
   not_connected:'Adding is not switched on yet — the admin is finishing setup.',sending:'Sending…',
   copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
-  share_text:s=>`${s}\n\n📒 From the Electrical Suppliers Directory — ${G} group`,join_short:'Join the group:',ago_today:'today',ago_days:n=>`${n}d ago`}
+  share_text:s=>`${s}\n\n📒 From the Electrical Suppliers Directory — ${G} group`,join_short:'Join the group:',join_line:'🔹 Join the WhatsApp group:',ago_today:'today',ago_days:n=>`${n}d ago`}
 };
 let lang = 'ar';
 try { lang = localStorage.getItem('lang') || 'ar'; } catch(e){}
@@ -807,12 +807,20 @@ function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req
 
 /* ---------- share ---------- */
 async function share(s){
-  const lines = ['🏢 ' + s.Name + (s.Name_AR ? ' — ' + s.Name_AR : ''), '🗂 ' + catLabel(s) + (s.City ? ' · ' + s.City : '')];
-  if (s.Contacts) lines.push('👤 ' + s.Contacts.replace(/ ; /g, '، '));
-  split(s.Mobiles).forEach(p => lines.push('📱 ' + p));
-  split(s.Phones).forEach(p => lines.push('☎️ ' + p));
-  split(s.Emails).forEach(p => lines.push('✉️ ' + p));
-  const text = t('share_text', lines.join('\n')) + '\n' + CONFIG.SITE_URL + '#s=' + encodeURIComponent(s.ID) + '\n' + t('join_short') + ' ' + CONFIG.JOIN_LINK;
+  const CITY_AR = {'Riyadh':'الرياض','Dammam':'الدمام','Al Khobar':'الخبر','Jeddah':'جدة','Eastern Province':'المنطقة الشرقية','Jubail':'الجبيل',
+    'Al Hasa':'الأحساء','Madinah':'المدينة المنورة','UAE':'الإمارات','China':'الصين','Canada':'كندا','Austria':'النمسا','Dammam, Riyadh, Jeddah':'الدمام، الرياض، جدة'};
+  const CAT_EMOJI = [[/fire|vesda/i,'🔥'],[/lightning|earthing/i,'🌩'],[/^led|lighting|fixture|poles/i,'💡'],[/cctv|camera|access|parking|check in/i,'📹'],
+    [/data|telephony|low current|clock|signage|public address|audio/i,'📡'],[/cable|tray|conduit|trunking|busway/i,'🔌'],
+    [/generator|ups|ats|transformer|substation|rmu|switch ?gear|sbu/i,'⚡'],[/panel|disconnect|wiring|materials|supplies/i,'🔧'],[/./,'🏭']];
+  const emoji = (CAT_EMOJI.find(([re]) => re.test(s.Category || '')) || [, '🏭'])[1];
+  const city = s.City ? (lang === 'ar' ? (CITY_AR[s.City] || s.City) : s.City) : '';
+  const head = ['🏢 ' + s.Name + (s.Name_AR ? ' — ' + s.Name_AR : ''), emoji + ' ' + catLabel(s) + (city ? ' — ' + city : '')];
+  const info = [];
+  if (s.Contacts) info.push('👤 ' + s.Contacts.replace(/ ; /g, '، '));
+  split(s.Mobiles).forEach(p => info.push('📱 ' + p));
+  split(s.Phones).forEach(p => info.push('☎️ ' + p));
+  split(s.Emails).forEach(p => info.push('✉️ ' + p));
+  const text = head.join('\n') + (info.length ? '\n\n' + info.join('\n') : '') + '\n\n' + t('join_line') + '\n' + CONFIG.JOIN_LINK;
   if (navigator.share) { try { await navigator.share({text}); return; } catch(e) { if (e.name === 'AbortError') return; } }
   try { await navigator.clipboard.writeText(text); toast(t('copied')); } catch(e) { prompt('', text); }
 }
