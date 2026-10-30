@@ -157,7 +157,7 @@ svg{display:block}
 /* supplier cards */
 .cards{margin:0 20px;display:grid;gap:10px}
 .sc{background:var(--card);border-radius:var(--r-l);overflow:hidden}
-.sc-head{display:flex;align-items:center;gap:14px;padding:14px;width:100%;border:0;background:none;text-align:start}
+.sc-head{display:flex;align-items:center;gap:12px;padding:14px 16px;width:100%;border:0;background:none;text-align:start}
 .av{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:var(--accent-soft);color:var(--accent)}
 .av svg{width:24px;height:24px}
 .sc-main{flex:1;min-width:0}
@@ -167,10 +167,13 @@ svg{display:block}
 .badge{display:inline-block;font-size:.72rem;font-weight:500;border-radius:999px;padding:1px 9px;margin-inline-start:6px;vertical-align:2px;background:var(--card-2);color:var(--ink-2)}
 .b-off{color:var(--warn)}
 .stars{color:#e3a800;font-size:.82rem;letter-spacing:1px}
-.qa{display:flex;gap:8px;flex-shrink:0}
-.rb{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:0;background:var(--accent-soft);color:var(--accent);text-decoration:none}
+.qa{display:flex;gap:6px;flex-shrink:0;align-self:center}
+.rb{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:0;background:var(--accent-soft);color:var(--accent);text-decoration:none}
 .rb.wa{background:var(--wa);color:#fff}
-.rb svg{width:20px;height:20px}
+.rb svg{width:18px;height:18px}
+.rb.off{opacity:.35;background:var(--card-2);color:var(--ink-3);pointer-events:none}
+.sc-main .who{display:flex;align-items:center;gap:5px;font-size:.88rem;color:var(--ink-2);margin-top:2px}
+.sc-main .who svg{width:14px;height:14px;color:var(--ink-3);flex-shrink:0}
 .detail{display:none;padding:0 16px 16px}
 .sc.open .detail{display:block}
 .dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:.95rem;margin:4px 0 14px;padding-top:14px;border-top:1px solid var(--line)}
@@ -444,6 +447,7 @@ const P = {
  chat:'<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1.1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 11h7M8.5 14.5h4"/>',
  trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
  back:'<path d="M15 6l-6 6 6 6"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
  call:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>',
  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>',
  star:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2L3 9.6l6.2-.9z"/>',
@@ -472,7 +476,7 @@ const paintIcons = (root = document) => root.querySelectorAll('[data-icon]').for
 /* category → icon + colour */
 const CAT_STYLE = [
   [/fire|vesda/i, 'fire'], [/^led|light(ing)?,|lighting|fixture|poles/i, 'bulb'], [/lightning|earthing/i, 'earth'],
-  [/cctv|camera/i, 'camera'], [/access|parking|check in/i, 'shield'],
+  [/cctv|camera/i, 'camera'], [/access control|parking|check in/i, 'shield'],
   [/data|telephony|signage|clock/i, 'net'], [/low current|public address|audio/i, 'wifi'],
   [/substation|switch ?gear|rmu|sbu/i, 'tower'], [/transformer/i, 'transformer'], [/ups/i, 'ups'],
   [/generator|ats/i, 'bolt'], [/cable|tray|conduit|trunking|busway/i, 'cable'],
@@ -511,7 +515,7 @@ const T = {
   need_rate:'اختر عدد النجوم أو اكتب تعليقاً.',busy:'الخدمة مشغولة الآن، حاول بعد دقائق.',neterr:'لم يصل الإرسال. تأكد من الإنترنت وحاول مرة أخرى.',
   not_connected:'الإضافة غير مفعّلة بعد — المشرف يكمل الإعداد.',sending:'جارٍ الإرسال…',
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
-  share_text:s=>`${s}\n\n📒 من دليل موردي الكهرباء — قروب ${G}`,join_short:'للانضمام للقروب:',join_line:'🔹 للانضمام إلى قروب الواتساب:',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
+  share_text:s=>`${s}\n\n📒 من دليل موردي الكهرباء — قروب ${G}`,join_short:'للانضمام للقروب:',join_line:'🔹 للانضمام إلى قروب الواتساب:',share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
  en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',byline:`Collected by ${G} group members`,search_ph:'Search: Honeywell, cables, generators…',
   st_sup:n=>`<b>${n}</b> suppliers`,st_cat:n=>`<b>${n}</b> categories`,q_ask:'Ask',q_add:'Add supplier',q_join:'Join group',
   inst_h:'Install on your phone',inst_p:'An icon next to WhatsApp, opens like an app',inst_btn:'Install',inst_ios:'Tap Share ⬆️ then “Add to Home Screen”',
@@ -540,7 +544,7 @@ const T = {
   need_rate:'Pick stars or write a comment.',busy:'Busy right now, try again in a few minutes.',neterr:'Not sent. Check your connection and try again.',
   not_connected:'Adding is not switched on yet — the admin is finishing setup.',sending:'Sending…',
   copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
-  share_text:s=>`${s}\n\n📒 From the Electrical Suppliers Directory — ${G} group`,join_short:'Join the group:',join_line:'🔹 Join the WhatsApp group:',ago_today:'today',ago_days:n=>`${n}d ago`}
+  share_text:s=>`${s}\n\n📒 From the Electrical Suppliers Directory — ${G} group`,join_short:'Join the group:',join_line:'🔹 Join the WhatsApp group:',share_wa:'Share on WhatsApp',no_wa:'No mobile number',ago_today:'today',ago_days:n=>`${n}d ago`}
 };
 let lang = 'ar';
 try { lang = localStorage.getItem('lang') || 'ar'; } catch(e){}
@@ -656,19 +660,20 @@ function renderCityChips(){
 const stars = n => { const r = Math.round(n); return '★'.repeat(r) + '☆'.repeat(5 - r); };
 const typeLabel = x => ({Manufacturer:t('mfr'), Supplier:t('sup'), Contractor:t('con')}[x] || '');
 function cardHTML(s){
-  const st = catStyle(s.Category), mobs = split(s.Mobiles), phones = split(s.Phones);
+  const mobs = split(s.Mobiles), phones = split(s.Phones);
   const first = tel(mobs[0] || phones[0] || ''), waNum = mobs.map(tel).find(isMobileKSA);
   const rated = (revBy[s.ID] || []).filter(r => r.rating), avg = rated.length ? rated.reduce((a, r) => a + r.rating, 0) / rated.length : 0;
   const inactive = /NOT ACTIVE/i.test(s.Notes || '');
   return `<article class="sc" id="r-${esc(s.ID)}">
     <div class="sc-head" role="button" tabindex="0" aria-expanded="false" data-id="${esc(s.ID)}">
-      <span class="av">${icon(st.ic)}</span>
       <span class="sc-main"><b><bdi>${esc(s.Name)}</bdi>${s.Type === 'Manufacturer' ? `<span class="badge">${t('mfr')}</span>` : ''}${inactive ? `<span class="badge b-off">${t('inactive')}</span>` : ''}</b>
         ${s.Name_AR ? `<span class="ar">${esc(s.Name_AR)}</span>` : ''}
+        ${s.Contacts ? `<span class="who">${icon('user')}<bdi>${esc(split(s.Contacts)[0])}</bdi></span>` : ''}
         <small>${esc([filt.cat ? typeLabel(s.Type) : catLabel(s), s.City].filter(Boolean).join(' · '))}${rated.length ? ` · <span class="stars">${stars(avg)}</span>` : ''}</small></span>
       <span class="qa">
-        ${first ? `<a class="rb" href="tel:+${first}" aria-label="${t('call')}" data-stop>${icon('call')}</a>` : ''}
-        ${waNum ? `<a class="rb wa" href="https://wa.me/${waNum}" target="_blank" rel="noopener" aria-label="${t('whatsapp')}" data-stop>${icon('wa')}</a>` : ''}
+        ${first ? `<a class="rb" href="tel:+${first}" aria-label="${t('call')}" data-stop>${icon('call')}</a>` : `<span class="rb off" aria-hidden="true">${icon('call')}</span>`}
+        ${waNum ? `<a class="rb wa" href="https://wa.me/${waNum}" target="_blank" rel="noopener" aria-label="${t('whatsapp')}" data-stop>${icon('wa')}</a>` : `<span class="rb off" title="${t('no_wa')}" aria-hidden="true">${icon('wa')}</span>`}
+        <button class="rb" type="button" data-share="${esc(s.ID)}" data-stop aria-label="${t('share')}">${icon('share')}</button>
       </span>
     </div>
     <div class="detail"></div>
@@ -686,7 +691,7 @@ function detailHTML(s){
     ${line('email', split(s.Emails).map(e => `<a href="mailto:${esc(e)}" dir="ltr">${esc(e)}</a>`).join('<br>'))}
     ${line('brands', esc(s.Brands))}${line('spec', esc(s.Specialty))}${line('address', esc(s.Address))}${line('notes', esc(notes))}
    </dl>
-   <div class="acts"><button class="btn primary" data-share="${esc(s.ID)}">${icon('share')}${t('share')}</button><button class="btn" data-rate="${esc(s.ID)}">${icon('star')}${t('rate')}</button></div>
+   <div class="acts"><button class="btn primary" data-share="${esc(s.ID)}">${icon('wa')}${t('share_wa')}</button><button class="btn" data-rate="${esc(s.ID)}">${icon('star')}${t('rate')}</button></div>
    <div class="reviews">
     ${rv.length ? rv.slice(-20).reverse().map(r => `<div class="rv">${r.rating ? `<span class="stars">${stars(r.rating)}</span> ` : ''}<b>${esc(r.name || '')}</b> <span class="muted">${esc((r.date || '').slice(0, 10))}</span><div>${esc(r.comment)}</div></div>`).join('') : `<div class="muted">${t('no_reviews')}</div>`}
     <form class="rv-form" data-sid="${esc(s.ID)}" hidden novalidate style="margin-top:10px">
@@ -809,7 +814,7 @@ function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req
 async function share(s){
   const CITY_AR = {'Riyadh':'الرياض','Dammam':'الدمام','Al Khobar':'الخبر','Jeddah':'جدة','Eastern Province':'المنطقة الشرقية','Jubail':'الجبيل',
     'Al Hasa':'الأحساء','Madinah':'المدينة المنورة','UAE':'الإمارات','China':'الصين','Canada':'كندا','Austria':'النمسا','Dammam, Riyadh, Jeddah':'الدمام، الرياض، جدة'};
-  const CAT_EMOJI = [[/fire|vesda/i,'🔥'],[/lightning|earthing/i,'🌩'],[/^led|lighting|fixture|poles/i,'💡'],[/cctv|camera|access|parking|check in/i,'📹'],
+  const CAT_EMOJI = [[/fire|vesda/i,'🔥'],[/lightning|earthing/i,'🌩'],[/^led|lighting|fixture|poles/i,'💡'],[/cctv|camera|access control|parking|check in/i,'📹'],
     [/data|telephony|low current|clock|signage|public address|audio/i,'📡'],[/cable|tray|conduit|trunking|busway/i,'🔌'],
     [/generator|ups|ats|transformer|substation|rmu|switch ?gear|sbu/i,'⚡'],[/panel|disconnect|wiring|materials|supplies/i,'🔧'],[/./,'🏭']];
   const emoji = (CAT_EMOJI.find(([re]) => re.test(s.Category || '')) || [, '🏭'])[1];
@@ -821,8 +826,7 @@ async function share(s){
   split(s.Phones).forEach(p => info.push('☎️ ' + p));
   split(s.Emails).forEach(p => info.push('✉️ ' + p));
   const text = head.join('\n') + (info.length ? '\n\n' + info.join('\n') : '') + '\n\n' + t('join_line') + '\n' + CONFIG.JOIN_LINK;
-  if (navigator.share) { try { await navigator.share({text}); return; } catch(e) { if (e.name === 'AbortError') return; } }
-  try { await navigator.clipboard.writeText(text); toast(t('copied')); } catch(e) { prompt('', text); }
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
 }
 function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
 
@@ -864,6 +868,7 @@ $('#empty-ask').addEventListener('click', () => { $('#rq-text').value = $('#q').
 $('#empty-add').addEventListener('click', () => { $('#a-name').value = $('#q').value.trim(); go('add'); });
 
 document.addEventListener('click', e => {
+  const sh0 = e.target.closest('button[data-share]'); if (sh0) { e.stopPropagation(); return share(byId[sh0.dataset.share]); }
   if (e.target.closest('[data-stop]')) return;
   const head = e.target.closest('.sc-head'); if (head) return toggleCard(head);
   const tile = e.target.closest('[data-cat]'); if (tile) { $('#q').value = ''; return go('list', {cat: tile.dataset.cat}); }
