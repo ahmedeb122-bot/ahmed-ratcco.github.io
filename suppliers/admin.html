@@ -48,6 +48,7 @@ nav{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px so
 nav .wrap{display:flex}
 nav button{flex:1;border:0;background:none;padding:12px 2px;font-weight:600;color:var(--ink-3);border-bottom:3px solid transparent;cursor:pointer}
 nav button[aria-selected=true]{color:var(--navy);border-bottom-color:var(--volt)}
+@media (prefers-color-scheme: dark){nav button[aria-selected=true]{color:var(--volt)}.card h3{color:var(--ink)}}
 .pill{display:inline-block;min-width:22px;padding:0 6px;border-radius:999px;background:var(--warn);color:#fff;font-size:.78rem;line-height:20px}
 .pill.zero{background:var(--rule);color:var(--ink-3)}
 main{padding:14px 0 60px}
