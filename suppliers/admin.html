@@ -82,6 +82,18 @@ label{display:block;font-weight:600;font-size:.88rem;margin:8px 0 3px}
 .stars{color:var(--gold)}
 .toast{position:fixed;bottom:16px;left:16px;right:16px;max-width:520px;margin:auto;z-index:30;background:var(--ink);color:var(--sheet);border-radius:10px;padding:12px 14px;text-align:center}
 .board li{margin:4px 0}
+dl.dl dt{color:var(--ink-3)}
+.warn{background:#fde6e6;color:#8a1d22;border-radius:12px;padding:8px 10px;font-size:.88rem;margin-bottom:10px}
+.batch{border:2px solid var(--volt)}
+.add-l{color:var(--ok);font-weight:600}
+.tagrow{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
+.tagc{background:var(--paper);border-radius:999px;padding:2px 9px;font-size:.78rem;color:var(--ink-2)}
+.pg{background:var(--paper);border-radius:12px;padding:8px;margin-bottom:8px}
+.pg-h{border:0;background:none;font-weight:700;font-size:.88rem;padding:2px 0 6px;color:var(--ink);cursor:pointer}
+.pg-c{display:flex;flex-wrap:wrap;gap:5px}
+.pc{border:1.5px solid var(--rule);background:var(--sheet);border-radius:999px;padding:5px 10px;font-size:.8rem;color:var(--ink-2);cursor:pointer}
+.pc[aria-pressed=true]{background:var(--navy);border-color:var(--navy);color:#fff}
+.toolbar{display:flex;gap:8px;margin-bottom:10px}
 [hidden]{display:none!important}
 @media (max-width:400px){.two{grid-template-columns:1fr}}
 </style>
@@ -118,8 +130,7 @@ label{display:block;font-weight:600;font-size:.88rem;margin:8px 0 3px}
     <section id="tab-pending"></section>
     <section id="tab-requests" hidden></section>
     <section id="tab-all" hidden>
-      <input id="q" type="search" placeholder="ابحث لتعديل أو حذف مورد" autocomplete="off">
-      <div style="height:10px"></div>
+      <div class="toolbar"><input id="q" type="search" placeholder="ابحث لتعديل أو حذف مورد" autocomplete="off"><button class="btn" id="export-all" type="button">⬇️ Excel</button></div>
       <div class="list" id="all-list"></div>
     </section>
   </main>
@@ -131,9 +142,166 @@ label{display:block;font-weight:600;font-size:.88rem;margin:8px 0 3px}
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const split = s => String(s||'').split(/\s*;\s*/).filter(Boolean);
+/*@@SHARED*/
+/* ===== shared: categories + duplicate detection (same code in the site, the admin page and the Google script) ===== */
+// [key (stored), Arabic name, short Arabic, short English]
+const TAXONOMY = [
+  {id: 'power', ar: 'القوى والجهد المتوسط', en: 'Power & MV', icon: 'bolt', cats: [
+    ['Generators & ATS', 'المولدات و ATS', 'المولدات', 'Generators'],
+    ['ATS', 'مفاتيح التحويل الأوتوماتيكي ATS', 'مفاتيح ATS', 'ATS'],
+    ['Transformer', 'المحولات', 'المحولات', 'Transformers'],
+    ['Package Substations & Panel Boards', 'المحطات المدمجة واللوحات', 'المحطات المدمجة', 'Substations'],
+    ['RMU', 'وحدات الحلقة الرئيسية RMU', 'وحدات RMU', 'RMU'],
+    ['Medium Voltage Switch Gear 33KV', 'مفاتيح الجهد المتوسط 33KV', 'مفاتيح 33KV', 'MV switchgear'],
+    ['Switchgear Business Unit / SBU', 'وحدة أعمال المفاتيح SBU', 'وحدة SBU', 'Switchgear SBU'],
+    ['UPS', 'أجهزة UPS', 'أجهزة UPS', 'UPS'],
+    ['Busway', 'مجاري القضبان Busway', 'Busway', 'Busway'],
+    ['Solar & Batteries', 'الطاقة الشمسية والبطاريات', 'الطاقة الشمسية', 'Solar & batteries'],
+  ]},
+  {id: 'panels', ar: 'اللوحات والمفاتيح', en: 'Panels & switches', icon: 'panel', cats: [
+    ['LV & MV Panel Boards', 'لوحات الجهد المنخفض والمتوسط', 'اللوحات الكهربائية', 'Panel boards'],
+    ['Disconnecting Switches', 'مفاتيح الفصل', 'مفاتيح الفصل', 'Disconnect switches'],
+    ['Wiring Devices & Floor Box', 'الأفياش والمفاتيح وصناديق الأرضيات', 'الأفياش والمفاتيح', 'Wiring devices'],
+  ]},
+  {id: 'cables', ar: 'الكابلات والمواد', en: 'Cables & materials', icon: 'cable', cats: [
+    ['Cables', 'الكابلات', 'الكابلات', 'Cables'],
+    ['Cable Accessories (LV & MV)', 'ملحقات الكابلات (جهد منخفض ومتوسط)', 'ملحقات الكابلات', 'Cable accessories'],
+    ['Cable Tray & Accessories', 'حوامل الكابلات وملحقاتها', 'حوامل الكابلات', 'Cable trays'],
+    ['PVC Conduits and Accessories', 'مواسير PVC وملحقاتها', 'مواسير PVC', 'PVC conduits'],
+    ['Under Floor Trunking & Raised Floor Cable Tray', 'مجاري الأرضيات والأرضيات المرتفعة', 'مجاري الأرضيات', 'Floor trunking'],
+    ['Lightning Protection & Earthing', 'الحماية من الصواعق والتأريض', 'الصواعق والتأريض', 'Earthing'],
+    ['Electrical Materials (1ST & 2ND Fix)', 'مواد كهربائية (تأسيس وتشطيب)', 'مواد كهربائية', 'Electrical materials'],
+    ['Electrical Supplies & IT Solutions', 'مستلزمات كهربائية وحلول تقنية', 'مستلزمات وحلول تقنية', 'Supplies & IT'],
+  ]},
+  {id: 'lighting', ar: 'الإنارة', en: 'Lighting', icon: 'bulb', cats: [
+    ['Lighting, Fixtures & Poles', 'الإنارة والكشافات والأعمدة', 'الإنارة والأعمدة', 'Lighting & poles'],
+    ['LED Lights (USA Made)', 'إنارة LED (صنع أمريكي)', 'إنارة LED', 'LED lights'],
+  ]},
+  {id: 'lowcurrent', ar: 'التيار الخفيف', en: 'Low current', icon: 'wifi', cats: [
+    ['Low Current Systems & Cables', 'أنظمة التيار الخفيف وكابلاتها', 'التيار الخفيف', 'Low current'],
+    ['Data & IP Telephony Systems', 'أنظمة البيانات والهاتف الشبكي', 'البيانات والشبكات', 'Data & IP'],
+    ['CCTV System', 'كاميرات المراقبة CCTV', 'كاميرات المراقبة', 'CCTV'],
+    ['Access Control System', 'أنظمة التحكم بالدخول', 'التحكم بالدخول', 'Access control'],
+    ['BMS System', 'أنظمة إدارة المباني BMS', 'أنظمة BMS', 'BMS'],
+    ['Control System (BMS – Integrated)', 'أنظمة التحكم المتكاملة', 'التحكم المتكامل', 'Integrated control'],
+    ['Smart Home / KNX', 'المنازل الذكية KNX', 'المنازل الذكية', 'Smart home / KNX'],
+    ['Public Address System', 'أنظمة النداء العام', 'النداء العام', 'Public address'],
+    ['Audio Visual & Auditorium Systems', 'أنظمة الصوت والصورة والقاعات', 'الصوت والصورة', 'Audio visual'],
+    ['IP CCTV, Audio Visual & Public Address', 'كاميرات شبكية وصوتيات ونداء عام', 'كاميرات وصوتيات', 'IP CCTV & AV'],
+    ['IP Clock Display System', 'أنظمة الساعات الشبكية', 'الساعات الشبكية', 'IP clocks'],
+    ['IP Digital Signage System', 'الشاشات الإعلانية الرقمية', 'الشاشات الرقمية', 'Digital signage'],
+    ['Car Parking System & Gate Barrier System', 'أنظمة المواقف والبوابات', 'المواقف والبوابات', 'Parking & gates'],
+    ['Check In & Check Out System', 'أنظمة الحضور والانصراف', 'الحضور والانصراف', 'Check in/out'],
+  ]},
+  {id: 'fire', ar: 'الحريق والسلامة', en: 'Fire & safety', icon: 'fire', cats: [
+    ['Fire Alarm, VESDA & Fire Protection', 'إنذار الحريق والحماية من الحريق', 'إنذار الحريق', 'Fire alarm'],
+    ['Electrical & Mechanical Works / Safety', 'أعمال كهروميكانيكية وسلامة', 'كهروميكانيك وسلامة', 'E&M / safety'],
+  ]},
+  {id: 'contracting', ar: 'المقاولات والخدمات', en: 'Contracting & services', icon: 'tools', cats: [
+    ['Electrical Contracting', 'مقاولات كهربائية', 'مقاولات كهربائية', 'Electrical contracting'],
+    ['Low Current Contracting', 'مقاولات تيار خفيف', 'مقاولات تيار خفيف', 'Low current contracting'],
+    ['Full MEP Works Contractors', 'مقاولو أعمال MEP كاملة', 'مقاولو MEP', 'MEP contractors'],
+    ['O&M & General Contracting', 'تشغيل وصيانة ومقاولات عامة', 'تشغيل وصيانة', 'O&M'],
+    ['Equipment Rental', 'تأجير المعدات', 'تأجير المعدات', 'Equipment rental'],
+  ]},
+];
+const CAT_INFO = {};
+TAXONOMY.forEach(g => g.cats.forEach(c => { CAT_INFO[c[0]] = {key: c[0], ar: c[1], sar: c[2], sen: c[3], group: g.id}; }));
+
+const CITY_AR = {'Riyadh': 'الرياض', 'Dammam': 'الدمام', 'Al Khobar': 'الخبر', 'Jeddah': 'جدة', 'Eastern Province': 'المنطقة الشرقية',
+  'Jubail': 'الجبيل', 'Al Hasa': 'الأحساء', 'Madinah': 'المدينة المنورة', 'Makkah': 'مكة المكرمة', 'Qassim': 'القصيم', 'Abha': 'أبها',
+  'Tabuk': 'تبوك', 'UAE': 'الإمارات', 'China': 'الصين', 'Canada': 'كندا', 'Austria': 'النمسا', 'Dammam, Riyadh, Jeddah': 'الدمام، الرياض، جدة'};
+
+function splitList(s) {
+  return (Array.isArray(s) ? s : String(s == null ? '' : s).split(/\s*[;؛\n]\s*/)).map(x => String(x).trim()).filter(Boolean);
+}
+function joinList(a) { return a.filter(Boolean).join(' ; '); }
+
+// one key for a phone however it is written: 0501234567 = +966 50 123 4567 = 00966501234567 = (13) 835-2391
+function phoneKey(p) {
+  let d = String(p == null ? '' : p).replace(/ext.*$/i, '').replace(/\D/g, '');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.startsWith('966')) d = d.slice(3);
+  d = d.replace(/^0+/, '');
+  if (d.length === 8 && /^[2-7]/.test(d)) d = '1' + d;   // landline written without its leading 1, e.g. (3) 835-2391
+  return d.length >= 8 ? d : '';
+}
+function emailKey(e) { const m = String(e || '').toLowerCase().match(/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/); return m ? m[0] : ''; }
+const FREE_MAIL = /@(gmail|hotmail|yahoo|outlook|live|icloud|msn|aol|ymail)\./;
+function normText(s) {
+  return String(s || '').toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+const NAME_STOP = new Set(['موسسه', 'co', 'company', 'cos', 'est', 'establishment', 'ltd', 'llc', 'limited', 'trading', 'trade', 'group', 'holding',
+  'factory', 'industries', 'industry', 'industrial', 'the', 'and', 'for', 'of', 'corp', 'corporation', 'inc', 'ksa', 'sa', 'saudi',
+  'شركه', 'مصنع', 'مجموعه', 'للتجاره', 'التجاريه', 'تجاره', 'المحدوده', 'محدوده', 'للمقاولات', 'مقاولات', 'و', 'ذ', 'م', 'م.']);
+function nameKey(n) {
+  const words = normText(String(n || '').replace(/\(.*?\)/g, ' ')).split(' ')
+    .filter(w => w && !NAME_STOP.has(w)).map(w => (w.length > 4 && w.startsWith('ال')) ? w.slice(2) : w).filter(w => w !== 'al' && w !== 'el');
+  let k = words.join('');
+  if (/^al[a-z]{4,}/.test(k)) k = k.slice(2);
+  return k;
+}
+function dice(a, b) {
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const grams = s => { const m = {}; for (let i = 0; i < s.length - 1; i++) { const g = s.slice(i, i + 2); m[g] = (m[g] || 0) + 1; } return m; };
+  const A = grams(a), B = grams(b); let inter = 0, na = 0, nb = 0;
+  Object.keys(A).forEach(g => { na += A[g]; if (B[g]) inter += Math.min(A[g], B[g]); });
+  Object.keys(B).forEach(g => { nb += B[g]; });
+  return na + nb ? (2 * inter) / (na + nb) : 0;
+}
+function supplierKeys(s) {
+  return {
+    phones: splitList((s.Mobiles || '') + ';' + (s.Phones || '')).map(phoneKey).filter(Boolean),
+    emails: splitList(s.Emails).map(emailKey).filter(Boolean),
+    name: nameKey(s.Name), nameAr: nameKey(s.Name_AR),
+  };
+}
+// returns {item, level: 'same' | 'likely', why} or null
+function findDuplicate(cand, list, skipId) {
+  const c = supplierKeys(cand);
+  let likely = null;
+  for (const s of list) {
+    if (!s || s.ID === skipId) continue;
+    const k = s._keys || (s._keys = supplierKeys(s));
+    const p = c.phones.find(x => k.phones.includes(x));
+    if (p) return {item: s, level: 'same', why: 'phone'};
+    if (c.emails.find(x => k.emails.includes(x))) return {item: s, level: 'same', why: 'email'};
+    if (c.name.length >= 3 && (c.name === k.name || c.name === k.nameAr)) return {item: s, level: 'same', why: 'name'};
+    if (c.nameAr.length >= 3 && (c.nameAr === k.name || c.nameAr === k.nameAr)) return {item: s, level: 'same', why: 'name'};
+    if (!likely) {
+      const dom = c.emails.map(e => e.split('@')[1]).find(d => !FREE_MAIL.test('@' + d) && k.emails.some(e => e.endsWith('@' + d)));
+      if (dom) likely = {item: s, level: 'likely', why: 'domain'};
+      else if (c.name.length >= 5 && k.name.length >= 5 && dice(c.name, k.name) >= 0.85) likely = {item: s, level: 'likely', why: 'similar_name'};
+      else if (c.name && k.name && Math.min(c.name.length, k.name.length) >= 4 && (c.name.startsWith(k.name) || k.name.startsWith(c.name))) likely = {item: s, level: 'likely', why: 'similar_name'};
+    }
+  }
+  return likely;
+}
+const LIST_FIELDS = {Mobiles: phoneKey, Phones: phoneKey, Fax: phoneKey, Emails: emailKey, Contacts: normText, Category: x => x, Brands: normText};
+const FILL_FIELDS = ['Name_AR', 'City', 'Address', 'Specialty'];
+// what `src` adds to `target` (only new values). Returns {} when nothing is new.
+function mergeDiff(target, src) {
+  const out = {};
+  Object.keys(LIST_FIELDS).forEach(f => {
+    const keyOf = LIST_FIELDS[f], have = splitList(target[f]), haveKeys = have.map(keyOf);
+    const known = k => f === 'Contacts' ? haveKeys.some(h => h.includes(k) || k.includes(h)) : haveKeys.includes(k);
+    const add = splitList(src[f]).filter(v => { const k = keyOf(v); return k && !known(k) && (haveKeys.push(k), true); });
+    if (add.length) out[f] = joinList(have.concat(add));
+  });
+  FILL_FIELDS.forEach(f => { if (!String(target[f] || '').trim() && String(src[f] || '').trim()) out[f] = String(src[f]).trim(); });
+  if (out.Category) out.Category_AR = catsAr(out.Category);
+  return out;
+}
+function catsAr(cats) { return joinList(splitList(cats).map(c => (CAT_INFO[c] ? CAT_INFO[c].ar : c))); }
+/* ===== end shared ===== */
+
+/*@@END*/
+const catAr = c => CAT_INFO[c] ? CAT_INFO[c].ar : c;
 let PASS = '';
 try { PASS = localStorage.getItem('admin_pass') || ''; } catch(e){}
-let DATA = {pending:[], reviews:[], requests:[], suppliers:[]};
+let DATA = {pending:[], updates:[], reviews:[], requests:[], suppliers:[]};
 let editing = null;
 
 function tel(raw){
@@ -177,7 +345,8 @@ function start(r){
 async function refresh(){ const r = await api('load'); if (r.ok) setData(r); else toast(errText(r)); }
 function setData(r){
   DATA = r;
-  const n = r.pending.length + r.reviews.length;
+  r.updates = r.updates || [];
+  const n = r.pending.length + r.reviews.length + r.updates.length;
   $('#c-pend').textContent = n; $('#c-pend').classList.toggle('zero', !n);
   $('#c-req').textContent = r.requests.length; $('#c-req').classList.toggle('zero', !r.requests.length);
   document.title = (n ? `(${n}) ` : '') + 'لوحة المشرف';
@@ -195,7 +364,9 @@ function supplierCard(s){
   const req = s.Request_ID ? (DATA.requests.find(r => r.ID === s.Request_ID) || {}).Text : '';
   return `<div class="card" id="c-${esc(s.ID)}">
     <h3>${esc(s.Name)}</h3>
-    <div class="sub">${esc([s.Type, s.Category, s.City].filter(Boolean).join(' · '))} · ${esc(s.Date)}</div>
+    <div class="sub">${esc([({Supplier:'مورد',Manufacturer:'مصنع',Contractor:'مقاول'})[s.Type] || s.Type, s.City].filter(Boolean).join(' · '))} · ${esc(s.Date)}</div>
+    <div class="tagrow">${split(s.Category).map(c => `<span class="tagc">${esc(catAr(c))}</span>`).join('')}</div>
+    ${s.Dup_Of ? `<div class="warn">⚠️ قد يكون نفس المورد الموجود: <b>${esc(s.DupName || s.Dup_Of)}</b><div class="acts" style="margin-top:6px"><button class="btn" data-merge="${esc(s.ID)}" data-into="${esc(s.Dup_Of)}">🔗 ادمجه فيه</button></div></div>` : ''}
     ${req ? `<div class="by">ردّ على طلب: «${esc(req)}»</div>` : ''}
     <dl class="dl">
       ${line('الماركات', esc(s.Brands))}${line('التخصص', esc(s.Specialty))}${line('المسؤول', esc(s.Contacts))}
@@ -222,24 +393,53 @@ function reviewCard(r){
       <button class="btn no" data-act="reject" data-sheet="Reviews" data-id="${esc(r.ID)}">❌ رفض</button>
     </div></div>`;
 }
+const FIELD_AR = {Mobiles:'جوال', Phones:'هاتف', Fax:'فاكس', Emails:'إيميل', Contacts:'المسؤول', Category:'تخصصات', Brands:'الماركات', Name_AR:'الاسم بالعربي', City:'المدينة', Address:'العنوان', Specialty:'التفاصيل'};
+function updateCard(u){
+  const lines = Object.keys(u.Data).filter(k => k !== 'Category_AR').map(k => {
+    const keyOf = LIST_FIELDS[k];
+    if (!keyOf) return `<div><span class="add-l">➕ ${FIELD_AR[k] || k}:</span> ${esc(u.Data[k])}</div>`;
+    const have = split(u.Current[k]).map(keyOf);
+    const added = split(u.Data[k]).filter(x => !have.includes(keyOf(x)));
+    return added.length ? `<div><span class="add-l">➕ ${FIELD_AR[k] || k}:</span> ${added.map(x => esc(k === 'Category' ? catAr(x) : x)).join('، ')}</div>` : '';
+  }).join('');
+  return `<div class="card" id="c-${esc(u.ID)}">
+    <h3>🔄 معلومة جديدة لـ: ${esc(u.SupplierName)}</h3>
+    <div class="sub">${esc(u.Date)}</div>
+    ${lines || '<div class="sub">لا جديد فعلياً</div>'}
+    <div class="by" style="margin-top:8px">من: <b>${esc(u.Submitted_By || 'بدون اسم')}</b>${u.Submitter_Phone ? ` · <span class="num">${esc(u.Submitter_Phone)}</span>` : ''}</div>
+    <div class="acts">
+      <button class="btn ok" data-act="approve" data-sheet="Updates" data-id="${esc(u.ID)}">✅ أضفها للبطاقة</button>
+      <button class="btn no" data-act="reject" data-sheet="Updates" data-id="${esc(u.ID)}">❌ رفض</button>
+    </div></div>`;
+}
+function batchCard(b, items){
+  const sup = items.filter(x => !x.Supplier_ID).length, upd = items.length - sup;
+  const by = items[0].Submitted_By || 'عضو';
+  return `<div class="card batch" id="c-${esc(b)}">
+    <h3>📦 قائمة من ${esc(by)}</h3>
+    <p class="sub">${sup} مورد جديد · ${upd} تحديث لموردين موجودين. راجعها بالأسفل، أو اعتمدها كلها مرة واحدة.</p>
+    <div class="acts"><button class="btn ok" data-batch="${esc(b)}">✅ اعتمد القائمة كلها (${items.length})</button></div></div>`;
+}
 function renderPending(){
-  const p = DATA.pending, rv = DATA.reviews;
-  $('#tab-pending').innerHTML = (!p.length && !rv.length)
+  const p = DATA.pending, rv = DATA.reviews, up = DATA.updates;
+  const batches = {};
+  p.concat(up).forEach(x => { if (x.Batch_ID) (batches[x.Batch_ID] = batches[x.Batch_ID] || []).push(x); });
+  $('#tab-pending').innerHTML = (!p.length && !rv.length && !up.length)
     ? `<div class="empty">لا شيء بانتظارك الآن 👌<br><button class="btn ghost" id="reload" style="margin-top:12px">تحديث</button></div>`
-    : p.map(supplierCard).join('') + rv.map(reviewCard).join('') + `<button class="btn ghost" id="reload">تحديث</button>`;
+    : Object.keys(batches).map(b => batchCard(b, batches[b])).join('') + p.map(supplierCard).join('') + up.map(updateCard).join('') + rv.map(reviewCard).join('') + `<button class="btn ghost" id="reload">تحديث</button>`;
 }
 
 /* ---------- edit form ---------- */
-const FIELDS = [['Name','اسم المورد'],['Name_AR','الاسم بالعربي'],['Brands','الماركات'],['Category','التصنيف'],['Type','النوع'],['Specialty','التخصص'],
+const FIELDS = [['Name','اسم المورد'],['Name_AR','الاسم بالعربي'],['Brands','الماركات وأسماء أخرى'],['Type','النوع (Supplier / Manufacturer / Contractor)'],['Specialty','التفاصيل'],
   ['City','المدينة'],['Contacts','المسؤول'],['Mobiles','الجوال (افصل بـ ; )'],['Phones','هاتف المكتب'],['Fax','الفاكس'],['Emails','الإيميل'],['Address','العنوان'],['Notes','ملاحظات']];
 async function openEdit(id, fromAll){
   let s = DATA.pending.find(x => x.ID === id);
   if (!s) { const r = await api('get', {id}); if (!r.ok) return toast(errText(r)); s = r.item; }
-  editing = {id, pending: s.Status === 'pending'};
+  editing = {id, pending: s.Status === 'pending' || !!DATA.pending.find(x => x.ID === id), cats: new Set(split(s.Category))};
   const box = document.createElement('div');
   box.className = 'card'; box.id = 'c-' + id;
   box.innerHTML = `<h3>تعديل: ${esc(s.Name)}</h3>
-    <form id="edit-form">${FIELDS.map(([k, l]) => `<label for="e-${k}">${l}</label><input id="e-${k}" value="${esc(s[k])}" ${/Mobiles|Phones|Fax|Emails/.test(k) ? 'dir="ltr"' : ''}>`).join('')}
+    <form id="edit-form"><label>التخصصات</label><div id="e-cats"></div>${FIELDS.map(([k, l]) => `<label for="e-${k}">${l}</label><input id="e-${k}" value="${esc(s[k])}" ${/Mobiles|Phones|Fax|Emails/.test(k) ? 'dir="ltr"' : ''}>`).join('')}
     <div style="height:12px"></div>
     <div class="acts">
       ${editing.pending ? `<button class="btn ok" type="submit" data-mode="edit_approve">💾 حفظ وموافقة</button>` : `<button class="btn ok" type="submit" data-mode="edit">💾 حفظ</button>`}
@@ -247,13 +447,22 @@ async function openEdit(id, fromAll){
     </div></form>`;
   const old = document.getElementById('c-' + id);
   if (old) old.replaceWith(box); else { const list = $('#tab-' + (fromAll ? 'all' : 'pending')); list.prepend(box); }
+  renderEditCats();
   box.scrollIntoView({block:'start', behavior:'smooth'});
+}
+function renderEditCats(){
+  const el = $('#e-cats'); if (!el || !editing) return;
+  const known = new Set(Object.keys(CAT_INFO));
+  const custom = [...editing.cats].filter(c => !known.has(c));
+  el.innerHTML = TAXONOMY.map(g => `<div class="pg"><button type="button" class="pg-h" data-epg="${g.id}">${esc(g.ar)}</button><div class="pg-c">${g.cats.map(c =>
+    `<button type="button" class="pc" data-ecat="${esc(c[0])}" aria-pressed="${editing.cats.has(c[0])}">${esc(c[2])}</button>`).join('')}</div></div>`).join('')
+    + (custom.length ? `<div class="pg"><div class="pg-h">تخصصات كتبها العضو</div><div class="pg-c">${custom.map(c => `<button type="button" class="pc" data-ecat="${esc(c)}" aria-pressed="true">${esc(c)} ✕</button>`).join('')}</div></div>` : '');
 }
 document.addEventListener('submit', async e => {
   if (e.target.id !== 'edit-form') return;
   e.preventDefault();
   const mode = e.submitter ? e.submitter.dataset.mode : 'edit';
-  const data = {}; FIELDS.forEach(([k]) => data[k] = $('#e-' + k).value.trim());
+  const data = {}; FIELDS.forEach(([k]) => data[k] = $('#e-' + k).value.trim()); data.Category = [...editing.cats];
   e.submitter && (e.submitter.disabled = true);
   const r = await api(mode, {sheet:'Suppliers', id:editing.id, data});
   if (!r.ok) { e.submitter && (e.submitter.disabled = false); return toast(errText(r)); }
@@ -278,9 +487,9 @@ function renderRequests(){
 const norm = s => String(s||'').toLowerCase().replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
 function renderAll(){
   const q = norm($('#q').value.trim());
-  const list = DATA.suppliers.filter(s => !q || norm([s.Name, s.Name_AR, s.Category, s.City, s.Brands, s.Mobiles, s.ID].join(' ')).includes(q));
+  const list = DATA.suppliers.filter(s => !q || norm([s.Name, s.Name_AR, s.Category, s.Category_AR, s.City, s.Brands, s.Mobiles, s.ID].join(' ')).includes(q));
   $('#all-list').innerHTML = list.slice(0, 80).map(s => `<div class="row ${s.Status === 'deleted' ? 'del' : ''}" id="c-${esc(s.ID)}">
-      <div><b>${esc(s.Name)} ${s.Status === 'deleted' ? '<span class="tag">محذوف</span>' : ''}</b><span class="sub">${esc([s.Category, s.City].filter(Boolean).join(' · '))}</span></div>
+      <div><b>${esc(s.Name)} ${s.Status === 'deleted' ? '<span class="tag">محذوف</span>' : ''}</b><span class="sub">${esc([split(s.Category).slice(0, 2).map(c => CAT_INFO[c] ? CAT_INFO[c].sar : c).join('، '), s.City].filter(Boolean).join(' · '))}</span></div>
       <div class="acts">${s.Status === 'deleted'
         ? `<button class="btn" data-act="restore" data-sheet="Suppliers" data-id="${esc(s.ID)}">↩️ إرجاع</button>`
         : `<button class="btn ghost" data-edit-all="${esc(s.ID)}">✏️</button><button class="btn no" data-act="delete" data-sheet="Suppliers" data-id="${esc(s.ID)}" aria-label="حذف">🗑</button>`}</div>
@@ -298,6 +507,11 @@ document.addEventListener('click', async e => {
     ['pending','requests','all'].forEach(n => $('#tab-' + n).hidden = n !== tab.dataset.tab); return; }
   if (e.target.closest('#reload')) return refresh();
   if (e.target.closest('#cancel-edit')) { editing = null; return refresh(); }
+  const ec = e.target.closest('[data-ecat]'); if (ec && editing) { const k = ec.dataset.ecat; editing.cats.has(k) ? editing.cats.delete(k) : editing.cats.add(k); return renderEditCats(); }
+  const eg = e.target.closest('[data-epg]'); if (eg && editing) { const g = TAXONOMY.find(x => x.id === eg.dataset.epg); const all = g.cats.every(c => editing.cats.has(c[0])); g.cats.forEach(c => all ? editing.cats.delete(c[0]) : editing.cats.add(c[0])); return renderEditCats(); }
+  const bt = e.target.closest('[data-batch]'); if (bt) { if (!confirm('اعتماد القائمة كلها؟')) return; bt.disabled = true; const r = await api('approve_batch', {batch: bt.dataset.batch}); if (!r.ok) { bt.disabled = false; return toast(errText(r)); } toast('تم اعتماد ' + r.count + ' ✅'); return refresh(); }
+  const mg = e.target.closest('[data-merge]'); if (mg) { if (!confirm('دمج هذا المورد في الموجود؟ تُضاف بياناته الجديدة لبطاقته.')) return; mg.disabled = true; const r = await api('merge', {id: mg.dataset.merge, into: mg.dataset.into}); if (!r.ok) { mg.disabled = false; return toast(errText(r)); } toast('تم الدمج ✅'); return refresh(); }
+  if (e.target.closest('#export-all')) return exportAll();
   const ed = e.target.closest('[data-edit]'); if (ed) return openEdit(ed.dataset.edit, false);
   const ea = e.target.closest('[data-edit-all]'); if (ea) return openEdit(ea.dataset.editAll, true);
   const b = e.target.closest('[data-act]'); if (!b) return;
@@ -316,6 +530,26 @@ document.addEventListener('click', async e => {
   }
   refresh();
 });
+
+let xlsxP = null;
+function loadXLSX(){
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return xlsxP || (xlsxP = new Promise((ok, no) => { const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; sc.onload = () => ok(window.XLSX); sc.onerror = () => { xlsxP = null; no(); }; document.head.appendChild(sc); }));
+}
+async function exportAll(){
+  const b = $('#export-all'); b.disabled = true;
+  const r = await api('export'); if (!r.ok) { b.disabled = false; return toast(errText(r)); }
+  let X; try { X = await loadXLSX(); } catch(e) { b.disabled = false; return toast('تعذّر تحميل مكتبة Excel'); }
+  const cols = [['ID','الرقم'],['Name','اسم الشركة'],['Name_AR','الاسم بالعربي'],['Type','النوع'],['Category_AR','التخصصات'],['City','المدينة'],['Contacts','المسؤول'],
+    ['Mobiles','الجوال'],['Phones','الهاتف'],['Fax','الفاكس'],['Emails','الإيميل'],['Brands','الماركات وأسماء أخرى'],['Specialty','التفاصيل'],['Address','العنوان'],['Notes','ملاحظات'],['Submitted_By','أضافه'],['Date','التاريخ']];
+  const rows = r.suppliers.map(s => cols.map(([k]) => String(s[k] || '').replace(/ ; /g, ' / ')));
+  const ws = X.utils.aoa_to_sheet([['دليل موردي الكهرباء – قروب Elec in KSA · نسخة كاملة ' + new Date().toISOString().slice(0, 10)], [], cols.map(c => c[1])].concat(rows));
+  ws['!cols'] = cols.map(() => ({wch: 22})); ws['!views'] = [{RTL: true}];
+  const wb = X.utils.book_new(); wb.Workbook = {Views: [{RTL: true}]}; X.utils.book_append_sheet(wb, ws, 'Suppliers');
+  X.writeFile(wb, 'Elec-in-KSA-all-suppliers-' + new Date().toISOString().slice(0, 10) + '.xlsx');
+  b.disabled = false; toast('تم تجهيز الملف ✅ (' + rows.length + ' شركة)');
+}
 
 if (PASS) api('load').then(r => { if (r.ok) start(r); else { try { localStorage.removeItem('admin_pass'); } catch(e){} } });
 })();

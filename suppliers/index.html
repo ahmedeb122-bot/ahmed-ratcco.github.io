@@ -256,6 +256,44 @@ footer p{margin:0 0 6px}
 .nav .plus .pi svg{width:24px;height:24px}
 .nav .dotn{position:absolute;top:0;inset-inline-end:calc(50% - 20px);min-width:18px;height:18px;border-radius:9px;background:var(--warn);color:#fff;font-size:.68rem;font-weight:700;display:grid;place-items:center;padding:0 5px}
 
+/* v2: mode switch, picker, easy add, bulk */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--card);border-radius:var(--r-m);padding:4px;margin-top:12px}
+.seg button{border:0;background:none;border-radius:12px;padding:10px 8px;font-weight:500;font-size:.92rem;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:8px}
+.seg button svg{width:19px;height:19px}
+.seg button[aria-selected=true],.seg button[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
+.seg.small{grid-template-columns:repeat(3,1fr);background:var(--card-2);margin-top:0}
+.seg.small button{padding:9px 4px;font-size:.88rem}
+.chips.wrap{flex-wrap:wrap;overflow:visible;padding:0 0 8px}
+.chip.on{background:var(--accent);color:var(--on-accent)}
+.picker{display:grid;gap:10px}
+.pg{background:var(--card-2);border-radius:var(--r-m);padding:10px}
+.pg-h{display:flex;align-items:center;gap:8px;border:0;background:none;width:100%;padding:2px 0 8px;font-weight:700;font-size:.92rem;color:var(--ink);text-align:start}
+.pg-h svg{width:18px;height:18px;color:var(--accent)}
+.pg-h .n{margin-inline-start:auto;font-weight:500;font-size:.78rem;color:var(--ink-3)}
+.pg-c{display:flex;flex-wrap:wrap;gap:6px}
+.pc{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:.84rem;color:var(--ink-2)}
+.pc[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.fast{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 20px 12px}
+.fastb{border:0;background:var(--card);border-radius:var(--r-m);padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.84rem;font-weight:500;color:var(--ink)}
+.fastb svg{width:22px;height:22px;color:var(--accent)}
+.dup{border-radius:var(--r-m);padding:12px 14px;margin:-4px 0 14px;font-size:.9rem;background:var(--volt);color:#121212}
+.dup.likely{background:var(--accent-soft);color:var(--ink)}
+.dup b{font-weight:700}
+.dup button{border:0;background:rgba(0,0,0,.12);border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:500;margin-top:8px;color:inherit}
+.more-d{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:4px 0 14px;padding:4px 0}
+.more-d summary{cursor:pointer;padding:10px 0;font-weight:500;color:var(--accent)}
+.sums{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 20px 12px}
+.sums div{background:var(--card);border-radius:var(--r-m);padding:10px 6px;text-align:center;font-size:.78rem;color:var(--ink-2)}
+.sums b{display:block;font-size:1.3rem;color:var(--ink)}
+.brows{margin:0 20px;background:var(--card);border-radius:var(--r-l);overflow:hidden}
+.br{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.88rem}
+.br:last-child{border-bottom:0}
+.br .st{flex-shrink:0;width:22px;text-align:center}
+.br b{display:block;font-weight:500;overflow-wrap:anywhere}
+.br small{color:var(--ink-3)}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.tagc{background:var(--card-2);border-radius:999px;padding:2px 10px;font-size:.78rem;color:var(--ink-2)}
+#export[hidden]{display:none}
 .toast{position:fixed;bottom:calc(var(--nav-h) + 24px);left:20px;right:20px;max-width:500px;margin:auto;z-index:30;background:var(--ink);color:var(--bg);border-radius:var(--r-m);padding:13px 16px;text-align:center;font-size:.92rem}
 [hidden]{display:none!important}
 @media (max-width:370px){.tiles{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.hello{font-size:1.5rem}}
@@ -281,6 +319,10 @@ footer p{margin:0 0 6px}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q-home" type="search" enterkeyhint="search" autocomplete="off" data-tp="search_ph" placeholder="ابحث في الدليل" aria-label="Search">
     </label>
+    <div class="seg" role="tablist" aria-label="mode">
+      <button type="button" role="tab" data-mode="sup" aria-selected="true"><span data-icon="box"></span><span data-t="mode_sup">الموردون والمصانع</span></button>
+      <button type="button" role="tab" data-mode="con" aria-selected="false"><span data-icon="tools"></span><span data-t="mode_con">المقاولون</span></button>
+    </div>
   </div>
 
   <div class="install" id="install" hidden>
@@ -295,6 +337,7 @@ footer p{margin:0 0 6px}
     <div class="quick">
       <button class="qp" type="button" data-go="requests"><span data-icon="chat"></span><span data-t="q_ask">اطلب مورداً</span></button>
       <button class="qp" type="button" data-go="add"><span data-icon="plus"></span><span data-t="q_add">أضف مورداً</span></button>
+      <button class="qp" type="button" data-go="bulk"><span data-icon="sheet"></span><span data-t="q_bulk">رفع قائمة Excel</span></button>
       <button class="qp" type="button" data-go="board"><span data-icon="trophy"></span><span data-t="n_board">المساهمون</span></button>
       <a class="qp wa" id="join" target="_blank" rel="noopener"><span data-icon="wa"></span><span data-t="q_join">انضم للقروب</span></a>
     </div>
@@ -309,7 +352,7 @@ footer p{margin:0 0 6px}
   </div>
 
   <div class="sec">
-    <div class="sec-h"><h2 data-t="cats_h">استكشف التصنيفات</h2><button class="see" type="button" id="more-cats"><span id="more-cats-t" data-t="see_all_cats">عرض الكل</span><span data-icon="back"></span></button></div>
+    <div class="sec-h"><h2 data-t="cats_h">استكشف التصنيفات</h2><button class="see" type="button" data-go="list" data-all="1"><span data-t="see_all_cats">عرض الكل</span><span data-icon="back"></span></button></div>
     <div class="tiles" id="tiles"></div>
   </div>
 
@@ -329,12 +372,14 @@ footer p{margin:0 0 6px}
   <div class="topbar">
     <button class="back" data-go="home" aria-label="back" data-icon="back"></button>
     <h2 id="list-title" data-t="all_sup">كل الموردين</h2>
+    <button class="back" id="export" type="button" aria-label="Excel" data-icon="download"></button>
   </div>
   <div class="list-tools">
     <label class="sbox">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" enterkeyhint="search" autocomplete="off" data-tp="search_ph" placeholder="ابحث" aria-label="Search">
     </label>
+    <div class="chips" id="cat-chips" hidden></div>
     <div class="chips" id="city-chips"></div>
   </div>
   <div class="count" id="count" aria-live="polite"></div>
@@ -385,37 +430,80 @@ footer p{margin:0 0 6px}
 <!-- ================= ADD ================= -->
 <section class="view" id="v-add" hidden>
   <div class="topbar"><button class="back" data-go="home" aria-label="back" data-icon="back"></button><h2 data-t="add_h">أضف مورداً</h2></div>
+  <div class="fast">
+    <button type="button" class="fastb" id="b-paste"><span data-icon="clip"></span><span data-t="fast_paste">الصق رسالة</span></button>
+    <button type="button" class="fastb" id="b-vcf"><span data-icon="user"></span><span data-t="fast_vcf">من جهات الاتصال</span></button>
+    <button type="button" class="fastb" data-go="bulk"><span data-icon="sheet"></span><span data-t="fast_bulk">رفع قائمة</span></button>
+    <input type="file" id="vcf-file" accept=".vcf,text/vcard,text/x-vcard" hidden>
+  </div>
+  <div class="panel" id="paste-box" hidden>
+    <p data-t="paste_p">الصق هنا رسالة المورد أو توقيع الإيميل أو بطاقة العمل، وسنستخرج الاسم والأرقام والإيميل تلقائياً.</p>
+    <div class="f"><textarea id="paste-text" rows="5" data-tp="paste_ph" placeholder="مثال:&#10;شركة النور للكابلات&#10;م. أحمد – 0501234567&#10;sales@alnoor.com – الدمام"></textarea></div>
+    <button type="button" class="btn primary" id="paste-go" data-t="paste_go">استخرج البيانات</button>
+  </div>
   <form class="panel" id="f-add" novalidate>
-    <p data-t="add_p">يظهر المورد للجميع بعد موافقة المشرف. الحقول المعلّمة بـ * مطلوبة.</p>
+    <p class="muted" data-t="add_p">يظهر للجميع بعد موافقة المشرف. ثلاث خانات فقط مطلوبة.</p>
     <div class="note" id="answering" hidden></div>
-    <div class="f"><label for="a-name"><span data-t="f_name">اسم الشركة أو المورد</span> *</label><input id="a-name" type="text" maxlength="120"></div>
-    <div class="f"><label for="a-brands"><span data-t="f_brands">الماركات التي يوردها</span> <span class="h" data-t="f_brands_h">(مثل Honeywell, Bosch)</span></label><input id="a-brands" type="text" maxlength="200" dir="ltr"></div>
-    <div class="two">
-      <div class="f"><label for="a-cat" data-t="f_cat">التصنيف</label><select id="a-cat"></select></div>
-      <div class="f"><label for="a-type" data-t="f_type">النوع</label><select id="a-type"><option value="Supplier" data-t="t_sup">مورد / وكيل</option><option value="Manufacturer" data-t="t_mfr">مصنع</option><option value="Contractor" data-t="t_con">مقاول</option></select></div>
+    <div class="note" id="filled" hidden></div>
+    <div class="f"><label for="a-name"><span data-t="f_name">اسم الشركة أو المورد</span> *</label><input id="a-name" type="text" maxlength="120" autocomplete="off"></div>
+    <div class="dup" id="dup" hidden></div>
+    <div class="f"><label for="a-mob"><span data-t="f_mob">رقم الجوال أو الهاتف</span> *</label><input id="a-mob" type="tel" maxlength="200" dir="ltr" placeholder="05XXXXXXXX" autocomplete="off"><span class="h" data-t="f_mob_h">أكثر من رقم؟ افصل بينها بفاصلة</span></div>
+    <div class="f"><label data-t="f_type">النوع</label>
+      <div class="seg small" id="a-type"><button type="button" data-v="Supplier" aria-pressed="true" data-t="t_sup">مورد / وكيل</button><button type="button" data-v="Manufacturer" aria-pressed="false" data-t="t_mfr">مصنع</button><button type="button" data-v="Contractor" aria-pressed="false" data-t="t_con">مقاول</button></div>
     </div>
-    <div class="f"><label for="a-spec" data-t="f_spec">المنتجات أو التخصص</label><input id="a-spec" type="text" maxlength="200"></div>
-    <div class="two">
+    <div class="f"><label><span data-t="f_cats">التخصصات</span> * <span class="h" id="cat-count"></span></label>
+      <p class="h" data-t="f_cats_h">اختر كل ما تعمل فيه الشركة. اضغط اسم المجموعة لاختيارها كلها.</p>
+      <div id="cat-picker" class="picker"></div>
+    </div>
+    <div class="f"><label data-t="city">المدينة</label>
+      <div class="chips wrap" id="a-city-chips"></div>
+      <input id="a-city" type="text" maxlength="60" data-tp="city_other" placeholder="مدينة أخرى">
+    </div>
+    <details class="more-d" id="more-d">
+      <summary data-t="more_details">تفاصيل أكثر (اختياري)</summary>
       <div class="f"><label for="a-contact" data-t="f_contact">اسم الشخص المسؤول</label><input id="a-contact" type="text" maxlength="200"></div>
-      <div class="f"><label for="a-city" data-t="city">المدينة</label><input id="a-city" type="text" maxlength="60"></div>
-    </div>
-    <div class="two">
-      <div class="f"><label for="a-mob"><span data-t="f_mob">الجوال / واتساب</span> *</label><input id="a-mob" type="tel" maxlength="200" dir="ltr" placeholder="05XXXXXXXX"></div>
+      <div class="f"><label for="a-email" data-t="f_email">الإيميل</label><input id="a-email" type="email" maxlength="250" dir="ltr"></div>
       <div class="f"><label for="a-tel" data-t="f_tel">هاتف المكتب</label><input id="a-tel" type="tel" maxlength="200" dir="ltr"></div>
-    </div>
-    <div class="f"><label for="a-email" data-t="f_email">الإيميل</label><input id="a-email" type="email" maxlength="250" dir="ltr"></div>
-    <div class="f"><label for="a-addr" data-t="f_addr">العنوان</label><input id="a-addr" type="text" maxlength="250"></div>
-    <div class="f"><label for="a-notes" data-t="f_notes">ملاحظات</label><input id="a-notes" type="text" maxlength="300"></div>
-    <div class="note" data-t="why_phone">اكتب اسمك ورقمك ليُحسب كل ما تضيفه باسمك في لوحة الشرف. الرقم اختياري ولا يظهر لأحد.</div>
+      <div class="f"><label for="a-brands"><span data-t="f_brands">الماركات التي يوردها</span> <span class="h" data-t="f_brands_h">(مثل Honeywell, Bosch)</span></label><input id="a-brands" type="text" maxlength="300" dir="ltr"></div>
+      <div class="f"><label for="a-spec" data-t="f_spec">المنتجات أو التخصص بالتفصيل</label><input id="a-spec" type="text" maxlength="200"></div>
+      <div class="f"><label for="a-addr" data-t="f_addr">العنوان</label><input id="a-addr" type="text" maxlength="250"></div>
+      <div class="f"><label for="a-notes" data-t="f_notes">ملاحظات</label><input id="a-notes" type="text" maxlength="300"></div>
+    </details>
     <div class="two">
       <div class="f"><label for="a-by" data-t="your_name">اسمك</label><input id="a-by" type="text" maxlength="60" autocomplete="name"></div>
       <div class="f"><label for="a-byph"><span data-t="your_phone">رقمك</span> <span class="h" data-t="optional">(اختياري)</span></label><input id="a-byph" type="tel" maxlength="30" dir="ltr"></div>
     </div>
     <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-    <p class="muted" data-t="mob_or">* يكفي رقم واحد أو إيميل.</p>
     <button class="btn primary block" type="submit" data-t="add_send">أرسل للمراجعة</button>
     <div id="a-msg" aria-live="polite"></div>
   </form>
+</section>
+
+<!-- ================= BULK ================= -->
+<section class="view" id="v-bulk" hidden>
+  <div class="topbar"><button class="back" data-go="add" aria-label="back" data-icon="back"></button><h2 data-t="bulk_h">رفع قائمة موردين</h2></div>
+  <div class="panel">
+    <h3 data-t="bulk_h2">عندك قائمة؟ ارفعها دفعة واحدة</h3>
+    <p data-t="bulk_p">ارفع ملف Excel أو CSV بأي ترتيب أعمدة. نتعرف على الأعمدة تلقائياً، ونستبعد الموردين الموجودين، ونعرض لك النتيجة قبل الإرسال.</p>
+    <div class="acts">
+      <label class="btn primary" for="bulk-file"><span data-icon="upload"></span><span data-t="bulk_pick">اختر الملف</span></label>
+      <button type="button" class="btn" id="bulk-tpl"><span data-icon="download"></span><span data-t="bulk_tpl">تحميل القالب</span></button>
+    </div>
+    <input type="file" id="bulk-file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv" hidden>
+    <div id="bulk-msg" aria-live="polite"></div>
+  </div>
+  <div id="bulk-preview" hidden>
+    <div class="sums" id="bulk-sums"></div>
+    <div class="panel">
+      <div class="two">
+        <div class="f"><label for="bk-by" data-t="your_name">اسمك</label><input id="bk-by" type="text" maxlength="60" autocomplete="name"></div>
+        <div class="f"><label for="bk-byph"><span data-t="your_phone">رقمك</span> <span class="h" data-t="optional">(اختياري)</span></label><input id="bk-byph" type="tel" maxlength="30" dir="ltr"></div>
+      </div>
+      <button type="button" class="btn primary block" id="bulk-send"></button>
+      <div id="bulk-res" aria-live="polite"></div>
+    </div>
+    <div class="brows" id="bulk-rows"></div>
+  </div>
 </section>
 
 </div>
@@ -423,7 +511,7 @@ footer p{margin:0 0 6px}
 <nav class="nav" aria-label="main">
   <div class="nav-in">
     <button data-go="home" aria-current="page"><span data-icon="home"></span><span data-t="n_home">الرئيسية</span></button>
-    <button data-go="list"><span data-icon="list"></span><span data-t="n_list">الموردون</span></button>
+    <button data-go="list" data-all="1"><span data-icon="list"></span><span data-t="n_list">الدليل</span></button>
     <button data-go="add" class="plus" aria-label="add"><span class="pi" data-icon="plus"></span></button>
     <button data-go="requests"><span data-icon="chat"></span><span data-t="n_req">الطلبات</span><span class="dotn" id="n-req" hidden></span></button>
     <button data-go="board"><span data-icon="trophy"></span><span data-t="n_board">المساهمون</span></button>
@@ -437,6 +525,163 @@ const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const G = CONFIG.GROUP_NAME;
+
+/*@@SHARED*/
+/* ===== shared: categories + duplicate detection (same code in the site, the admin page and the Google script) ===== */
+// [key (stored), Arabic name, short Arabic, short English]
+const TAXONOMY = [
+  {id: 'power', ar: 'القوى والجهد المتوسط', en: 'Power & MV', icon: 'bolt', cats: [
+    ['Generators & ATS', 'المولدات و ATS', 'المولدات', 'Generators'],
+    ['ATS', 'مفاتيح التحويل الأوتوماتيكي ATS', 'مفاتيح ATS', 'ATS'],
+    ['Transformer', 'المحولات', 'المحولات', 'Transformers'],
+    ['Package Substations & Panel Boards', 'المحطات المدمجة واللوحات', 'المحطات المدمجة', 'Substations'],
+    ['RMU', 'وحدات الحلقة الرئيسية RMU', 'وحدات RMU', 'RMU'],
+    ['Medium Voltage Switch Gear 33KV', 'مفاتيح الجهد المتوسط 33KV', 'مفاتيح 33KV', 'MV switchgear'],
+    ['Switchgear Business Unit / SBU', 'وحدة أعمال المفاتيح SBU', 'وحدة SBU', 'Switchgear SBU'],
+    ['UPS', 'أجهزة UPS', 'أجهزة UPS', 'UPS'],
+    ['Busway', 'مجاري القضبان Busway', 'Busway', 'Busway'],
+    ['Solar & Batteries', 'الطاقة الشمسية والبطاريات', 'الطاقة الشمسية', 'Solar & batteries'],
+  ]},
+  {id: 'panels', ar: 'اللوحات والمفاتيح', en: 'Panels & switches', icon: 'panel', cats: [
+    ['LV & MV Panel Boards', 'لوحات الجهد المنخفض والمتوسط', 'اللوحات الكهربائية', 'Panel boards'],
+    ['Disconnecting Switches', 'مفاتيح الفصل', 'مفاتيح الفصل', 'Disconnect switches'],
+    ['Wiring Devices & Floor Box', 'الأفياش والمفاتيح وصناديق الأرضيات', 'الأفياش والمفاتيح', 'Wiring devices'],
+  ]},
+  {id: 'cables', ar: 'الكابلات والمواد', en: 'Cables & materials', icon: 'cable', cats: [
+    ['Cables', 'الكابلات', 'الكابلات', 'Cables'],
+    ['Cable Accessories (LV & MV)', 'ملحقات الكابلات (جهد منخفض ومتوسط)', 'ملحقات الكابلات', 'Cable accessories'],
+    ['Cable Tray & Accessories', 'حوامل الكابلات وملحقاتها', 'حوامل الكابلات', 'Cable trays'],
+    ['PVC Conduits and Accessories', 'مواسير PVC وملحقاتها', 'مواسير PVC', 'PVC conduits'],
+    ['Under Floor Trunking & Raised Floor Cable Tray', 'مجاري الأرضيات والأرضيات المرتفعة', 'مجاري الأرضيات', 'Floor trunking'],
+    ['Lightning Protection & Earthing', 'الحماية من الصواعق والتأريض', 'الصواعق والتأريض', 'Earthing'],
+    ['Electrical Materials (1ST & 2ND Fix)', 'مواد كهربائية (تأسيس وتشطيب)', 'مواد كهربائية', 'Electrical materials'],
+    ['Electrical Supplies & IT Solutions', 'مستلزمات كهربائية وحلول تقنية', 'مستلزمات وحلول تقنية', 'Supplies & IT'],
+  ]},
+  {id: 'lighting', ar: 'الإنارة', en: 'Lighting', icon: 'bulb', cats: [
+    ['Lighting, Fixtures & Poles', 'الإنارة والكشافات والأعمدة', 'الإنارة والأعمدة', 'Lighting & poles'],
+    ['LED Lights (USA Made)', 'إنارة LED (صنع أمريكي)', 'إنارة LED', 'LED lights'],
+  ]},
+  {id: 'lowcurrent', ar: 'التيار الخفيف', en: 'Low current', icon: 'wifi', cats: [
+    ['Low Current Systems & Cables', 'أنظمة التيار الخفيف وكابلاتها', 'التيار الخفيف', 'Low current'],
+    ['Data & IP Telephony Systems', 'أنظمة البيانات والهاتف الشبكي', 'البيانات والشبكات', 'Data & IP'],
+    ['CCTV System', 'كاميرات المراقبة CCTV', 'كاميرات المراقبة', 'CCTV'],
+    ['Access Control System', 'أنظمة التحكم بالدخول', 'التحكم بالدخول', 'Access control'],
+    ['BMS System', 'أنظمة إدارة المباني BMS', 'أنظمة BMS', 'BMS'],
+    ['Control System (BMS – Integrated)', 'أنظمة التحكم المتكاملة', 'التحكم المتكامل', 'Integrated control'],
+    ['Smart Home / KNX', 'المنازل الذكية KNX', 'المنازل الذكية', 'Smart home / KNX'],
+    ['Public Address System', 'أنظمة النداء العام', 'النداء العام', 'Public address'],
+    ['Audio Visual & Auditorium Systems', 'أنظمة الصوت والصورة والقاعات', 'الصوت والصورة', 'Audio visual'],
+    ['IP CCTV, Audio Visual & Public Address', 'كاميرات شبكية وصوتيات ونداء عام', 'كاميرات وصوتيات', 'IP CCTV & AV'],
+    ['IP Clock Display System', 'أنظمة الساعات الشبكية', 'الساعات الشبكية', 'IP clocks'],
+    ['IP Digital Signage System', 'الشاشات الإعلانية الرقمية', 'الشاشات الرقمية', 'Digital signage'],
+    ['Car Parking System & Gate Barrier System', 'أنظمة المواقف والبوابات', 'المواقف والبوابات', 'Parking & gates'],
+    ['Check In & Check Out System', 'أنظمة الحضور والانصراف', 'الحضور والانصراف', 'Check in/out'],
+  ]},
+  {id: 'fire', ar: 'الحريق والسلامة', en: 'Fire & safety', icon: 'fire', cats: [
+    ['Fire Alarm, VESDA & Fire Protection', 'إنذار الحريق والحماية من الحريق', 'إنذار الحريق', 'Fire alarm'],
+    ['Electrical & Mechanical Works / Safety', 'أعمال كهروميكانيكية وسلامة', 'كهروميكانيك وسلامة', 'E&M / safety'],
+  ]},
+  {id: 'contracting', ar: 'المقاولات والخدمات', en: 'Contracting & services', icon: 'tools', cats: [
+    ['Electrical Contracting', 'مقاولات كهربائية', 'مقاولات كهربائية', 'Electrical contracting'],
+    ['Low Current Contracting', 'مقاولات تيار خفيف', 'مقاولات تيار خفيف', 'Low current contracting'],
+    ['Full MEP Works Contractors', 'مقاولو أعمال MEP كاملة', 'مقاولو MEP', 'MEP contractors'],
+    ['O&M & General Contracting', 'تشغيل وصيانة ومقاولات عامة', 'تشغيل وصيانة', 'O&M'],
+    ['Equipment Rental', 'تأجير المعدات', 'تأجير المعدات', 'Equipment rental'],
+  ]},
+];
+const CAT_INFO = {};
+TAXONOMY.forEach(g => g.cats.forEach(c => { CAT_INFO[c[0]] = {key: c[0], ar: c[1], sar: c[2], sen: c[3], group: g.id}; }));
+
+const CITY_AR = {'Riyadh': 'الرياض', 'Dammam': 'الدمام', 'Al Khobar': 'الخبر', 'Jeddah': 'جدة', 'Eastern Province': 'المنطقة الشرقية',
+  'Jubail': 'الجبيل', 'Al Hasa': 'الأحساء', 'Madinah': 'المدينة المنورة', 'Makkah': 'مكة المكرمة', 'Qassim': 'القصيم', 'Abha': 'أبها',
+  'Tabuk': 'تبوك', 'UAE': 'الإمارات', 'China': 'الصين', 'Canada': 'كندا', 'Austria': 'النمسا', 'Dammam, Riyadh, Jeddah': 'الدمام، الرياض، جدة'};
+
+function splitList(s) {
+  return (Array.isArray(s) ? s : String(s == null ? '' : s).split(/\s*[;؛\n]\s*/)).map(x => String(x).trim()).filter(Boolean);
+}
+function joinList(a) { return a.filter(Boolean).join(' ; '); }
+
+// one key for a phone however it is written: 0501234567 = +966 50 123 4567 = 00966501234567 = (13) 835-2391
+function phoneKey(p) {
+  let d = String(p == null ? '' : p).replace(/ext.*$/i, '').replace(/\D/g, '');
+  if (d.startsWith('00')) d = d.slice(2);
+  if (d.startsWith('966')) d = d.slice(3);
+  d = d.replace(/^0+/, '');
+  if (d.length === 8 && /^[2-7]/.test(d)) d = '1' + d;   // landline written without its leading 1, e.g. (3) 835-2391
+  return d.length >= 8 ? d : '';
+}
+function emailKey(e) { const m = String(e || '').toLowerCase().match(/[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}/); return m ? m[0] : ''; }
+const FREE_MAIL = /@(gmail|hotmail|yahoo|outlook|live|icloud|msn|aol|ymail)\./;
+function normText(s) {
+  return String(s || '').toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي')
+    .replace(/ة/g, 'ه').replace(/ؤ/g, 'و').replace(/ئ/g, 'ي').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+}
+const NAME_STOP = new Set(['موسسه', 'co', 'company', 'cos', 'est', 'establishment', 'ltd', 'llc', 'limited', 'trading', 'trade', 'group', 'holding',
+  'factory', 'industries', 'industry', 'industrial', 'the', 'and', 'for', 'of', 'corp', 'corporation', 'inc', 'ksa', 'sa', 'saudi',
+  'شركه', 'مصنع', 'مجموعه', 'للتجاره', 'التجاريه', 'تجاره', 'المحدوده', 'محدوده', 'للمقاولات', 'مقاولات', 'و', 'ذ', 'م', 'م.']);
+function nameKey(n) {
+  const words = normText(String(n || '').replace(/\(.*?\)/g, ' ')).split(' ')
+    .filter(w => w && !NAME_STOP.has(w)).map(w => (w.length > 4 && w.startsWith('ال')) ? w.slice(2) : w).filter(w => w !== 'al' && w !== 'el');
+  let k = words.join('');
+  if (/^al[a-z]{4,}/.test(k)) k = k.slice(2);
+  return k;
+}
+function dice(a, b) {
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const grams = s => { const m = {}; for (let i = 0; i < s.length - 1; i++) { const g = s.slice(i, i + 2); m[g] = (m[g] || 0) + 1; } return m; };
+  const A = grams(a), B = grams(b); let inter = 0, na = 0, nb = 0;
+  Object.keys(A).forEach(g => { na += A[g]; if (B[g]) inter += Math.min(A[g], B[g]); });
+  Object.keys(B).forEach(g => { nb += B[g]; });
+  return na + nb ? (2 * inter) / (na + nb) : 0;
+}
+function supplierKeys(s) {
+  return {
+    phones: splitList((s.Mobiles || '') + ';' + (s.Phones || '')).map(phoneKey).filter(Boolean),
+    emails: splitList(s.Emails).map(emailKey).filter(Boolean),
+    name: nameKey(s.Name), nameAr: nameKey(s.Name_AR),
+  };
+}
+// returns {item, level: 'same' | 'likely', why} or null
+function findDuplicate(cand, list, skipId) {
+  const c = supplierKeys(cand);
+  let likely = null;
+  for (const s of list) {
+    if (!s || s.ID === skipId) continue;
+    const k = s._keys || (s._keys = supplierKeys(s));
+    const p = c.phones.find(x => k.phones.includes(x));
+    if (p) return {item: s, level: 'same', why: 'phone'};
+    if (c.emails.find(x => k.emails.includes(x))) return {item: s, level: 'same', why: 'email'};
+    if (c.name.length >= 3 && (c.name === k.name || c.name === k.nameAr)) return {item: s, level: 'same', why: 'name'};
+    if (c.nameAr.length >= 3 && (c.nameAr === k.name || c.nameAr === k.nameAr)) return {item: s, level: 'same', why: 'name'};
+    if (!likely) {
+      const dom = c.emails.map(e => e.split('@')[1]).find(d => !FREE_MAIL.test('@' + d) && k.emails.some(e => e.endsWith('@' + d)));
+      if (dom) likely = {item: s, level: 'likely', why: 'domain'};
+      else if (c.name.length >= 5 && k.name.length >= 5 && dice(c.name, k.name) >= 0.85) likely = {item: s, level: 'likely', why: 'similar_name'};
+      else if (c.name && k.name && Math.min(c.name.length, k.name.length) >= 4 && (c.name.startsWith(k.name) || k.name.startsWith(c.name))) likely = {item: s, level: 'likely', why: 'similar_name'};
+    }
+  }
+  return likely;
+}
+const LIST_FIELDS = {Mobiles: phoneKey, Phones: phoneKey, Fax: phoneKey, Emails: emailKey, Contacts: normText, Category: x => x, Brands: normText};
+const FILL_FIELDS = ['Name_AR', 'City', 'Address', 'Specialty'];
+// what `src` adds to `target` (only new values). Returns {} when nothing is new.
+function mergeDiff(target, src) {
+  const out = {};
+  Object.keys(LIST_FIELDS).forEach(f => {
+    const keyOf = LIST_FIELDS[f], have = splitList(target[f]), haveKeys = have.map(keyOf);
+    const known = k => f === 'Contacts' ? haveKeys.some(h => h.includes(k) || k.includes(h)) : haveKeys.includes(k);
+    const add = splitList(src[f]).filter(v => { const k = keyOf(v); return k && !known(k) && (haveKeys.push(k), true); });
+    if (add.length) out[f] = joinList(have.concat(add));
+  });
+  FILL_FIELDS.forEach(f => { if (!String(target[f] || '').trim() && String(src[f] || '').trim()) out[f] = String(src[f]).trim(); });
+  if (out.Category) out.Category_AR = catsAr(out.Category);
+  return out;
+}
+function catsAr(cats) { return joinList(splitList(cats).map(c => (CAT_INFO[c] ? CAT_INFO[c].ar : c))); }
+/* ===== end shared ===== */
+
+/*@@END*/
 
 /* ---------- icons ---------- */
 const P = {
@@ -455,133 +700,141 @@ const P = {
  bolt:'<path d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12z"/>',
  bulb:'<path d="M9 18h6M10 21.5h4"/><path d="M12 2.5a6.5 6.5 0 0 0-3.8 11.8c.5.4.8 1 .8 1.6V16h6v-.1c0-.6.3-1.2.8-1.6A6.5 6.5 0 0 0 12 2.5z"/>',
  fire:'<path d="M12 22c4 0 7-2.8 7-6.8 0-3.5-2.4-5.6-3.6-8.2-.9 1.7-1.9 2.6-2.9 2.8.2-2.6-.9-5-3-6.8.2 4.1-4.5 6.6-4.5 12.2C5 19.2 8 22 12 22z"/>',
- camera:'<rect x="2.5" y="7" width="13" height="10" rx="2"/><path d="m15.5 11 6-3.5v9l-6-3.5"/>',
  wifi:'<path d="M2 9a15 15 0 0 1 20 0M5.5 12.5a10 10 0 0 1 13 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="19.5" r="1"/>',
- plug:'<path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5"/>',
- earth:'<path d="M12 3v9M5 12h14M8 16h8M10.5 20h3"/>',
  tools:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.6-.4-.4-2.6z"/>',
- shield:'<path d="M12 2.5 4.5 5.5v5.6c0 4.6 3.2 8.6 7.5 10.4 4.3-1.8 7.5-5.8 7.5-10.4V5.5z"/><path d="m9 12 2 2 4-4"/>',
- tower:'<path d="M12 2 8 22M12 2l4 20M6 8h12M5 13h14M9 18h6"/>',
- socket:'<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M9.5 8.5v4M14.5 8.5v4M12 16.5v.5"/>',
- net:'<rect x="9" y="2.5" width="6" height="5" rx="1"/><rect x="2.5" y="16.5" width="6" height="5" rx="1"/><rect x="15.5" y="16.5" width="6" height="5" rx="1"/><path d="M12 7.5V12M5.5 16.5V12h13v4.5"/>',
- transformer:'<circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/>',
- ups:'<rect x="3" y="7" width="16" height="10" rx="2"/><path d="M21 10v4M11.5 9.5l-2 3h3l-2 3"/>',
  panel:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h3M13 11h3M8 15h3M13 15h3"/>',
+ box:'<path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/>',
+ sheet:'<rect x="3.5" y="3" width="17" height="18" rx="2"/><path d="M3.5 9h17M3.5 15h17M10 3v18"/>',
+ clip:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V2.5h6V4M9 10h6M9 14h6"/>',
+ download:'<path d="M12 3v12M7 10l5 5 5-5M4 20h16"/>',
+ upload:'<path d="M12 21V9M7 14l5-5 5 5M4 4h16"/>',
 };
-const icon = (n, extra = '') => n === 'wa'
+const icon = n => n === 'wa'
   ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2m0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2m4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3"/></svg>'
-  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[n] || P.bolt}</svg>`;
+  : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${P[n] || P.bolt}</svg>`;
 const paintIcons = (root = document) => root.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
-
-/* category → icon + colour */
-const CAT_STYLE = [
-  [/fire|vesda/i, 'fire'], [/^led|light(ing)?,|lighting|fixture|poles/i, 'bulb'], [/lightning|earthing/i, 'earth'],
-  [/cctv|camera/i, 'camera'], [/access control|parking|check in/i, 'shield'],
-  [/data|telephony|signage|clock/i, 'net'], [/low current|public address|audio/i, 'wifi'],
-  [/substation|switch ?gear|rmu|sbu/i, 'tower'], [/transformer/i, 'transformer'], [/ups/i, 'ups'],
-  [/generator|ats/i, 'bolt'], [/cable|tray|conduit|trunking|busway/i, 'cable'],
-  [/panel|disconnect/i, 'panel'], [/wiring/i, 'socket'], [/materials|supplies/i, 'plug'],
-  [/bms|control/i, 'shield'], [/mep|contract|o&m|works|rental|safety/i, 'tools'],
-];
-const catStyle = c => { for (const [re, ic] of CAT_STYLE) if (re.test(c || '')) return {ic}; return {ic:'bolt'}; };
+const GROUP_OF = id => TAXONOMY.find(g => g.id === id);
+const groupIcon = s => { const c = (s._cats || [])[0]; const g = c && CAT_INFO[c] ? GROUP_OF(CAT_INFO[c].group) : null; return g ? g.icon : 'box'; };
 
 /* ---------- words ---------- */
 const T = {
- ar:{title:'دليل موردي الكهرباء',brand_sub:'قروب مهندسي الكهرباء',byline:`يجمعه أعضاء قروب ${G}`,search_ph:'ابحث: Honeywell، كابلات، مولدات…',
-  st_sup:n=>`<b>${n}</b> مورد`,st_cat:n=>`<b>${n}</b> تصنيف`,q_ask:'اطلب مورداً',q_add:'أضف مورداً',q_join:'انضم للقروب',
+ ar:{title:'دليل موردي الكهرباء',brand_sub:'قروب مهندسي الكهرباء',search_ph:'ابحث: Honeywell، كابلات، مولدات…',
+  mode_sup:'الموردون والمصانع',mode_con:'المقاولون',q_ask:'اطلب مورداً',q_add:'أضف مورداً',q_bulk:'رفع قائمة Excel',q_join:'انضم للقروب',
   inst_h:'ثبّت الدليل على جوالك',inst_p:'أيقونة بجانب واتساب، تفتح مثل التطبيق',inst_btn:'تثبيت',inst_ios:'اضغط زر المشاركة ⬆️ ثم «إضافة إلى الشاشة الرئيسية»',
-  cats_h:'استكشف التصنيفات',quick_h:'الوصول السريع',see_all_cats:'عرض الكل',by_line:(n,c)=>`<b>${n}</b> مورد في <b>${c}</b> تصنيف · يجمعه أعضاء قروب ${G}`,see_all:'كل الموردين',all_cats:n=>`عرض كل التصنيفات (${n})`,less_cats:'عرض أقل',recent_h:'آخر الإضافات',all_sup:'كل الموردين',
-  n_home:'الرئيسية',n_list:'الموردون',n_req:'الطلبات',n_board:'المساهمون',all_city:'كل المدن',
-  found:n=>`${n} مورد`,showing:(a,b)=>`يظهر ${a} من ${b}`,more:'عرض المزيد',sup_n:n=>`${n} مورد`,
+  cats_h:'استكشف التصنيفات',quick_h:'الوصول السريع',see_all_cats:'عرض الكل',by_line:(n,c)=>`<b>${n}</b> شركة في <b>${c}</b> تخصصاً · يجمعه أعضاء قروب ${G}`,
+  see_all:'كل الموردين',recent_h:'آخر الإضافات',all_sup:'كل الموردين',all_con:'كل المقاولين',all_in:'الكل',
+  n_home:'الرئيسية',n_list:'الدليل',n_req:'الطلبات',n_board:'المساهمون',all_city:'كل المدن',
+  found:n=>`${n} شركة`,showing:(a,b)=>`يظهر ${a} من ${b}`,more:'عرض المزيد',sup_n:n=>`${n} شركة`,
   empty_h:'لم نجد مورداً بهذا البحث',empty_p:'اطلبه من الأعضاء، وعندما يرد أحدهم يُضاف إلى الدليل للجميع.',ask_btn:'اطلب هذا المورد',add_btn:'أعرف مورداً، أضيفه',
-  contact:'المسؤول',mobile:'جوال',phone:'هاتف',fax:'فاكس',email:'إيميل',address:'العنوان',brands:'الماركات',notes:'ملاحظات',city:'المدينة',spec:'التخصص',
-  call:'اتصال',whatsapp:'واتساب',share:'مشاركة',copied:'تم النسخ — الصقه في القروب',rate:'قيّم',
+  contact:'المسؤول',mobile:'جوال',phone:'هاتف',fax:'فاكس',email:'إيميل',address:'العنوان',brands:'الماركات وأسماء أخرى',notes:'ملاحظات',city:'المدينة',spec:'التفاصيل',cats:'التخصصات',
+  call:'اتصال',whatsapp:'واتساب',share:'مشاركة',rate:'قيّم',
   mfr:'مصنع',sup:'مورد',con:'مقاول',inactive:'غير نشط',added_by:'أضافه',no_reviews:'لا توجد تقييمات بعد.',
   rv_h:'تقييمك',rv_comment:'تعليقك (مثال: الأسعار ممتازة، أو الرقم لا يرد)',rv_send:'أرسل التقييم',
   tab_req:'طلبات الأعضاء',req_h:'تبحث عن مورد ولم تجده؟',req_p:'اكتب طلبك. من يعرف المورد يضغط «أعرف المورد» ويضيف بياناته.',req_text:'ماذا تبحث عنه؟',
-  req_text_ph:'مثال: مورد أكسس كنترول Kantech في الرياض',your_name:'اسمك',your_phone:'رقمك',optional_phone:'(اختياري — لا يظهر لأحد)',optional:'(اختياري)',
-  why_phone:'اكتب اسمك ورقمك ليُحسب كل ما تضيفه باسمك في لوحة الشرف. الرقم اختياري ولا يظهر لأحد.',req_send:'انشر الطلب',
+  req_text_ph:'مثال: مورد أكسس كنترول Kantech في الرياض',your_name:'اسمك',your_phone:'رقمك',optional_phone:'(اختياري — لا يظهر لأحد)',optional:'(اختياري)',req_send:'انشر الطلب',
   req_n:n=>`الطلبات (${n})`,req_open:'بانتظار رد',req_done:'تم الرد',i_know:'أعرف المورد',see_answer:'عرض المورد',no_req:'لا توجد طلبات حالياً.',
-  tab_board:'المساهمون',month_h:'نجم الشهر',month_p:'الأكثر إضافة للموردين هذا الشهر',board_h:'لوحة الشرف',board_p:'الأكثر إضافة منذ إطلاق الدليل. تُحسب الإضافات بعد موافقة المشرف.',
+  tab_board:'المساهمون',month_h:'نجم الشهر',month_p:'الأكثر إضافة للموردين هذا الشهر',board_h:'لوحة الشرف',board_p:'تُحسب الإضافات بعد موافقة المشرف.',
   board_cta:'أضف مورداً وانضم للوحة',month_empty:'لا أحد بعد هذا الشهر — كن أنت!',board_empty:'اللوحة فارغة. أول من يضيف مورداً يتصدر!',
   adds:n=>n==1?'إضافة واحدة':n==2?'إضافتان':`${n} ${n<=10?'إضافات':'إضافة'}`,answers_n:n=>n==1?'ردّ على طلب واحد':n==2?'ردّ على طلبين':`ردّ على ${n} ${n<=10?'طلبات':'طلباً'}`,
-  add_h:'أضف مورداً',add_p:'يظهر المورد للجميع بعد موافقة المشرف. الحقول المعلّمة بـ * مطلوبة.',
-  f_name:'اسم الشركة أو المورد',f_brands:'الماركات التي يوردها',f_brands_h:'(مثل Honeywell, Bosch)',f_cat:'التصنيف',f_type:'النوع',choose:'اختر…',
-  t_sup:'مورد / وكيل',t_mfr:'مصنع',t_con:'مقاول',f_spec:'المنتجات أو التخصص',f_contact:'اسم الشخص المسؤول',f_mob:'الجوال / واتساب',
-  f_tel:'هاتف المكتب',f_email:'الإيميل',f_addr:'العنوان',f_notes:'ملاحظات',mob_or:'* يكفي رقم واحد أو إيميل.',add_send:'أرسل للمراجعة',
-  other:'أخرى',answering:t=>`أنت ترد على الطلب: «${t}»`,
-  sent_sup:'وصلنا المورد ✅ سيظهر بعد موافقة المشرف. شكراً لمساهمتك.',sent_req:'تم نشر طلبك ✅ شارك رابط الدليل في القروب ليرد الأعضاء.',
-  sent_rv:'وصلنا تقييمك ✅ سيظهر بعد موافقة المشرف.',need_name:'اكتب اسم المورد.',need_contact:'أضف رقم جوال أو هاتف أو إيميل.',need_text:'اكتب ماذا تبحث عنه.',
+  add_h:'أضف مورداً',add_p:'يظهر للجميع بعد موافقة المشرف. ثلاث خانات فقط مطلوبة.',
+  fast_paste:'الصق رسالة',fast_vcf:'من جهات الاتصال',fast_bulk:'رفع قائمة',
+  paste_p:'الصق هنا رسالة المورد أو توقيع الإيميل أو بطاقة العمل، وسنستخرج الاسم والأرقام والإيميل تلقائياً.',paste_ph:'مثال:\nشركة النور للكابلات\nم. أحمد – 0501234567\nsales@alnoor.com – الدمام',
+  paste_go:'استخرج البيانات',filled:n=>`✨ عبّأنا ${n} خانات تلقائياً. راجعها ثم اختر التخصصات.`,filled_none:'لم نجد بيانات واضحة في النص. اكتبها يدوياً.',
+  f_name:'اسم الشركة أو المورد',f_mob:'رقم الجوال أو الهاتف',f_mob_h:'أكثر من رقم؟ افصل بينها بفاصلة',f_type:'النوع',f_cats:'التخصصات',
+  f_cats_h:'اختر كل ما تعمل فيه الشركة. اضغط اسم المجموعة لاختيارها كلها.',picked:n=>n?`(${n} مختار)`:'',city_other:'مدينة أخرى',more_details:'تفاصيل أكثر (اختياري)',
+  f_brands:'الماركات التي يوردها',f_brands_h:'(مثل Honeywell, Bosch)',t_sup:'مورد / وكيل',t_mfr:'مصنع',t_con:'مقاول',f_spec:'المنتجات أو التخصص بالتفصيل',
+  f_contact:'اسم الشخص المسؤول',f_tel:'هاتف المكتب',f_email:'الإيميل',f_addr:'العنوان',f_notes:'ملاحظات',add_send:'أرسل للمراجعة',
+  answering:t=>`أنت ترد على الطلب: «${t}»`,
+  dup_same:n=>`⚠️ هذا المورد موجود في الدليل: <b>${n}</b>`,dup_same_p:'إذا عندك معلومة جديدة له (رقم آخر، تخصص، مدينة) أكمل الإرسال وستُضاف لبطاقته بعد موافقة المشرف.',
+  dup_likely:n=>`قد يكون نفس المورد: <b>${n}</b>`,dup_open:'افتح البطاقة',
+  sent_sup:'وصلنا المورد ✅ سيظهر بعد موافقة المشرف. شكراً لمساهمتك.',sent_upd:n=>`شكراً ✅ معلومتك الجديدة لـ «${n}» بانتظار موافقة المشرف.`,
+  sent_exists:n=>`«${n}» موجود في الدليل بنفس البيانات، لا حاجة لإضافته 👍`,sent_req:'تم نشر طلبك ✅ شارك رابط الدليل في القروب ليرد الأعضاء.',
+  sent_rv:'وصلنا تقييمك ✅ سيظهر بعد موافقة المشرف.',need_name:'اكتب اسم المورد.',need_contact:'أضف رقم جوال أو هاتف أو إيميل.',need_cats:'اختر تخصصاً واحداً على الأقل.',need_text:'اكتب ماذا تبحث عنه.',
   need_rate:'اختر عدد النجوم أو اكتب تعليقاً.',busy:'الخدمة مشغولة الآن، حاول بعد دقائق.',neterr:'لم يصل الإرسال. تأكد من الإنترنت وحاول مرة أخرى.',
   not_connected:'الإضافة غير مفعّلة بعد — المشرف يكمل الإعداد.',sending:'جارٍ الإرسال…',
+  bulk_h:'رفع قائمة موردين',bulk_h2:'عندك قائمة؟ ارفعها دفعة واحدة',bulk_p:'ارفع ملف Excel أو CSV بأي ترتيب أعمدة. نتعرف على الأعمدة تلقائياً، ونستبعد الموردين الموجودين، ونعرض لك النتيجة قبل الإرسال.',
+  bulk_pick:'اختر الملف',bulk_tpl:'تحميل القالب',bulk_reading:'جارٍ قراءة الملف…',bulk_bad:'لم نجد عمود «اسم الشركة» في الملف. حمّل القالب واستخدمه.',bulk_empty:'الملف فارغ.',
+  s_new:'جديد',s_upd:'معلومة جديدة',s_exists:'موجود',s_invalid:'ناقص',bulk_send:n=>`أرسل ${n} للمراجعة`,bulk_nothing:'لا يوجد جديد في هذه القائمة — كل الموردين موجودون مسبقاً 👍',
+  bulk_done:(a,b)=>`✅ وصلت القائمة: ${a} مورد جديد و${b} تحديث بانتظار موافقة المشرف. شكراً لك!`,bulk_more:n=>`و${n} صفاً آخر…`,bulk_libfail:'تعذّر تحميل قارئ ملفات Excel. تأكد من الإنترنت وحاول مرة أخرى.',
+  x_title:`دليل موردي الكهرباء – قروب ${G}`,x_join:'للانضمام للقروب',x_need:'اختر تصنيفاً أو مدينة أو ابحث أولاً، ثم حمّل النتيجة.',x_done:'تم تجهيز ملف Excel ✅',
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
-  share_text:s=>`${s}\n\n📒 من دليل موردي الكهرباء — قروب ${G}`,join_short:'للانضمام للقروب:',join_line:'🔹 للانضمام لقروب الواتساب:',dir_line:`📒 صفحة دليل موردي الكهرباء – قروب ${G}`,share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
- en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',byline:`Collected by ${G} group members`,search_ph:'Search: Honeywell, cables, generators…',
-  st_sup:n=>`<b>${n}</b> suppliers`,st_cat:n=>`<b>${n}</b> categories`,q_ask:'Ask',q_add:'Add supplier',q_join:'Join group',
+  join_line:'🔹 للانضمام لقروب الواتساب:',dir_line:`📒 صفحة دليل موردي الكهرباء – قروب ${G}`,share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
+ en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',search_ph:'Search: Honeywell, cables, generators…',
+  mode_sup:'Suppliers & factories',mode_con:'Contractors',q_ask:'Ask',q_add:'Add supplier',q_bulk:'Upload Excel list',q_join:'Join group',
   inst_h:'Install on your phone',inst_p:'An icon next to WhatsApp, opens like an app',inst_btn:'Install',inst_ios:'Tap Share ⬆️ then “Add to Home Screen”',
-  cats_h:'Explore categories',quick_h:'Quick access',see_all_cats:'See all',by_line:(n,c)=>`<b>${n}</b> suppliers in <b>${c}</b> categories · collected by ${G} members`,see_all:'All suppliers',all_cats:n=>`Show all categories (${n})`,less_cats:'Show less',recent_h:'Recently added',all_sup:'All suppliers',
-  n_home:'Home',n_list:'Suppliers',n_req:'Requests',n_board:'Top',all_city:'All cities',
-  found:n=>`${n} suppliers`,showing:(a,b)=>`Showing ${a} of ${b}`,more:'Show more',sup_n:n=>`${n} suppliers`,
+  cats_h:'Explore categories',quick_h:'Quick access',see_all_cats:'See all',by_line:(n,c)=>`<b>${n}</b> companies in <b>${c}</b> specialties · collected by ${G} members`,
+  see_all:'All suppliers',recent_h:'Recently added',all_sup:'All suppliers',all_con:'All contractors',all_in:'All',
+  n_home:'Home',n_list:'Directory',n_req:'Requests',n_board:'Top',all_city:'All cities',
+  found:n=>`${n} companies`,showing:(a,b)=>`Showing ${a} of ${b}`,more:'Show more',sup_n:n=>`${n} companies`,
   empty_h:'No supplier found',empty_p:'Ask the members. When someone answers, it is added for everyone.',ask_btn:'Ask for it',add_btn:'I know one, add it',
-  contact:'Contact',mobile:'Mobile',phone:'Phone',fax:'Fax',email:'E-mail',address:'Address',brands:'Brands',notes:'Notes',city:'City',spec:'Specialty',
-  call:'Call',whatsapp:'WhatsApp',share:'Share',copied:'Copied — paste it in the group',rate:'Rate',
+  contact:'Contact',mobile:'Mobile',phone:'Phone',fax:'Fax',email:'E-mail',address:'Address',brands:'Brands & other names',notes:'Notes',city:'City',spec:'Details',cats:'Specialties',
+  call:'Call',whatsapp:'WhatsApp',share:'Share',rate:'Rate',
   mfr:'Manufacturer',sup:'Supplier',con:'Contractor',inactive:'Not active',added_by:'Added by',no_reviews:'No reviews yet.',
   rv_h:'Your rating',rv_comment:'Your comment (e.g. good prices, or number not answering)',rv_send:'Send review',
   tab_req:'Member requests',req_h:'Looking for a supplier?',req_p:'Post what you need. Members who know one tap “I know a supplier”.',req_text:'What are you looking for?',
-  req_text_ph:'e.g. Kantech access control supplier in Riyadh',your_name:'Your name',your_phone:'Your phone',optional_phone:'(optional — never shown)',optional:'(optional)',
-  why_phone:'Add your name and number so what you add counts for you on the leaderboard. The number is optional and never shown.',req_send:'Post request',
+  req_text_ph:'e.g. Kantech access control supplier in Riyadh',your_name:'Your name',your_phone:'Your phone',optional_phone:'(optional — never shown)',optional:'(optional)',req_send:'Post request',
   req_n:n=>`Requests (${n})`,req_open:'Waiting',req_done:'Answered',i_know:'I know a supplier',see_answer:'See supplier',no_req:'No requests yet.',
-  tab_board:'Contributors',month_h:'Star of the month',month_p:'Most suppliers added this month',board_h:'Leaderboard',board_p:'Most suppliers added since launch. Counted after admin approval.',
+  tab_board:'Contributors',month_h:'Star of the month',month_p:'Most suppliers added this month',board_h:'Leaderboard',board_p:'Counted after admin approval.',
   board_cta:'Add a supplier and join the board',month_empty:'Nobody yet this month — be the first!',board_empty:'The board is empty. The first to add a supplier leads!',
   adds:n=>`${n} added`,answers_n:n=>`answered ${n} requests`,
-  add_h:'Add a supplier',add_p:'Shown to everyone after the admin approves it. Fields marked * are required.',
-  f_name:'Company / supplier name',f_brands:'Brands supplied',f_brands_h:'(e.g. Honeywell, Bosch)',f_cat:'Category',f_type:'Type',choose:'Choose…',
-  t_sup:'Supplier / agent',t_mfr:'Manufacturer',t_con:'Contractor',f_spec:'Products or specialty',f_contact:'Contact person',f_mob:'Mobile / WhatsApp',
-  f_tel:'Office phone',f_email:'E-mail',f_addr:'Address',f_notes:'Notes',mob_or:'* One phone number or e-mail is enough.',add_send:'Send for review',
-  other:'Other',answering:t=>`You are answering: “${t}”`,
-  sent_sup:'Received ✅ It will appear after the admin approves it. Thank you.',sent_req:'Request posted ✅ Share the link in the group so members can answer.',
-  sent_rv:'Review received ✅ It will appear after approval.',need_name:'Enter the supplier name.',need_contact:'Add a mobile, phone or e-mail.',need_text:'Write what you are looking for.',
+  add_h:'Add a supplier',add_p:'Shown to everyone after admin approval. Only three fields are required.',
+  fast_paste:'Paste a message',fast_vcf:'From contacts',fast_bulk:'Upload a list',
+  paste_p:'Paste a supplier message, e-mail signature or business card text. We pick out the name, numbers and e-mail.',paste_ph:'e.g.\nAl Noor Cables Co.\nEng. Ahmed – 0501234567\nsales@alnoor.com – Dammam',
+  paste_go:'Fill the form',filled:n=>`✨ Filled ${n} fields. Check them, then pick the specialties.`,filled_none:'No clear details found. Please type them.',
+  f_name:'Company / supplier name',f_mob:'Mobile or phone',f_mob_h:'More than one? Separate with a comma',f_type:'Type',f_cats:'Specialties',
+  f_cats_h:'Pick everything the company does. Tap a group name to pick all of it.',picked:n=>n?`(${n} picked)`:'',city_other:'Other city',more_details:'More details (optional)',
+  f_brands:'Brands supplied',f_brands_h:'(e.g. Honeywell, Bosch)',t_sup:'Supplier / agent',t_mfr:'Manufacturer',t_con:'Contractor',f_spec:'Products in detail',
+  f_contact:'Contact person',f_tel:'Office phone',f_email:'E-mail',f_addr:'Address',f_notes:'Notes',add_send:'Send for review',
+  answering:t=>`You are answering: “${t}”`,
+  dup_same:n=>`⚠️ Already in the directory: <b>${n}</b>`,dup_same_p:'Have something new for it (another number, specialty, city)? Send it and it is added to its card after approval.',
+  dup_likely:n=>`Might be the same as: <b>${n}</b>`,dup_open:'Open card',
+  sent_sup:'Received ✅ It appears after admin approval. Thank you.',sent_upd:n=>`Thanks ✅ Your new details for “${n}” are waiting for approval.`,
+  sent_exists:n=>`“${n}” is already listed with these details 👍`,sent_req:'Request posted ✅ Share the link in the group so members can answer.',
+  sent_rv:'Review received ✅ It will appear after approval.',need_name:'Enter the supplier name.',need_contact:'Add a mobile, phone or e-mail.',need_cats:'Pick at least one specialty.',need_text:'Write what you are looking for.',
   need_rate:'Pick stars or write a comment.',busy:'Busy right now, try again in a few minutes.',neterr:'Not sent. Check your connection and try again.',
-  not_connected:'Adding is not switched on yet — the admin is finishing setup.',sending:'Sending…',
+  not_connected:'Adding is not switched on yet.',sending:'Sending…',
+  bulk_h:'Upload a supplier list',bulk_h2:'Have a list? Upload it in one go',bulk_p:'Upload an Excel or CSV file with any column order. We detect the columns, skip suppliers already listed and show you the result before sending.',
+  bulk_pick:'Choose file',bulk_tpl:'Download template',bulk_reading:'Reading the file…',bulk_bad:'No company name column found. Download the template and use it.',bulk_empty:'The file is empty.',
+  s_new:'New',s_upd:'New info',s_exists:'Listed',s_invalid:'Incomplete',bulk_send:n=>`Send ${n} for review`,bulk_nothing:'Nothing new in this list — every supplier is already listed 👍',
+  bulk_done:(a,b)=>`✅ List received: ${a} new suppliers and ${b} updates are waiting for approval. Thank you!`,bulk_more:n=>`and ${n} more rows…`,bulk_libfail:'Could not load the Excel reader. Check your connection and try again.',
+  x_title:`Electrical Suppliers Directory – ${G} group`,x_join:'Join the group',x_need:'Pick a category or city, or search first, then download the result.',x_done:'Excel file ready ✅',
   copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
-  share_text:s=>`${s}\n\n📒 From the Electrical Suppliers Directory — ${G} group`,join_short:'Join the group:',join_line:'🔹 Join the WhatsApp group:',dir_line:`📒 Electrical Suppliers Directory – ${G} group`,share_wa:'Share on WhatsApp',no_wa:'No mobile number',ago_today:'today',ago_days:n=>`${n}d ago`}
+  join_line:'🔹 Join the WhatsApp group:',dir_line:`📒 Electrical Suppliers Directory – ${G} group`,share_wa:'Share on WhatsApp',no_wa:'No mobile number',ago_today:'today',ago_days:n=>`${n}d ago`}
 };
 let lang = 'ar';
 try { lang = localStorage.getItem('lang') || 'ar'; } catch(e){}
 const t = (k, ...a) => { const v = (T[lang] && T[lang][k] !== undefined) ? T[lang][k] : T.ar[k]; return typeof v === 'function' ? v(...a) : (v ?? k); };
+const catName = c => CAT_INFO[c] ? (lang === 'ar' ? CAT_INFO[c].ar : c) : c;
+const catShort = c => CAT_INFO[c] ? (lang === 'ar' ? CAT_INFO[c].sar : CAT_INFO[c].sen) : c;
+const groupName = g => lang === 'ar' ? g.ar : g.en;
+const cityName = c => lang === 'ar' ? (CITY_AR[c] || c) : c;
 
 /* ---------- search ---------- */
-const normAr = s => String(s||'').toLowerCase()
-  .replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي')
-  .replace(/[^\p{L}\p{N}]+/gu,' ').trim();
 const SYN = {
  'كابل':'cable','كابلات':'cable','كيبل':'cable','مولد':'generator','مولدات':'generator','جنريتر':'generator','انارة':'lighting','اناره':'lighting','اضاءه':'lighting','كشافات':'lighting',
  'كاميرات':'cctv','كاميرا':'cctv','مراقبه':'cctv','حريق':'fire','انذار':'alarm','محول':'transformer','محولات':'transformer','لوحات':'panel','لوحه':'panel','طبلون':'panel',
  'تاريض':'earthing','ارضي':'earthing','صواعق':'lightning','اكسس':'access','دخول':'access','بوابات':'gate','مواقف':'parking','صوت':'audio','مفاتيح':'switch','افياش':'wiring',
- 'مواسير':'conduit','حوامل':'tray','تري':'tray','باسواي':'busway','بطاريات':'ups','شبكات':'data','خفيف':'low current',
+ 'مواسير':'conduit','حوامل':'tray','تري':'tray','باسواي':'busway','بطاريات':'ups','شبكات':'data','خفيف':'low current','شمسيه':'solar','سولار':'solar',
  'الرياض':'riyadh','رياض':'riyadh','الدمام':'dammam','دمام':'dammam','الخبر':'khobar','خبر':'khobar','جده':'jeddah','الشرقيه':'eastern','الجبيل':'jubail',
  'هانيويل':'honeywell','بوش':'bosch','سيمنس':'siemens','شنايدر':'schneider','اشنايدر':'schneider','الفنار':'fanar','فنار':'fanar','ليجراند':'legrand','السويدي':'sewedy','كانتك':'kantech','فيليبس':'philips','ابب':'abb'
 };
-const tokens = q => normAr(q).split(' ').filter(Boolean).map(w => [w, SYN[w]].filter(Boolean));
+const tokens = q => normText(q).split(' ').filter(Boolean).map(w => [w, SYN[w]].filter(Boolean));
 
 /* ---------- phones ---------- */
-function tel(raw){
-  let d = String(raw).replace(/ext.*$/i,'').replace(/\D/g,'');
-  if (d.startsWith('00')) d = d.slice(2);
-  if (d.startsWith('966')) d = '966' + d.slice(3).replace(/^0+/,'');
-  else if (/^05\d{8}$/.test(d)) d = '966' + d.slice(1);
-  else if (/^5\d{8}$/.test(d)) d = '966' + d;
-  else if (/^01\d{8}$/.test(d)) d = '966' + d.slice(1);
-  return d.length >= 9 ? d : '';
-}
+function tel(raw){ const k = phoneKey(raw); return k ? (k.length === 9 ? '966' + k : k) : ''; }
 const isMobileKSA = d => /^9665\d{8}$/.test(d);
-const split = s => String(s||'').split(/\s*;\s*/).filter(Boolean);
 
 /* ---------- state ---------- */
 let DATA = {suppliers:[], reviews:[], requests:[], board:null};
-let byId = {}, revBy = {}, shownLimit = 30, answerReq = null, filt = {cat:'', city:''}, allCats = false;
+let byId = {}, revBy = {}, shownLimit = 30, answerReq = null;
+let mode = 'sup', filt = {group:'', cat:'', city:''};
 let ME = {name:'', phone:''};
 try { ME = JSON.parse(localStorage.getItem('me') || 'null') || ME; } catch(e){}
+try { mode = localStorage.getItem('mode') === 'con' ? 'con' : 'sup'; } catch(e){}
+
+const isCon = s => s.Type === 'Contractor' || s._cats.some(c => CAT_INFO[c] && CAT_INFO[c].group === 'contracting');
+const isSup = s => s.Type !== 'Contractor';
+const inMode = s => mode === 'con' ? isCon(s) : isSup(s);
 
 /* ---------- load ---------- */
 async function load(){
@@ -602,7 +855,10 @@ function setData(j){
   DATA = {suppliers:j.suppliers||[], reviews:j.reviews||[], requests:j.requests||[], board:j.board||null};
   byId = {}; revBy = {};
   DATA.suppliers.forEach(s => {
-    s._hay = normAr([s.Name,s.Name_AR,s.Category,s.Category_AR,s.Specialty,s.Brands,s.City,s.Contacts,s.Notes,s.Address,s.Emails].join(' '));
+    s._cats = splitList(s.Category);
+    s._groups = [...new Set(s._cats.map(c => CAT_INFO[c] ? CAT_INFO[c].group : ''))].filter(Boolean);
+    s._hay = normText([s.Name, s.Name_AR, s.Category, s.Category_AR, s.Specialty, s.Brands, s.City, CITY_AR[s.City], s.Contacts, s.Notes, s.Address, s.Emails,
+      s._cats.map(c => CAT_INFO[c] ? CAT_INFO[c].sar + ' ' + CAT_INFO[c].sen : '').join(' ')].join(' '));
     byId[s.ID] = s;
   });
   DATA.reviews.forEach(r => (revBy[r.sid] = revBy[r.sid] || []).push(r));
@@ -612,64 +868,68 @@ function setData(j){
 function renderAll(){ renderHome(); fillForms(); renderList(); renderRequests(); renderBoard(); }
 
 /* ---------- home ---------- */
-const SHORT = {"Lighting, Fixtures & Poles": ["الإنارة", "Lighting"], "Electrical Materials (1ST & 2ND Fix)": ["مواد كهربائية", "Electrical materials"], "LV & MV Panel Boards": ["اللوحات الكهربائية", "Panel boards"], "Generators & ATS": ["المولدات", "Generators"], "Low Current Systems & Cables": ["التيار الخفيف", "Low current"], "Package Substations & Panel Boards": ["المحطات المدمجة", "Substations"], "Fire Alarm, VESDA & Fire Protection": ["إنذار الحريق", "Fire alarm"], "Data & IP Telephony Systems": ["البيانات والشبكات", "Data & IP"], "Wiring Devices & Floor Box": ["الأفياش والمفاتيح", "Wiring devices"], "Cables": ["الكابلات", "Cables"], "Transformer": ["المحولات", "Transformers"], "Disconnecting Switches": ["مفاتيح الفصل", "Disconnect switches"], "Cable Tray & Accessories": ["حوامل الكابلات", "Cable trays"], "UPS": ["أجهزة UPS", "UPS"], "RMU": ["وحدات RMU", "RMU"], "BMS System": ["أنظمة BMS", "BMS"], "CCTV System": ["كاميرات المراقبة", "CCTV"], "Busway": ["Busway", "Busway"], "Cable Accessories (LV & MV)": ["ملحقات الكابلات", "Cable accessories"], "PVC Conduits and Accessories": ["مواسير PVC", "PVC conduits"], "Electrical Supplies & IT Solutions": ["مستلزمات وحلول تقنية", "Supplies & IT"], "Lightning Protection & Earthing": ["الصواعق والتأريض", "Earthing"], "Car Parking System & Gate Barrier System": ["المواقف والبوابات", "Parking & gates"], "IP Clock Display System": ["الساعات الشبكية", "IP clocks"], "Electrical & Mechanical Works / Safety": ["أعمال كهروميكانيكية", "E&M works"], "Medium Voltage Switch Gear 33KV": ["مفاتيح 33KV", "MV switchgear"], "Public Address System": ["النداء العام", "Public address"], "Switchgear Business Unit / SBU": ["وحدة SBU", "Switchgear SBU"], "Access Control System": ["التحكم بالدخول", "Access control"], "Audio Visual & Auditorium Systems": ["الصوت والصورة", "Audio visual"], "ATS": ["مفاتيح ATS", "ATS"], "Control System (BMS – Integrated)": ["التحكم المتكامل", "Integrated control"], "IP CCTV, Audio Visual & Public Address": ["كاميرات وصوتيات", "IP CCTV & AV"], "IP Digital Signage System": ["الشاشات الرقمية", "Digital signage"], "LED Lights (USA Made)": ["إنارة LED", "LED lights"], "O&M & General Contracting": ["تشغيل وصيانة", "O&M"], "Under Floor Trunking & Raised Floor Cable Tray": ["مجاري الأرضيات", "Floor trunking"], "Check In & Check Out System": ["الحضور والانصراف", "Check in/out"], "Equipment Rental": ["تأجير المعدات", "Equipment rental"], "Full MEP Works Contractors": ["مقاولو MEP", "MEP contractors"]};
-const shortLabel = (key, full) => (SHORT[key] ? SHORT[key][lang === "ar" ? 0 : 1] : full);
-
-const catLabel = s => lang === 'ar' && s.Category_AR ? s.Category_AR : s.Category;
-function categories(){
-  const m = {};
-  DATA.suppliers.forEach(s => { if (!s.Category) return; (m[s.Category] = m[s.Category] || {key:s.Category, label:catLabel(s), n:0}).n++; });
-  return Object.values(m).sort((a, b) => b.n - a.n);
-}
 function renderHome(){
-  const cats = categories();
-  const shown = allCats ? cats : cats.slice(0, 9);
-  $('#tiles').innerHTML = shown.map(c => `<button class="tile" data-cat="${esc(c.key)}"><span class="ti">${icon(catStyle(c.key).ic)}</span><b>${esc(shortLabel(c.key, c.label))}</b><small>${t('sup_n', c.n)}</small></button>`).join('');
-  $('#more-cats').hidden = cats.length <= 9;
-  $('#more-cats-t').textContent = allCats ? t('less_cats') : t('see_all_cats');
-  $('#by').innerHTML = t('by_line', DATA.suppliers.length, cats.length);
-  // star of month
+  $$('.seg [data-mode]').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === mode));
+  const pool = DATA.suppliers.filter(inMode);
+  const tiles = TAXONOMY.map(g => ({g, n: pool.filter(s => s._groups.includes(g.id)).length})).filter(x => x.n || mode === 'sup');
+  $('#tiles').innerHTML = tiles.map(({g, n}) => `<button class="tile" data-group="${g.id}"><span class="ti">${icon(g.icon)}</span><b>${esc(groupName(g))}</b><small>${t('sup_n', n)}</small></button>`).join('')
+    + `<button class="tile" data-go="list" data-all="1"><span class="ti">${icon('list')}</span><b>${esc(mode === 'con' ? t('all_con') : t('all_sup'))}</b><small>${t('sup_n', pool.length)}</small></button>`;
+  const allCats = new Set(); DATA.suppliers.forEach(s => s._cats.forEach(c => allCats.add(c)));
+  $('#by').innerHTML = t('by_line', DATA.suppliers.length, allCats.size);
   const b = DATA.board, star = b && b.monthTop && b.monthTop[0];
   $('#star-sec').hidden = !star;
   if (star) { $('#star-name').textContent = star.name; $('#star-n').textContent = t('adds', star.month); }
-  // recent member additions
   const recent = DATA.suppliers.filter(s => s.Submitted_By && !/^القائمة الأولى/.test(s.Submitted_By))
     .sort((a, b) => String(b.Date).localeCompare(String(a.Date))).slice(0, 5);
   $('#recent-sec').hidden = !recent.length;
   const today = new Date();
   $('#recent').innerHTML = recent.map(s => {
     const d = Math.max(0, Math.round((today - new Date(String(s.Date).replace(' ', 'T'))) / 864e5));
-    return `<button class="ri" data-open="${esc(s.ID)}"><span class="ti">${icon(catStyle(s.Category).ic)}</span><span class="m"><b>${esc(s.Name)}</b><small>${esc([catLabel(s), s.Submitted_By].filter(Boolean).join(' · '))}</small></span><span class="when">${isNaN(d) ? '' : d === 0 ? t('ago_today') : t('ago_days', d)}</span></button>`;
+    return `<button class="ri" data-open="${esc(s.ID)}"><span class="ti">${icon(groupIcon(s))}</span><span class="m"><b>${esc(s.Name)}</b><small>${esc([catsLine(s, 1), s.Submitted_By].filter(Boolean).join(' · '))}</small></span><span class="when">${isNaN(d) ? '' : d === 0 ? t('ago_today') : t('ago_days', d)}</span></button>`;
   }).join('');
+}
+function catsLine(s, max){
+  const c = s._cats.filter(x => !filt.group || !CAT_INFO[x] || CAT_INFO[x].group === filt.group);
+  const list = (c.length ? c : s._cats);
+  const shown = list.slice(0, max).map(catShort).join('، ');
+  return list.length > max ? shown + ` +${list.length - max}` : shown;
 }
 
 /* ---------- list ---------- */
 function filtered(){
   const q = tokens($('#q').value);
-  return DATA.suppliers.filter(s => (!filt.cat || s.Category === filt.cat) && (!filt.city || s.City === filt.city) &&
-    q.every(alts => alts.some(w => s._hay.includes(w))));
+  return DATA.suppliers.filter(s => inMode(s) && (!filt.group || s._groups.includes(filt.group)) && (!filt.cat || s._cats.includes(filt.cat)) &&
+    (!filt.city || s.City === filt.city) && q.every(alts => alts.some(w => s._hay.includes(w))));
 }
-function renderCityChips(){
-  const pool = DATA.suppliers.filter(s => !filt.cat || s.Category === filt.cat);
+function renderChips(){
+  const g = filt.group && GROUP_OF(filt.group);
+  $('#cat-chips').hidden = !g;
+  if (g) {
+    const pool = DATA.suppliers.filter(s => inMode(s) && s._groups.includes(g.id));
+    const cats = g.cats.map(c => ({key: c[0], n: pool.filter(s => s._cats.includes(c[0])).length})).filter(x => x.n);
+    $('#cat-chips').innerHTML = [`<button class="chip" data-cat="" aria-pressed="${!filt.cat}">${t('all_in')}</button>`]
+      .concat(cats.map(c => `<button class="chip" data-cat="${esc(c.key)}" aria-pressed="${filt.cat === c.key}">${esc(catShort(c.key))} <small>${c.n}</small></button>`)).join('');
+  }
+  const pool = DATA.suppliers.filter(s => inMode(s) && (!filt.group || s._groups.includes(filt.group)) && (!filt.cat || s._cats.includes(filt.cat)));
   const cities = {}; pool.forEach(s => { if (s.City) cities[s.City] = (cities[s.City] || 0) + 1; });
   const list = Object.entries(cities).sort((a, b) => b[1] - a[1]).map(([c]) => c);
   if (filt.city && !list.includes(filt.city)) filt.city = '';
   $('#city-chips').innerHTML = [`<button class="chip" data-city="" aria-pressed="${!filt.city}">${t('all_city')}</button>`]
-    .concat(list.map(c => `<button class="chip" data-city="${esc(c)}" aria-pressed="${filt.city === c}">${esc(c)}</button>`)).join('');
+    .concat(list.map(c => `<button class="chip" data-city="${esc(c)}" aria-pressed="${filt.city === c}">${esc(cityName(c))}</button>`)).join('');
 }
 const stars = n => { const r = Math.round(n); return '★'.repeat(r) + '☆'.repeat(5 - r); };
 const typeLabel = x => ({Manufacturer:t('mfr'), Supplier:t('sup'), Contractor:t('con')}[x] || '');
 function cardHTML(s){
-  const mobs = split(s.Mobiles), phones = split(s.Phones);
-  const first = tel(mobs[0] || phones[0] || ''), waNum = mobs.map(tel).find(isMobileKSA);
+  const mobs = splitList(s.Mobiles), phones = splitList(s.Phones);
+  const first = tel(mobs[0] || phones[0] || ''), waNum = mobs.concat(phones).map(tel).find(isMobileKSA);
   const rated = (revBy[s.ID] || []).filter(r => r.rating), avg = rated.length ? rated.reduce((a, r) => a + r.rating, 0) / rated.length : 0;
   const inactive = /NOT ACTIVE/i.test(s.Notes || '');
   return `<article class="sc" id="r-${esc(s.ID)}">
     <div class="sc-head" role="button" tabindex="0" aria-expanded="false" data-id="${esc(s.ID)}">
-      <span class="sc-main"><b><bdi>${esc(s.Name)}</bdi>${s.Type === 'Manufacturer' ? `<span class="badge">${t('mfr')}</span>` : ''}${inactive ? `<span class="badge b-off">${t('inactive')}</span>` : ''}</b>
+      <span class="sc-main"><b><bdi>${esc(s.Name)}</bdi>${s.Type === 'Manufacturer' ? `<span class="badge">${t('mfr')}</span>` : s.Type === 'Contractor' ? `<span class="badge">${t('con')}</span>` : ''}${inactive ? `<span class="badge b-off">${t('inactive')}</span>` : ''}</b>
         ${s.Name_AR ? `<span class="ar">${esc(s.Name_AR)}</span>` : ''}
-        ${s.Contacts ? `<span class="who">${icon('user')}<bdi>${esc(split(s.Contacts)[0])}</bdi></span>` : ''}
-        <small>${esc([filt.cat ? typeLabel(s.Type) : catLabel(s), s.City].filter(Boolean).join(' · '))}${rated.length ? ` · <span class="stars">${stars(avg)}</span>` : ''}</small></span>
+        ${s.Contacts ? `<span class="who">${icon('user')}<bdi>${esc(splitList(s.Contacts)[0])}</bdi></span>` : ''}
+        <small>${esc([catsLine(s, 2), cityName(s.City)].filter(Boolean).join(' · '))}${rated.length ? ` · <span class="stars">${stars(avg)}</span>` : ''}</small></span>
       <span class="qa">
         ${first ? `<a class="rb" href="tel:+${first}" aria-label="${t('call')}" data-stop>${icon('call')}</a>` : `<span class="rb off" aria-hidden="true">${icon('call')}</span>`}
         ${waNum ? `<a class="rb wa" href="https://wa.me/${waNum}" target="_blank" rel="noopener" aria-label="${t('whatsapp')}" data-stop>${icon('wa')}</a>` : `<span class="rb off" title="${t('no_wa')}" aria-hidden="true">${icon('wa')}</span>`}
@@ -681,15 +941,17 @@ function cardHTML(s){
 }
 function detailHTML(s){
   const line = (k, v) => v ? `<dt>${t(k)}</dt><dd>${v}</dd>` : '';
-  const ph = list => split(list).map(p => { const d = tel(p); return d ? `<a class="num" href="tel:+${d}">${esc(p)}</a>` : `<span class="num">${esc(p)}</span>`; }).join('<br>');
-  const mob = split(s.Mobiles).map(p => { const d = tel(p);
+  const ph = list => splitList(list).map(p => { const d = tel(p); return d ? `<a class="num" href="tel:+${d}">${esc(p)}</a>` : `<span class="num">${esc(p)}</span>`; }).join('<br>');
+  const mob = splitList(s.Mobiles).map(p => { const d = tel(p);
     return d ? `<a class="num" href="tel:+${d}">${esc(p)}</a>${isMobileKSA(d) ? ` · <a href="https://wa.me/${d}" target="_blank" rel="noopener">${t('whatsapp')}</a>` : ''}` : `<span class="num">${esc(p)}</span>`; }).join('<br>');
   const rv = revBy[s.ID] || [], notes = (s.Notes || '').replace(/NOT ACTIVE/i, '').trim();
+  const cats = s._cats.length ? `<div class="tagrow">${s._cats.map(c => `<span class="tagc">${esc(catName(c))}</span>`).join('')}</div>` : '';
   return `<dl class="dl">
+    ${line('cats', cats)}
     ${line('contact', esc(s.Contacts).replace(/ ; /g, '، '))}${line('mobile', mob)}${line('phone', ph(s.Phones))}
-    ${line('fax', split(s.Fax).map(f => `<span class="num">${esc(f)}</span>`).join('<br>'))}
-    ${line('email', split(s.Emails).map(e => `<a href="mailto:${esc(e)}" dir="ltr">${esc(e)}</a>`).join('<br>'))}
-    ${line('brands', esc(s.Brands))}${line('spec', esc(s.Specialty))}${line('address', esc(s.Address))}${line('notes', esc(notes))}
+    ${line('fax', splitList(s.Fax).map(f => `<span class="num">${esc(f)}</span>`).join('<br>'))}
+    ${line('email', splitList(s.Emails).map(e => `<a href="mailto:${esc(e)}" dir="ltr">${esc(e)}</a>`).join('<br>'))}
+    ${line('city', esc(cityName(s.City)))}${line('brands', esc(s.Brands).replace(/ ; /g, '، '))}${line('spec', esc(s.Specialty))}${line('address', esc(s.Address))}${line('notes', esc(notes))}
    </dl>
    <div class="acts"><button class="btn primary" data-share="${esc(s.ID)}">${icon('wa')}${t('share_wa')}</button><button class="btn" data-rate="${esc(s.ID)}">${icon('star')}${t('rate')}</button></div>
    <div class="reviews">
@@ -705,10 +967,15 @@ function detailHTML(s){
    </div>
    ${s.Submitted_By ? `<p class="muted" style="margin:10px 0 0">${t('added_by')}: ${esc(s.Submitted_By)}</p>` : ''}`;
 }
+function listTitle(){
+  if (filt.cat) return catName(filt.cat);
+  if (filt.group) return groupName(GROUP_OF(filt.group));
+  return mode === 'con' ? t('all_con') : t('all_sup');
+}
 function renderList(){
-  renderCityChips();
+  renderChips();
   const list = filtered();
-  $('#list-title').textContent = filt.cat ? (catLabel(DATA.suppliers.find(s => s.Category === filt.cat) || {Category:filt.cat})) : t('all_sup');
+  $('#list-title').textContent = listTitle();
   $('#count').textContent = list.length > shownLimit ? t('showing', shownLimit, list.length) : t('found', list.length);
   $('#list').innerHTML = list.slice(0, shownLimit).map(cardHTML).join('');
   $('#empty').hidden = !!list.length;
@@ -720,6 +987,276 @@ function toggleCard(head){
   card.classList.toggle('open', open); head.setAttribute('aria-expanded', open);
   const s = byId[head.dataset.id];
   if (open && s) card.querySelector('.detail').innerHTML = detailHTML(s);
+}
+
+/* ---------- Excel (export, template, import) ---------- */
+let xlsxP = null;
+function loadXLSX(){
+  if (window.XLSX) return Promise.resolve(window.XLSX);
+  return xlsxP || (xlsxP = new Promise((ok, no) => {
+    const sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    sc.onload = () => ok(window.XLSX); sc.onerror = () => { xlsxP = null; no(new Error('xlsx')); };
+    document.head.appendChild(sc);
+  }));
+}
+const COLS = [['Name','اسم الشركة','Company'],['Name_AR','الاسم بالعربي','Arabic name'],['Type','النوع','Type'],['Category','التخصصات','Specialties'],
+  ['City','المدينة','City'],['Contacts','الشخص المسؤول','Contact person'],['Mobiles','الجوال','Mobile'],['Phones','هاتف المكتب','Office phone'],
+  ['Emails','الإيميل','E-mail'],['Brands','الماركات','Brands'],['Address','العنوان','Address']];
+async function exportList(){
+  const q = $('#q').value.trim();
+  if (!filt.group && !filt.cat && !filt.city && !q) return toast(t('x_need'));
+  let X; try { X = await loadXLSX(); } catch(e) { return toast(t('bulk_libfail')); }
+  const L = lang === 'ar' ? 1 : 2;
+  const rows = filtered().map(s => COLS.map(([k]) => k === 'Category' ? s._cats.map(catName).join('، ') : k === 'Type' ? typeLabel(s[k]) : k === 'City' ? cityName(s.City) : String(s[k] || '').replace(/ ; /g, ' / ')));
+  const head = [[t('x_title')], [listTitle() + (q ? ' – ' + q : '') + (filt.city ? ' – ' + cityName(filt.city) : '') + ' · ' + new Date().toISOString().slice(0, 10)],
+    [t('x_join') + ': ' + CONFIG.JOIN_LINK], [CONFIG.SITE_URL], [], COLS.map(c => c[L])];
+  const ws = X.utils.aoa_to_sheet(head.concat(rows));
+  ws['!cols'] = COLS.map((c, i) => ({wch: [28, 22, 10, 40, 12, 22, 20, 18, 30, 30, 30][i]}));
+  if (lang === 'ar') ws['!views'] = [{RTL: true}];
+  const wb = X.utils.book_new(); wb.Workbook = {Views: [{RTL: lang === 'ar'}]};
+  X.utils.book_append_sheet(wb, ws, 'Suppliers');
+  X.writeFile(wb, `Elec-in-KSA-${(listTitle() + (q ? '-' + q : '')).replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40)}.xlsx`);
+  toast(t('x_done'));
+}
+const TPL_HEAD = ['اسم الشركة *', 'الجوال *', 'هاتف المكتب', 'الإيميل', 'التخصص', 'المدينة', 'الشخص المسؤول', 'الماركات', 'العنوان', 'ملاحظات'];
+async function downloadTemplate(){
+  let X; try { X = await loadXLSX(); } catch(e) { return toast(t('bulk_libfail')); }
+  const ws = X.utils.aoa_to_sheet([TPL_HEAD, ['شركة المثال للكابلات', '0501234567', '0138000000', 'sales@example.com', 'الكابلات، حوامل الكابلات', 'الدمام', 'م. أحمد', 'Bahra, Elsewedy', '', '']]);
+  ws['!cols'] = TPL_HEAD.map(() => ({wch: 22})); ws['!views'] = [{RTL: true}];
+  const cats = [['المجموعة', 'التخصص (اكتبه كما هو أو قريباً منه)']].concat(...TAXONOMY.map(g => g.cats.map(c => [g.ar, c[1]])));
+  const ws2 = X.utils.aoa_to_sheet(cats); ws2['!cols'] = [{wch: 24}, {wch: 44}]; ws2['!views'] = [{RTL: true}];
+  const wb = X.utils.book_new(); wb.Workbook = {Views: [{RTL: true}]};
+  X.utils.book_append_sheet(wb, ws, 'الموردون'); X.utils.book_append_sheet(wb, ws2, 'التخصصات');
+  X.writeFile(wb, 'Elec-in-KSA-suppliers-template.xlsx');
+}
+
+/* ---------- reading free text: pasted messages, vCards, Excel cells ---------- */
+const CAT_WORDS = {
+  'Generators & ATS': ['generator', 'genset', 'مولد', 'مولدات', 'جنريتر', 'cummins', 'perkins'], 'ATS': ['ats', 'تحويل اوتوماتيكي'],
+  'Transformer': ['transformer', 'محول', 'محولات'], 'Package Substations & Panel Boards': ['substation', 'محطه', 'محطات'], 'RMU': ['rmu', 'ring main'],
+  'Medium Voltage Switch Gear 33KV': ['switchgear', 'mv', '33kv', 'جهد متوسط'], 'UPS': ['ups', 'بطاريات', 'battery', 'batteries'], 'Busway': ['busway', 'busduct', 'باسواي'],
+  'Solar & Batteries': ['solar', 'pv', 'شمسيه', 'سولار', 'inverter'], 'LV & MV Panel Boards': ['panel', 'لوحات', 'لوحه', 'طبلون', 'mdb', 'smdb', 'mcc'],
+  'Disconnecting Switches': ['isolator', 'disconnect', 'فصل'], 'Wiring Devices & Floor Box': ['wiring device', 'socket', 'switches', 'افياش', 'فيش', 'floor box', 'mk', 'legrand'],
+  'Cables': ['cable', 'cables', 'كابل', 'كابلات', 'wire', 'اسلاك'], 'Cable Accessories (LV & MV)': ['termination', 'joint', 'raychem', 'ملحقات الكابلات'],
+  'Cable Tray & Accessories': ['tray', 'trunking', 'ladder', 'حوامل', 'تري'], 'PVC Conduits and Accessories': ['conduit', 'pvc', 'emt', 'مواسير'],
+  'Lightning Protection & Earthing': ['earthing', 'grounding', 'lightning', 'تاريض', 'صواعق', 'furse'], 'Electrical Materials (1ST & 2ND Fix)': ['material', 'مواد كهربائيه', 'تاسيس', 'تشطيب'],
+  'Lighting, Fixtures & Poles': ['lighting', 'light', 'fixture', 'poles', 'pole', 'انارة', 'اناره', 'اضاءه', 'كشافات', 'اعمده', 'led', 'philips'],
+  'Low Current Systems & Cables': ['low current', 'تيار خفيف', 'elv'], 'Data & IP Telephony Systems': ['data', 'network', 'telephony', 'شبكات', 'fiber', 'cisco', 'cat6'],
+  'CCTV System': ['cctv', 'camera', 'كاميرات', 'كاميرا', 'مراقبه', 'hikvision'], 'Access Control System': ['access control', 'اكسس', 'تحكم بالدخول', 'kantech'],
+  'BMS System': ['bms', 'building management'], 'Smart Home / KNX': ['knx', 'smart home', 'منازل ذكيه'], 'Public Address System': ['public address', 'pa system', 'نداء'],
+  'Audio Visual & Auditorium Systems': ['audio', 'visual', 'صوتيات'], 'Car Parking System & Gate Barrier System': ['parking', 'barrier', 'مواقف', 'بوابات'],
+  'Fire Alarm, VESDA & Fire Protection': ['fire', 'حريق', 'vesda', 'fm200', 'fm 200', 'notifier', 'simplex'],
+  'Electrical Contracting': ['electrical contracting', 'مقاولات كهربائيه', 'مقاول كهرباء'], 'Low Current Contracting': ['مقاولات تيار خفيف'],
+  'Full MEP Works Contractors': ['mep'], 'O&M & General Contracting': ['o&m', 'maintenance', 'صيانه'], 'Equipment Rental': ['rental', 'تاجير'],
+};
+function guessCats(text){
+  const tx = ' ' + normText(text) + ' ';
+  const found = [];
+  Object.keys(CAT_INFO).forEach(k => {
+    const ci = CAT_INFO[k];
+    const words = (CAT_WORDS[k] || []).concat([k, ci.ar, ci.sar, ci.sen]).map(w => normText(w)).filter(w => w.length >= 2);
+    if (words.some(w => tx.includes(' ' + w + ' ') || (w.length >= 5 && tx.includes(w)))) found.push(k);
+  });
+  return found;
+}
+const CITY_WORDS = Object.keys(CITY_AR).filter(c => !/,/.test(c)).map(c => [c, [c, CITY_AR[c], CITY_AR[c].replace(/^ال/, '')].map(normText)]);
+CITY_WORDS.push(['Al Khobar', ['khobar', 'الخبر', 'خبر']], ['Jeddah', ['jeddah', 'jedda', 'جده']], ['Al Hasa', ['hofuf', 'ahsa', 'الاحساء', 'الهفوف']]);
+function guessCity(text){
+  const tx = ' ' + normText(text) + ' ';
+  const hit = CITY_WORDS.find(([, ws]) => ws.some(w => w.length >= 3 && tx.includes(' ' + w + ' ')));
+  return hit ? hit[0] : '';
+}
+const PHONE_RE = /(?:\+|00)?\d[\d\s\-().]{6,}\d/g;
+const EMAIL_RE = /[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g;
+const COMPANY_RE = /(شركه|شركة|مؤسسه|مؤسسة|مصنع|مجموعه|مجموعة|\bco\b|company|\best\b|ltd|llc|trading|factory|industries|group|holding|electric|cables?|lighting|systems?)/i;
+const PERSON_RE = /^(م\s*\.?|المهندس|مهندس|eng\.?|engr\.?|mr\.?|mrs\.?|ms\.?|الاستاذ|أ\.)\s*/i;
+function parseText(text){
+  const out = {Mobiles: [], Phones: [], Emails: []};
+  const raw = String(text || '').replace(/\r/g, '');
+  (raw.match(EMAIL_RE) || []).forEach(e => { if (!out.Emails.includes(e.toLowerCase())) out.Emails.push(e.toLowerCase()); });
+  const lines = raw.split('\n').map(l => l.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/gu, '').trim()).filter(Boolean);
+  const keep = [];
+  lines.forEach(l => {
+    if (/https?:\/\/|chat\.whatsapp\.com|www\./i.test(l)) return;
+    const noMail = l.replace(EMAIL_RE, ' ');
+    const phones = (noMail.match(PHONE_RE) || []).filter(p => p.replace(/\D/g, '').length >= 8);
+    phones.forEach(p => { const k = phoneKey(p); if (!k) return;
+      const list = /^5\d{8}$/.test(k) ? out.Mobiles : out.Phones;
+      if (![...out.Mobiles, ...out.Phones].some(x => phoneKey(x) === k)) list.push(p.trim()); });
+    const rest = noMail.replace(PHONE_RE, ' ').replace(/(mobile|mob|tel|phone|fax|email|e-mail|جوال|موبايل|هاتف|تلفون|فاكس|ايميل|بريد)\s*[:：.]?/gi, ' ')
+      .replace(/[|•·,،:–—\-]+/g, ' ').replace(/\s+/g, ' ').trim();
+    if (rest.length >= 2 && !/^(dir_line|للانضمام|join)/i.test(rest) && !/دليل موردي الكهرباء|قروب|whatsapp group|للانضمام/i.test(rest)) keep.push({l: rest, orig: l, fax: /fax|فاكس/i.test(l)});
+  });
+  // share-format support: "Name — الاسم" on the first line
+  let name = '', nameAr = '', contact = '';
+  const company = keep.find(x => COMPANY_RE.test(x.l) && !PERSON_RE.test(x.l));
+  const person = keep.find(x => PERSON_RE.test(x.l));
+  const first = keep.find(x => x !== person && !x.fax && x.l.length <= 80 && !CITY_WORDS.some(([, ws]) => ws.includes(normText(x.l))));
+  const pick = company || first;
+  if (pick) { const parts = pick.l.split(/\s+—\s+|\s+-\s+/); name = parts[0]; if (parts[1] && /[؀-ۿ]/.test(parts[1]) && !/[؀-ۿ]/.test(parts[0])) nameAr = parts[1]; }
+  if (person) contact = person.l.replace(/\s+(—|-).*$/, '').trim();
+  if (out.Phones.length && /fax|فاكس/i.test(raw)) {
+    const faxLine = lines.find(l => /fax|فاكس/i.test(l));
+    if (faxLine) out.Phones = out.Phones.filter(p => !faxLine.includes(p));
+  }
+  return {Name: name, Name_AR: nameAr, Contacts: contact, Mobiles: out.Mobiles.join(' , '), Phones: out.Phones.join(' , '),
+    Emails: out.Emails.join(' , '), City: guessCity(raw), cats: guessCats(raw)};
+}
+function parseVcf(text){
+  const lines = String(text).replace(/\r\n[ \t]/g, '').split(/\r?\n/);
+  const out = {Mobiles: [], Phones: [], Emails: []}; let fn = '', org = '', adr = '', title = '';
+  lines.forEach(l => {
+    const m = l.match(/^([A-Z\-]+)((?:;[^:]*)?):(.*)$/i); if (!m) return;
+    const key = m[1].toUpperCase(), params = m[2].toUpperCase(), val = m[3].replace(/\\,/g, ',').replace(/\\;/g, ';').trim();
+    if (key === 'FN') fn = val;
+    else if (key === 'ORG') org = val.split(';').filter(Boolean).join(' ');
+    else if (key === 'TITLE') title = val;
+    else if (key === 'TEL') { const k = phoneKey(val); if (k) (/^5\d{8}$/.test(k) || /CELL|MOBILE/.test(params) ? out.Mobiles : out.Phones).push(val); }
+    else if (key === 'EMAIL') out.Emails.push(val);
+    else if (key === 'ADR') adr = val.split(';').filter(Boolean).join(' ');
+  });
+  return {Name: org || fn, Contacts: org ? fn : '', Mobiles: out.Mobiles.join(' , '), Phones: out.Phones.join(' , '), Emails: out.Emails.join(' , '),
+    Address: adr, City: guessCity(adr + ' ' + org), cats: guessCats(org + ' ' + title)};
+}
+
+/* ---------- add form ---------- */
+let picked = new Set();
+const COMMON_CITIES = ['Riyadh', 'Dammam', 'Al Khobar', 'Jeddah', 'Jubail', 'Al Hasa', 'Makkah', 'Madinah'];
+function renderPicker(){
+  $('#cat-picker').innerHTML = TAXONOMY.map(g => {
+    const n = g.cats.filter(c => picked.has(c[0])).length;
+    return `<div class="pg"><button type="button" class="pg-h" data-pickgroup="${g.id}">${icon(g.icon)}<span>${esc(groupName(g))}</span><span class="n">${n ? n + '/' + g.cats.length : ''}</span></button>
+      <div class="pg-c">${g.cats.map(c => `<button type="button" class="pc" data-pick="${esc(c[0])}" aria-pressed="${picked.has(c[0])}">${esc(lang === 'ar' ? c[2] : c[3])}</button>`).join('')}</div></div>`;
+  }).join('');
+  $('#cat-count').textContent = t('picked', picked.size);
+}
+function renderCityPick(){
+  const cur = $('#a-city').value.trim();
+  $('#a-city-chips').innerHTML = COMMON_CITIES.map(c => `<button type="button" class="chip ${cur === c ? 'on' : ''}" data-acity="${esc(c)}">${esc(cityName(c))}</button>`).join('');
+}
+function setType(v){ $$('#a-type [data-v]').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); }
+const getType = () => ($('#a-type [aria-pressed=true]') || {}).dataset?.v || 'Supplier';
+function fillForms(){
+  renderPicker(); renderCityPick();
+  [['#a-by', ME.name], ['#a-byph', ME.phone], ['#rq-name', ME.name], ['#rq-phone', ME.phone], ['#bk-by', ME.name], ['#bk-byph', ME.phone]]
+    .forEach(([id, val]) => { const el = $(id); if (el && !el.value) el.value = val || ''; });
+}
+function applyParsed(p){
+  let n = 0;
+  const put = (id, val) => { if (val && !$(id).value.trim()) { $(id).value = val; n++; } };
+  put('#a-name', p.Name); put('#a-mob', [p.Mobiles, p.Phones && !p.Mobiles ? p.Phones : ''].filter(Boolean).join(' , '));
+  if (p.Mobiles && p.Phones) put('#a-tel', p.Phones);
+  put('#a-email', p.Emails); put('#a-contact', p.Contacts); put('#a-addr', p.Address);
+  if (p.City && !$('#a-city').value) { $('#a-city').value = p.City; n++; renderCityPick(); }
+  (p.cats || []).forEach(c => picked.add(c)); if ((p.cats || []).length) n++;
+  renderPicker();
+  if ($('#a-email').value || $('#a-tel').value || $('#a-contact').value) $('#more-d').open = true;
+  $('#filled').hidden = false; $('#filled').textContent = n ? t('filled', n) : t('filled_none');
+  checkDup();
+}
+function formData(){
+  return {Name: v('#a-name'), Mobiles: v('#a-mob').replace(/\s*[,،/]\s*/g, ' ; '), Phones: v('#a-tel').replace(/\s*[,،/]\s*/g, ' ; '), Emails: v('#a-email').replace(/\s*[,،]\s*/g, ' ; '),
+    Category: [...picked], Type: getType(), City: v('#a-city'), Contacts: v('#a-contact'), Brands: v('#a-brands'), Specialty: v('#a-spec'),
+    Address: v('#a-addr'), Notes: v('#a-notes'), Submitted_By: v('#a-by'), Submitter_Phone: v('#a-byph'), Request_ID: answerReq ? answerReq.id : ''};
+}
+let dupTimer;
+function checkDup(){
+  clearTimeout(dupTimer);
+  dupTimer = setTimeout(() => {
+    const d = formData(), box = $('#dup');
+    if (!d.Name && !d.Mobiles && !d.Emails) { box.hidden = true; return; }
+    const r = findDuplicate(d, DATA.suppliers);
+    if (!r) { box.hidden = true; return; }
+    box.hidden = false; box.className = 'dup' + (r.level === 'likely' ? ' likely' : '');
+    box.innerHTML = (r.level === 'same' ? t('dup_same', esc(r.item.Name)) + `<div>${t('dup_same_p')}</div>` : t('dup_likely', esc(r.item.Name)))
+      + `<div><button type="button" data-open="${esc(r.item.ID)}">${t('dup_open')}</button></div>`;
+  }, 250);
+}
+function resetAdd(){
+  $('#f-add').reset(); picked = new Set(); setType(mode === 'con' ? 'Contractor' : 'Supplier');
+  $('#dup').hidden = true; $('#filled').hidden = true; $('#paste-box').hidden = true; $('#paste-text').value = ''; $('#more-d').open = false;
+  fillForms(); setAnswer(null);
+}
+
+/* ---------- bulk upload ---------- */
+const HEAD_MAP = [
+  ['Name', /^(اسم الشركه|اسم الشركة|الشركه|الشركة|اسم المورد|المورد|المصنع|اسم|company|company name|supplier|supplier name|vendor|vendor name|name|brand name|supplier\/vendor\/brand name)\b/i],
+  ['Mobiles', /(جوال|موبايل|الجوال|واتساب|mobile|cell|whatsapp|gsm)/i],
+  ['Phones', /(هاتف|تلفون|رقم|phone|tel|contact ?#|contact no|telephone)/i],
+  ['Emails', /(ايميل|إيميل|بريد|email|e-mail|mail)/i],
+  ['Category', /(تخصص|تصنيف|نشاط|المجال|مجال|category|specialty|speciality|scope|activity|products?|service)/i],
+  ['City', /(مدينه|مدينة|المدينه|المدينة|city|location|region|منطقه)/i],
+  ['Contacts', /(المسؤول|مسؤول|الشخص|contact person|attn|contact name|person|sales)/i],
+  ['Brands', /(ماركات|الماركات|وكالات|brands?|agency|agencies)/i],
+  ['Address', /(عنوان|العنوان|address)/i],
+  ['Notes', /(ملاحظات|notes?|remarks?)/i],
+  ['Type', /(النوع|نوع|type)/i],
+];
+function mapHeader(row){
+  const map = {};
+  row.forEach((h, i) => {
+    const s = String(h || '').trim(); if (!s) return;
+    for (const [field, re] of HEAD_MAP) { if (re.test(s) && !(field in map)) { map[field] = i; break; } }
+  });
+  return map;
+}
+function rowToSupplier(r, map){
+  const g = f => map[f] == null ? '' : String(r[map[f]] == null ? '' : r[map[f]]).trim();
+  const all = [g('Mobiles'), g('Phones')].join(' , ');
+  const p = parseText(all);
+  const catText = g('Category');
+  let cats = splitList(catText.replace(/[،,\/]/g, ';')).map(x => {
+    const exact = Object.keys(CAT_INFO).find(k => normText(k) === normText(x) || normText(CAT_INFO[k].ar) === normText(x) || normText(CAT_INFO[k].sar) === normText(x));
+    return exact || '';
+  }).filter(Boolean);
+  if (!cats.length && catText) cats = guessCats(catText);
+  if (!cats.length && catText) cats = [catText.slice(0, 80)];
+  const typeTxt = normText(g('Type'));
+  return {Name: g('Name'), Mobiles: p.Mobiles.replace(/ , /g, ' ; '), Phones: p.Phones.replace(/ , /g, ' ; '),
+    Emails: splitList(g('Emails').replace(/[,،\s]+/g, ';')).filter(e => /@/.test(e)).join(' ; '), Category: cats,
+    City: guessCity(g('City')) || g('City'), Contacts: g('Contacts'), Brands: g('Brands'), Address: g('Address'), Notes: g('Notes'),
+    Type: /مصنع|manufact|factory/.test(typeTxt) ? 'Manufacturer' : /مقاول|contract/.test(typeTxt) ? 'Contractor' : 'Supplier'};
+}
+let BULK = [];
+async function readBulk(file){
+  const m = $('#bulk-msg'); m.innerHTML = `<div class="msg">${t('bulk_reading')}</div>`; $('#bulk-preview').hidden = true;
+  let X; try { X = await loadXLSX(); } catch(e) { return showMsg(m, false, t('bulk_libfail')); }
+  const buf = await file.arrayBuffer();
+  const wb = X.read(buf, {type: 'array'});
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = X.utils.sheet_to_json(ws, {header: 1, raw: false, defval: ''}).filter(r => r.some(c => String(c).trim()));
+  if (!rows.length) return showMsg(m, false, t('bulk_empty'));
+  let hi = rows.findIndex(r => { const mp = mapHeader(r); return 'Name' in mp && Object.keys(mp).length >= 2; });
+  if (hi < 0) return showMsg(m, false, t('bulk_bad'));
+  const map = mapHeader(rows[hi]);
+  const known = DATA.suppliers.slice(), seen = [];
+  BULK = rows.slice(hi + 1).map(r => rowToSupplier(r, map)).filter(s => s.Name || s.Mobiles || s.Phones).map(s => {
+    let st = 'new', match = null;
+    if (!s.Name || !(s.Mobiles || s.Phones || s.Emails)) st = 'invalid';
+    else {
+      const d = findDuplicate(s, known.concat(seen));
+      if (d && d.level === 'same') { match = d.item; st = Object.keys(mergeDiff(d.item, s)).length ? 'update' : 'exists'; }
+    }
+    if (st !== 'invalid') seen.push(Object.assign({ID: 'tmp' + seen.length}, s, {Category: joinList(s.Category)}));
+    return {s, st, match};
+  });
+  m.innerHTML = '';
+  renderBulk();
+}
+function renderBulk(){
+  const c = st => BULK.filter(x => x.st === st).length;
+  $('#bulk-preview').hidden = false;
+  $('#bulk-sums').innerHTML = [['new', 's_new', '🟢'], ['update', 's_upd', '🔄'], ['exists', 's_exists', '⛔'], ['invalid', 's_invalid', '⚠️']]
+    .map(([st, k, e]) => `<div>${e}<b>${c(st)}</b>${t(k)}</div>`).join('');
+  const send = c('new') + c('update');
+  $('#bulk-send').textContent = send ? t('bulk_send', send) : t('bulk_nothing');
+  $('#bulk-send').disabled = !send;
+  const E = {new: '🟢', update: '🔄', exists: '⛔', invalid: '⚠️'};
+  const shown = BULK.slice(0, 150);
+  $('#bulk-rows').innerHTML = shown.map(x => `<div class="br"><span class="st">${E[x.st]}</span><span><b>${esc(x.s.Name || '—')}</b>
+    <small>${esc([splitList(x.s.Mobiles)[0] || splitList(x.s.Phones)[0], x.s.Category.map(catShort).join('، '), cityName(x.s.City)].filter(Boolean).join(' · '))}${x.match ? ' · ' + esc(t('s_exists')) + ': ' + esc(x.match.Name) : ''}</small></span></div>`).join('')
+    + (BULK.length > shown.length ? `<div class="br"><small>${t('bulk_more', BULK.length - shown.length)}</small></div>` : '');
 }
 
 /* ---------- requests ---------- */
@@ -747,23 +1284,17 @@ function renderBoard(){
     : `<li><span class="who" style="font-weight:400;color:var(--ink-3)">${t('board_empty')}</span></li>`;
 }
 
-/* ---------- forms ---------- */
-function fillForms(){
-  const cats = categories();
-  const keep = $('#a-cat').value;
-  $('#a-cat').innerHTML = `<option value="">${t('choose')}</option>` + cats.map(c => `<option value="${esc(c.key)}">${esc(c.label)}</option>`).join('') + `<option value="Other">${t('other')}</option>`;
-  $('#a-cat').value = keep;
-  [['#a-by', ME.name], ['#a-byph', ME.phone], ['#rq-name', ME.name], ['#rq-phone', ME.phone]].forEach(([id, val]) => { const el = $(id); if (el && !el.value) el.value = val || ''; });
-}
+/* ---------- sending ---------- */
 function remember(name, phone){ ME = {name: name || ME.name, phone: phone || ME.phone}; try { localStorage.setItem('me', JSON.stringify(ME)); } catch(e){} }
-async function send(type, data, form){
-  if (form.querySelector('input[name=website]').value) return {ok:true};
+async function post(body, form){
+  if (form && form.querySelector('input[name=website]') && form.querySelector('input[name=website]').value) return {ok:true};
   if (!CONFIG.API_URL) return {ok:false, error:'not_connected'};
   try {
-    const res = await fetch(CONFIG.API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({type, data})});
+    const res = await fetch(CONFIG.API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(body)});
     return await res.json();
   } catch(e) { return {ok:false, error:'net'}; }
 }
+const send = (type, data, form) => post({type, data}, form);
 const showMsg = (el, ok, text) => { el.innerHTML = `<div class="msg ${ok ? 'ok' : 'err'}">${esc(text)}</div>`; };
 const errText = r => r.error === 'not_connected' ? t('not_connected') : r.error === 'busy' ? t('busy') : r.error === 'missing' ? t('need_contact') : t('neterr');
 const v = id => $(id).value.trim();
@@ -771,18 +1302,17 @@ const v = id => $(id).value.trim();
 $('#f-add').addEventListener('submit', async e => {
   e.preventDefault();
   const m = $('#a-msg'), btn = e.target.querySelector('[type=submit]');
-  if (!v('#a-name')) return showMsg(m, false, t('need_name'));
-  if (!v('#a-mob') && !v('#a-tel') && !v('#a-email')) return showMsg(m, false, t('need_contact'));
-  const cat = $('#a-cat').value, cs = DATA.suppliers.find(s => s.Category === cat);
-  const data = {Name:v('#a-name'), Brands:v('#a-brands'), Category:cat, Category_AR: cs ? cs.Category_AR : '', Type:$('#a-type').value,
-    Specialty:v('#a-spec'), Contacts:v('#a-contact'), City:v('#a-city'), Mobiles:v('#a-mob').replace(/\s*[,،/]\s*/g, ' ; '),
-    Phones:v('#a-tel').replace(/\s*[,،/]\s*/g, ' ; '), Emails:v('#a-email'), Address:v('#a-addr'), Notes:v('#a-notes'),
-    Submitted_By:v('#a-by'), Submitter_Phone:v('#a-byph'), Request_ID: answerReq ? answerReq.id : ''};
+  const data = formData();
+  if (!data.Name) return showMsg(m, false, t('need_name'));
+  if (!data.Mobiles && !data.Phones && !data.Emails) return showMsg(m, false, t('need_contact'));
+  if (!data.Category.length) return showMsg(m, false, t('need_cats'));
   btn.disabled = true; m.textContent = t('sending');
   const r = await send('supplier', data, e.target);
   btn.disabled = false;
-  if (r.ok) { showMsg(m, true, t('sent_sup')); remember(data.Submitted_By, data.Submitter_Phone); e.target.reset(); fillForms(); setAnswer(null); }
-  else showMsg(m, false, errText(r));
+  if (!r.ok) return showMsg(m, false, errText(r));
+  remember(data.Submitted_By, data.Submitter_Phone);
+  const msg = r.status === 'exists' ? t('sent_exists', r.existing || data.Name) : (r.status === 'update' || r.status === 'merged_pending') ? t('sent_upd', r.existing || data.Name) : t('sent_sup');
+  resetAdd(); showMsg(m, true, msg);
 });
 $('#f-req').addEventListener('submit', async e => {
   e.preventDefault();
@@ -808,52 +1338,64 @@ document.addEventListener('submit', async e => {
   btn.disabled = false;
   if (r.ok) { showMsg(m, true, t('sent_rv')); f.querySelector('textarea').value = ''; } else showMsg(m, false, errText(r));
 });
+$('#bulk-send').addEventListener('click', async () => {
+  const rows = BULK.filter(x => x.st === 'new' || x.st === 'update').map(x => Object.assign({}, x.s));
+  if (!rows.length) return;
+  const by = v('#bk-by'), byPhone = v('#bk-byph'); remember(by, byPhone);
+  const b = $('#bulk-send'), m = $('#bulk-res'); b.disabled = true; m.textContent = t('sending');
+  const r = await post({type: 'bulk', rows, by, byPhone});
+  if (!r.ok) { b.disabled = false; return showMsg(m, false, errText(r)); }
+  showMsg(m, true, t('bulk_done', r.summary.new, r.summary.update));
+  BULK = []; $('#bulk-rows').innerHTML = ''; $('#bulk-sums').innerHTML = ''; b.textContent = '✓';
+});
 function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req) $('#answering').textContent = t('answering', req.text); }
 
 /* ---------- share ---------- */
-async function share(s){
-  const CITY_AR = {'Riyadh':'الرياض','Dammam':'الدمام','Al Khobar':'الخبر','Jeddah':'جدة','Eastern Province':'المنطقة الشرقية','Jubail':'الجبيل',
-    'Al Hasa':'الأحساء','Madinah':'المدينة المنورة','UAE':'الإمارات','China':'الصين','Canada':'كندا','Austria':'النمسا','Dammam, Riyadh, Jeddah':'الدمام، الرياض، جدة'};
-  const CAT_EMOJI = [[/fire|vesda/i,'🔥'],[/lightning|earthing/i,'🌩'],[/^led|lighting|fixture|poles/i,'💡'],[/cctv|camera|access control|parking|check in/i,'📹'],
-    [/data|telephony|low current|clock|signage|public address|audio/i,'📡'],[/cable|tray|conduit|trunking|busway/i,'🔌'],
-    [/generator|ups|ats|transformer|substation|rmu|switch ?gear|sbu/i,'⚡'],[/panel|disconnect|wiring|materials|supplies/i,'🔧'],[/./,'🏭']];
-  const emoji = (CAT_EMOJI.find(([re]) => re.test(s.Category || '')) || [, '🏭'])[1];
-  const city = s.City ? (lang === 'ar' ? (CITY_AR[s.City] || s.City) : s.City) : '';
-  const head = ['🏢 ' + s.Name + (s.Name_AR ? ' — ' + s.Name_AR : ''), emoji + ' ' + catLabel(s) + (city ? ' — ' + city : '')];
+function share(s){
+  const CAT_EMOJI = [['fire', '🔥'], ['lighting', '💡'], ['lowcurrent', '📡'], ['cables', '🔌'], ['power', '⚡'], ['panels', '🔧'], ['contracting', '🛠']];
+  const emoji = (CAT_EMOJI.find(([g]) => s._groups[0] === g) || [, '🏭'])[1];
+  const city = s.City ? cityName(s.City) : '';
+  const cats = s._cats.slice(0, 3).map(catName).join('، ') + (s._cats.length > 3 ? '…' : '');
+  const head = ['🏢 ' + s.Name + (s.Name_AR ? ' — ' + s.Name_AR : ''), emoji + ' ' + cats + (city ? ' — ' + city : '')];
   const info = [];
   if (s.Contacts) info.push('👤 ' + s.Contacts.replace(/ ; /g, '، '));
-  split(s.Mobiles).forEach(p => info.push('📱 ' + p));
-  split(s.Phones).forEach(p => info.push('☎️ ' + p));
-  split(s.Emails).forEach(p => info.push('✉️ ' + p));
+  splitList(s.Mobiles).forEach(p => info.push('📱 ' + p));
+  splitList(s.Phones).forEach(p => info.push('☎️ ' + p));
+  splitList(s.Emails).forEach(p => info.push('✉️ ' + p));
   const home = CONFIG.SITE_URL.replace(/[?#].*$/, '');
   const text = head.join('\n') + (info.length ? '\n\n' + info.join('\n') : '') +
     '\n\n' + t('dir_line') + '\n' + home + '\n\n' + t('join_line') + '\n' + CONFIG.JOIN_LINK;
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
 }
-function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2800); }
 
 /* ---------- navigation (hash routes so the phone back button works) ---------- */
-const VIEWS = ['home', 'list', 'requests', 'board', 'add'];
-function go(view, opts = {}){
-  if (opts.cat !== undefined) { filt.cat = opts.cat; filt.city = ''; }
+const VIEWS = ['home', 'list', 'requests', 'board', 'add', 'bulk'];
+function go(view){
   if (view === 'list') { shownLimit = 30; renderList(); }
-  const h = '#' + view + (view === 'list' && filt.cat ? '/' + encodeURIComponent(filt.cat) : '');
+  const h = '#' + view + (view === 'list' && (filt.group || filt.cat) ? '/' + encodeURIComponent(filt.group + '|' + filt.cat) : '');
   if (location.hash !== h) location.hash = h; else route();
 }
 function route(){
   const m = location.hash.match(/^#s=([\w-]+)/);
   if (m && byId[m[1]]) { openSupplier(m[1]); return; }
-  const [view, cat] = location.hash.slice(1).split('/');
+  const [view, st] = location.hash.slice(1).split('/');
   const name = VIEWS.includes(view) ? view : 'home';
-  if (name === 'list') { const c = cat ? decodeURIComponent(cat) : ''; if (c !== filt.cat) { filt.cat = c; renderList(); } }
+  if (name === 'list') {
+    const [g, c] = decodeURIComponent(st || '').split('|');
+    if ((g || '') !== filt.group || (c || '') !== filt.cat) { filt.group = g || ''; filt.cat = c || ''; }
+    renderList();
+  }
   if (name !== 'add') setAnswer(null);
   VIEWS.forEach(n => $('#v-' + n).hidden = n !== name);
   $$('.nav [data-go]').forEach(b => { if (b.dataset.go === name) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  $('#export').hidden = name !== 'list';
   window.scrollTo(0, 0);
 }
 function openSupplier(id){
   const s = byId[id]; if (!s) return;
-  filt = {cat:'', city:''}; $('#q').value = s.Name; shownLimit = 30;
+  if (!inMode(s)) { mode = isSup(s) ? 'sup' : 'con'; renderHome(); }
+  filt = {group:'', cat:'', city:''}; $('#q').value = s.Name; shownLimit = 30;
   history.replaceState(null, '', '#list'); route(); renderList();
   const head = document.querySelector(`#r-${CSS.escape(id)} .sc-head`);
   if (head) { toggleCard(head); setTimeout(() => head.scrollIntoView({block:'center', behavior:'smooth'}), 60); }
@@ -863,22 +1405,37 @@ window.addEventListener('hashchange', route);
 /* ---------- events ---------- */
 let timer;
 $('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { shownLimit = 30; renderList(); }, 120); });
-$('#q-home').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('#q').value = $('#q-home').value; filt = {cat:'', city:''}; go('list'); } });
-$('#q-home').addEventListener('input', () => { clearTimeout(timer); if ($('#q-home').value.trim().length >= 2) timer = setTimeout(() => { $('#q').value = $('#q-home').value; filt = {cat:'', city:''}; go('list'); setTimeout(() => { const q = $('#q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 30); }, 450); });
+const homeSearch = () => { $('#q').value = $('#q-home').value; filt = {group:'', cat:'', city:''}; go('list'); };
+$('#q-home').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); homeSearch(); } });
+$('#q-home').addEventListener('input', () => { clearTimeout(timer); if ($('#q-home').value.trim().length >= 2) timer = setTimeout(() => { homeSearch(); setTimeout(() => { const q = $('#q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 30); }, 450); });
 $('#more').addEventListener('click', () => { shownLimit += 40; renderList(); });
 $('#empty-ask').addEventListener('click', () => { $('#rq-text').value = $('#q').value.trim(); go('requests'); });
-$('#empty-add').addEventListener('click', () => { $('#a-name').value = $('#q').value.trim(); go('add'); });
+$('#empty-add').addEventListener('click', () => { $('#a-name').value = $('#q').value.trim(); go('add'); checkDup(); });
+$('#export').addEventListener('click', exportList);
+['#a-name', '#a-mob', '#a-email', '#a-tel'].forEach(id => $(id).addEventListener('input', checkDup));
+$('#a-city').addEventListener('input', renderCityPick);
+$('#b-paste').addEventListener('click', () => { $('#paste-box').hidden = !$('#paste-box').hidden; if (!$('#paste-box').hidden) $('#paste-text').focus(); });
+$('#paste-go').addEventListener('click', () => { applyParsed(parseText($('#paste-text').value)); $('#paste-box').hidden = true; });
+$('#b-vcf').addEventListener('click', () => $('#vcf-file').click());
+$('#vcf-file').addEventListener('change', async e => { const f = e.target.files[0]; if (!f) return; applyParsed(parseVcf(await f.text())); e.target.value = ''; });
+$('#bulk-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) readBulk(f); e.target.value = ''; });
+$('#bulk-tpl').addEventListener('click', downloadTemplate);
 
 document.addEventListener('click', e => {
   const sh0 = e.target.closest('button[data-share]'); if (sh0) { e.stopPropagation(); return share(byId[sh0.dataset.share]); }
   if (e.target.closest('[data-stop]')) return;
   const head = e.target.closest('.sc-head'); if (head) return toggleCard(head);
-  const tile = e.target.closest('[data-cat]'); if (tile) { $('#q').value = ''; return go('list', {cat: tile.dataset.cat}); }
-  if (e.target.closest('#more-cats')) { allCats = !allCats; return renderHome(); }
+  const md = e.target.closest('[data-mode]'); if (md) { mode = md.dataset.mode; try { localStorage.setItem('mode', mode); } catch(e){} renderHome(); renderList(); return; }
+  const grp = e.target.closest('[data-group]'); if (grp) { $('#q').value = ''; filt = {group: grp.dataset.group, cat: '', city: ''}; return go('list'); }
+  const cat = e.target.closest('[data-cat]'); if (cat) { filt.cat = cat.dataset.cat; shownLimit = 30; return renderList(); }
   const city = e.target.closest('[data-city]'); if (city) { filt.city = city.dataset.city; shownLimit = 30; return renderList(); }
-  const g = e.target.closest('[data-go]'); if (g) { if (g.dataset.go === 'list' && g.closest('.nav')) { filt.cat = ''; } return go(g.dataset.go); }
+  const pg = e.target.closest('[data-pickgroup]'); if (pg) { const g = GROUP_OF(pg.dataset.pickgroup); const all = g.cats.every(c => picked.has(c[0]));
+    g.cats.forEach(c => all ? picked.delete(c[0]) : picked.add(c[0])); return renderPicker(); }
+  const pk = e.target.closest('[data-pick]'); if (pk) { const k = pk.dataset.pick; picked.has(k) ? picked.delete(k) : picked.add(k); return renderPicker(); }
+  const ac = e.target.closest('[data-acity]'); if (ac) { $('#a-city').value = $('#a-city').value === ac.dataset.acity ? '' : ac.dataset.acity; return renderCityPick(); }
+  const ty = e.target.closest('#a-type [data-v]'); if (ty) return setType(ty.dataset.v);
+  const g = e.target.closest('[data-go]'); if (g) { if (g.dataset.all) { filt = {group:'', cat:'', city:''}; $('#q').value = ''; } if (g.dataset.go === 'add' && !answerReq) {} return go(g.dataset.go); }
   const op = e.target.closest('[data-open]'); if (op) return openSupplier(op.dataset.open);
-  const sh = e.target.closest('[data-share]'); if (sh) return share(byId[sh.dataset.share]);
   const rt = e.target.closest('[data-rate]'); if (rt) { const f = rt.closest('.detail').querySelector('.rv-form'); f.hidden = !f.hidden; return; }
   const st = e.target.closest('[data-star]'); if (st) { const f = st.closest('form'); f.dataset.rating = st.dataset.star;
     f.querySelectorAll('[data-star]').forEach(b => b.classList.toggle('on', +b.dataset.star <= +st.dataset.star)); return; }
@@ -910,11 +1467,13 @@ function applyLang(){
 $('#lang').addEventListener('click', () => { lang = lang === 'ar' ? 'en' : 'ar'; try { localStorage.setItem('lang', lang); } catch(e){} applyLang(); });
 
 $('#join').href = CONFIG.JOIN_LINK;
+setType(mode === 'con' ? 'Contractor' : 'Supplier');
 paintIcons();
 applyLang();
 route();
 load();
 })();
+
 </script>
 </body>
 </html>
