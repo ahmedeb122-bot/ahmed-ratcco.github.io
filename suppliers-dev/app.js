@@ -95,7 +95,7 @@ const T = {
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
   ed_btn:'اقترح تعديل',ed_btn_adm:'تعديل',ed_h:'صحّح معلومات الشركة',ed_h_adm:'تعديل البطاقة (مشرف)',ed_p:'غيّر ما تريد ثم أرسل. يظهر التعديل في الدليل بعد موافقة المشرف.',ed_p_adm:'أنت مشرف: ما تحفظه يظهر في الدليل فوراً. ما تكتبه يحلّ محلّ القديم.',
   ed_name:'اسم الشركة',ed_name_ar:'الاسم بالعربي',ed_sep:'(افصل بفاصلة ،)',ed_why:'ما الذي تغيّر؟',ed_why_ph:'مثال: المسؤول الجديد للمبيعات في الرياض',ed_secs:'لتغيير الأقسام والتخصصات استخدم',
-  ed_send:'أرسل للمشرف',ed_save:'احفظ وانشر',ed_cancel:'إلغاء',ed_none:'لم تغيّر أي معلومة بعد.',ed_need_by:'اكتب اسمك ليعرف المشرف من اقترح التعديل.',ed_sent:'وصل اقتراحك ✅ سيظهر بعد موافقة المشرف. شكراً لك!',
+  ed_send:'أرسل للمشرف',ed_del:'حذف المورد من الدليل',ed_del_q:n=>`حذف «${n}» من الدليل؟\nيمكنك إرجاعه لاحقاً من لوحة الإدارة ← كل الموردين.`,ed_deleted:'تم الحذف 🗑 يمكنك إرجاعه من لوحة الإدارة.',ed_save:'احفظ وانشر',ed_cancel:'إلغاء',ed_none:'لم تغيّر أي معلومة بعد.',ed_need_by:'اكتب اسمك ليعرف المشرف من اقترح التعديل.',ed_sent:'وصل اقتراحك ✅ سيظهر بعد موافقة المشرف. شكراً لك!',
   ed_saved:'تم الحفظ ✅ ظهر في الدليل.',ed_gone:'هذه الشركة لم تعد في الدليل.',ed_signin:'انتهت جلسة المشرف. ادخل من «دخول المشرفين» ثم حاول مرة أخرى.',
   adm_link:'🔒 دخول المشرفين',adm_open:'لوحة الإدارة',adm_out:'خروج',adm_who:n=>`أنت مشرف${n?': '+n:''}`,
   join_line:'🔹 للانضمام لقروب الواتساب:',dir_line:`📒 صفحة دليل موردي الكهرباء – قروب ${G}`,share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
@@ -142,7 +142,7 @@ const T = {
   copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
   ed_btn:'Suggest a fix',ed_btn_adm:'Edit',ed_h:'Correct this company',ed_h_adm:'Edit card (admin)',ed_p:'Change what you need and send. It shows after an admin approves it.',ed_p_adm:'You are an admin: saving publishes at once. What you type replaces the old info.',
   ed_name:'Company name',ed_name_ar:'Arabic name',ed_sep:'(separate with commas)',ed_why:'What changed?',ed_why_ph:'e.g. new sales contact in Riyadh',ed_secs:'To change sections and specialties use the',
-  ed_send:'Send to admin',ed_save:'Save & publish',ed_cancel:'Cancel',ed_none:'You have not changed anything yet.',ed_need_by:'Enter your name so the admin knows who suggested it.',ed_sent:'Suggestion received ✅ It shows after approval. Thank you!',
+  ed_send:'Send to admin',ed_del:'Delete from directory',ed_del_q:n=>`Delete «${n}» from the directory?\nYou can restore it later from the admin page → All suppliers.`,ed_deleted:'Deleted 🗑 You can restore it from the admin page.',ed_save:'Save & publish',ed_cancel:'Cancel',ed_none:'You have not changed anything yet.',ed_need_by:'Enter your name so the admin knows who suggested it.',ed_sent:'Suggestion received ✅ It shows after approval. Thank you!',
   ed_saved:'Saved ✅ Now live in the directory.',ed_gone:'This company is no longer in the directory.',ed_signin:'Admin session ended. Sign in again from «Admin sign-in».',
   adm_link:'🔒 Admin sign-in',adm_open:'Admin panel',adm_out:'Sign out',adm_who:n=>`You are an admin${n?': '+n:''}`,
   join_line:'🔹 Join the WhatsApp group:',dir_line:`📒 Electrical Suppliers Directory – ${G} group`,share_wa:'Share on WhatsApp',no_wa:'No mobile number',ago_today:'today',ago_days:n=>`${n}d ago`}
@@ -886,7 +886,8 @@ function openEdit(id){
     <div class="f"><label>${t('your_phone')} <span class="muted">${t('optional_phone')}</span></label><input data-byph maxlength="30" dir="ltr" inputmode="tel" value="${esc(ME.phone)}"></div>
     <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">`}
     <div class="acts"><button class="btn primary" type="submit">${t(adm ? 'ed_save' : 'ed_send')}</button><button class="btn" type="button" data-edcancel>${t('ed_cancel')}</button></div>
-    <div class="ed-msg" aria-live="polite"></div>`;
+    <div class="ed-msg" aria-live="polite"></div>
+    ${adm ? `<div class="ed-del"><button class="btn del" type="button" data-eddel="${esc(id)}">🗑 ${t('ed_del')}</button></div>` : ''}`;
   f.hidden = false;
   f.scrollIntoView({block: 'start', behavior: 'smooth'});
 }
@@ -924,6 +925,21 @@ document.addEventListener('submit', async e => {
   f.querySelectorAll('input').forEach(i => i.disabled = true); btn.hidden = true;
   showMsg(m, true, t('ed_sent'));
 });
+
+/* an admin deletes a company from its card (Status → deleted, can be restored from the admin page) */
+async function adminDelete(id, btn){
+  const s = byId[id], f = btn.closest('.ed-form'), m = f && f.querySelector('.ed-msg');
+  if (!s || !confirm(t('ed_del_q', s.Name))) return;
+  btn.disabled = true; if (m) m.textContent = t('sending');
+  const r = await post({type: 'admin', pass: adminPass(), action: 'delete', sheet: 'Suppliers', id});
+  btn.disabled = false;
+  if (!r.ok) {
+    if (r.error === 'wrong_password') { try { localStorage.removeItem('admin_pass'); localStorage.removeItem('admin_name'); } catch(err){} paintAdmin(); return m && showMsg(m, false, t('ed_signin')); }
+    return m && showMsg(m, false, errText(r));
+  }
+  setData({suppliers: DATA.suppliers.filter(x => x.ID !== id), reviews: DATA.reviews, requests: DATA.requests, board: DATA.board});
+  toast(t('ed_deleted'));
+}
 
 function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req) $('#answering').textContent = t('answering', req.text); }
 
@@ -1135,6 +1151,7 @@ document.addEventListener('click', e => {
   const g = e.target.closest('[data-go]'); if (g) { if (g.dataset.all) { filt = {group:'', cat:'', city:'', type:''}; $('#q').value = ''; } if (g.dataset.go === 'add' && !answerReq) {} return go(g.dataset.go); }
   const op = e.target.closest('[data-open]'); if (op) return openSupplier(op.dataset.open);
   const ed = e.target.closest('[data-edit]'); if (ed) return openEdit(ed.dataset.edit);
+  const dl = e.target.closest('[data-eddel]'); if (dl) return adminDelete(dl.dataset.eddel, dl);
   if (e.target.closest('[data-edcancel]')) { e.target.closest('.ed-form').hidden = true; return; }
   const rt = e.target.closest('[data-rate]'); if (rt) { const f = rt.closest('.detail').querySelector('.rv-form'); f.hidden = !f.hidden; return; }
   const st = e.target.closest('[data-star]'); if (st) { const f = st.closest('form'); f.dataset.rating = st.dataset.star;

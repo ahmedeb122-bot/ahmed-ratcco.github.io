@@ -1,6 +1,6 @@
 # دليل موردي الكهرباء – قروب Elec in KSA
 **Project brief: read this first in every new chat about this project.**
-Last updated: 2026-10-31 (version 4.3 live).
+Last updated: 2026-10-31 (version 4.4 live).
 
 ---
 
@@ -120,12 +120,14 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 - Admin page: such updates show as «✏️ اقتراح تعديل» with قبل (struck) / بعد per field; «✅ اعتمد التعديل» REPLACES the old values (`applyUpdate_` with `_replace`), unlike normal updates which only add.
 - Admin signed in on the phone (`admin_pass` in localStorage): the button is yellow «تعديل» and saves at once through the existing admin `edit` action; the app patches its data in place. Sections/specialties are not in this form (link to لوحة الإدارة). A stale password signs the admin out of the app with a message.
 - List fields are shown with «،» in the form and stored with ` ; `.
+- **Delete (version 4.4):** the admin's edit form on a card ends with «🗑 حذف المورد من الدليل» (confirm → existing admin `delete` action → Status `deleted`; the app drops the card at once). Restore from the admin page «كل الموردين» → ↩️.
 
 **Admin page** (password remembered on the phone)
 - **Pending tab:**
   - A bulk list comes as one card with «اعتمد القائمة كلها».
   - Updates show only the ➕ new values.
   - A possible duplicate shows ⚠️ with a «ادمجه فيه» button.
+  - Every update / suggestion card has «🗑 احذف المورد نفسه من الدليل» (version 4.4): deletes the supplier and rejects **all** its pending updates. A pending update on a supplier that is already deleted shows «هذا المورد محذوف» with only «إغلاق الاقتراح».
 - **«كل الموردين» tab:**
   - ➕ add (published at once, still checked for duplicates), ✏️ edit with section chips, 🗑 delete / ↩️ restore.
   - 🔍 «قد تكون مكررة» list with **ادمج** / **ليست مكررة**. The "not a duplicate" choice is remembered per phone. When merging, the other name is kept in Brands so it stays searchable.
@@ -211,7 +213,11 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - **2026-10-31: version 4.2 – edit a card.** Trigger: a Cummins Arabia sales engineer asked Ahmed to replace the contact on Cummins' card, and Ahmed found no edit button in the app. Ahmed chose: admin ✏️ directly on the card; members can suggest a fix that waits for approval; approved suggestions REPLACE old values. Also moved «انضم للقروب» before «المساهمون» in quick access (Ahmed saw it is still partly cut off on a phone and chose to keep the horizontal row as is; a 2×2 grid was offered). Backend = **Apps Script version 6** (same URL, API still `v:3`, new public type `suggest`); site `sw.js` cache `elec-ksa-v10`. Tested on fakegas (member suggests → admin sees before/after → approve replaces; admin edit in the app; stale admin password; no change / wipe contacts / unknown id rejected).
 - **2026-10-31: version 4.3 – equipment search.** Trigger: a member renting ramming / DTH machines (solar pile driving); Ahmed asked that «ramming machine» find «رامنج» and that آلة/مكينة/machine searches show rental equipment, e.g. cable pulling machine = ونش سحب كابلات, Cable Drum Jack = حامل بكرات كابلات. Site only; `sw.js` cache `elec-ksa-v12`. Follow-up fix the same day: on each new search, if the current tab has no results (or a normal search is typed while on the rental tab) the app switches to the tab with the most results, so «كابلات» after an equipment search goes back to suppliers. Tested with 18 queries on fakegas (all equipment queries open the rental tab; كابلات / سيمنس / مولدات / Honeywell unchanged).
 
+- **2026-10-31: version 4.4 – admins delete a supplier from anywhere.** Trigger: member Hussein Rahil sent two suggestions that AL-MISBAH FABRICATORS CO. closed 7 years ago, and the suggestion card had no delete. Ahmed chose a delete button on the suggestion card, plus delete for admins on any card in the app. Site only (uses the existing admin `delete` action, no backend deploy); `sw.js` cache `elec-ksa-v13`. Tested on fakegas: delete from a suggestion closes both pending suggestions; delete from the app card hides it and it shows as «محذوف» with ↩️ in the admin page; a suggestion on an already deleted supplier offers only «إغلاق الاقتراح».
+
 ## 11. Open ideas (not requested yet)
+- Offered, not decided: a «🚫 أُغلقت الشركة» choice in the member «اقترح تعديل» form (needs a backend deploy).
+- AL-MISBAH FABRICATORS CO.: two pending suggestions (Hussein Rahil) say it closed; Ahmed to delete it with the new button.
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
 - WhatsApp alerts for admins, if Ahmed ever wants them.
 - Update the setup-guide doc for versions 2–3.

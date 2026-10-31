@@ -489,6 +489,16 @@ function reviewCard(r){
 }
 const FIELD_AR = {Mobiles:'جوال', Phones:'هاتف', Fax:'فاكس', Emails:'إيميل', Contacts:'المسؤول', Category:'تخصصات', Brands:'الماركات', Name_AR:'الاسم بالعربي', City:'المدينة', Address:'العنوان', Specialty:'التفاصيل'};
 const FIELD_AR2 = Object.assign({Name:'اسم الشركة', Notes:'ملاحظات'}, FIELD_AR);
+const supGone = id => (DATA.suppliers || []).some(x => x.ID === id && x.Status === 'deleted');
+function updActs(u, okText){
+  if (supGone(u.Supplier_ID)) return `<p class="sub" style="margin-top:8px">🗑 هذا المورد محذوف من الدليل. أغلق الاقتراح، أو أرجِع المورد من «كل الموردين».</p>
+    <div class="acts"><button class="btn no" data-act="reject" data-sheet="Updates" data-id="${esc(u.ID)}">إغلاق الاقتراح</button></div>`;
+  return `<div class="acts">
+      <button class="btn ok" data-act="approve" data-sheet="Updates" data-id="${esc(u.ID)}">${okText}</button>
+      <button class="btn no" data-act="reject" data-sheet="Updates" data-id="${esc(u.ID)}">❌ رفض</button>
+    </div>
+    <div class="acts"><button class="btn ghost" data-delsup="${esc(u.Supplier_ID)}" data-name="${esc(u.SupplierName)}">🗑 احذف المورد نفسه من الدليل</button></div>`;
+}
 function suggestCard(u){
   const ltr = k => /Mobiles|Phones|Fax|Emails/.test(k) ? ' dir="ltr"' : '';
   const show = v => esc(split(v).join('، ') || String(v || '')) || '<span class="sub">(فارغ)</span>';
@@ -500,10 +510,7 @@ function suggestCard(u){
     ${u.Data._why ? `<div style="margin-top:6px">💬 ${esc(u.Data._why)}</div>` : ''}
     ${lines}
     <div class="by" style="margin-top:8px">من: <b>${esc(u.Submitted_By || 'بدون اسم')}</b>${u.Submitter_Phone ? ` · <span class="num">${esc(u.Submitter_Phone)}</span>` : ''}</div>
-    <div class="acts">
-      <button class="btn ok" data-act="approve" data-sheet="Updates" data-id="${esc(u.ID)}">✅ اعتمد التعديل</button>
-      <button class="btn no" data-act="reject" data-sheet="Updates" data-id="${esc(u.ID)}">❌ رفض</button>
-    </div></div>`;
+    ${updActs(u, '✅ اعتمد التعديل')}</div>`;
 }
 function updateCard(u){
   if (u.Data && u.Data._replace) return suggestCard(u);
@@ -519,10 +526,7 @@ function updateCard(u){
     <div class="sub">${esc(u.Date)}</div>
     ${lines || '<div class="sub">لا جديد فعلياً</div>'}
     <div class="by" style="margin-top:8px">من: <b>${esc(u.Submitted_By || 'بدون اسم')}</b>${u.Submitter_Phone ? ` · <span class="num">${esc(u.Submitter_Phone)}</span>` : ''}</div>
-    <div class="acts">
-      <button class="btn ok" data-act="approve" data-sheet="Updates" data-id="${esc(u.ID)}">✅ أضفها للبطاقة</button>
-      <button class="btn no" data-act="reject" data-sheet="Updates" data-id="${esc(u.ID)}">❌ رفض</button>
-    </div></div>`;
+    ${updActs(u, '✅ أضفها للبطاقة')}</div>`;
 }
 function batchCard(b, items){
   const sup = items.filter(x => !x.Supplier_ID).length, upd = items.length - sup;
@@ -675,6 +679,16 @@ document.addEventListener('click', async e => {
   const ec = e.target.closest('[data-ecat]'); if (ec && editing) { const k = ec.dataset.ecat; editing.cats.has(k) ? editing.cats.delete(k) : editing.cats.add(k); return renderEditCats(); }
   const bt = e.target.closest('[data-batch]'); if (bt) { if (!confirm('اعتماد القائمة كلها؟')) return; bt.disabled = true; const r = await api('approve_batch', {batch: bt.dataset.batch}); if (!r.ok) { bt.disabled = false; return toast(errText(r)); } toast('تم اعتماد ' + r.count + ' ✅'); return refresh(); }
   const mg = e.target.closest('[data-merge]'); if (mg) { if (!confirm('دمج هذا المورد في الموجود؟ تُضاف بياناته الجديدة لبطاقته.')) return; mg.disabled = true; const r = await api('merge', {id: mg.dataset.merge, into: mg.dataset.into}); if (!r.ok) { mg.disabled = false; return toast(errText(r)); } toast('تم الدمج ✅'); return refresh(); }
+  const ds = e.target.closest('[data-delsup]'); if (ds) {        // delete the company itself and close every suggestion waiting on it
+    const sid = ds.dataset.delsup, mine = DATA.updates.filter(x => x.Supplier_ID === sid);
+    if (!confirm(`حذف «${ds.dataset.name}» من الدليل؟${mine.length > 1 ? `\nوتُغلق معه ${mine.length} اقتراحات بانتظارك عليه.` : ''}\n(يمكنك إرجاعه لاحقاً من «كل الموردين»)`)) return;
+    ds.disabled = true;
+    const r = await api('delete', {sheet: 'Suppliers', id: sid});
+    if (!r.ok) { ds.disabled = false; return toast(errText(r)); }
+    for (const u of mine) await api('reject', {sheet: 'Updates', id: u.ID});
+    toast('تم حذف المورد 🗑' + (mine.length ? ' وإغلاق اقتراحاته' : ''));
+    return refresh();
+  }
   if (e.target.closest('#export-all')) return exportAll();
   if (e.target.closest('#add-new')) return openEdit('', true);
   const nd = e.target.closest('[data-notdup]'); if (nd) { notDup.add(nd.dataset.notdup); try { localStorage.setItem('not_dup', JSON.stringify([...notDup])); } catch(e){} return renderDups(); }
