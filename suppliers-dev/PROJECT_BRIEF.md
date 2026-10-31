@@ -190,6 +190,7 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
   - Alfaneyah got `Elevator Installation & Maintenance` + brand Hyundai Elevator. It was still pending, so the backend merged this into its card in batch `B261031102420` (`merged_pending`).
   - Not added (site dead or no web presence): Fujitec (phone only), Anmar Al-Riyadh (Orona), Sanyo Elevator Saudi (domain redirects to Japan), CGC Elevators (site "coming soon", no contacts), Smart Elevators (smevo), Rakan Elevators (midgrkl), Ajyad, Al-Banaoon, Aman Al-Ibtikar.
   - Tested first on fakegas with v3 code: elevators section shows 7 companies after approval.
+- **2026-10-31: admin passwords changed.** Ahmed typed the new passwords himself in the Apps Script editor (Claude never types passwords); Claude checked syntax, saved state and deployed **Apps Script version 4** (same URL). API still `v:3`; a wrong password returns `wrong_password`. Any future backend deploy must copy these new passwords from the live code (§9).
 
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
@@ -198,6 +199,7 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - Grow the `SYN` dictionary with short brand names members search for (e.g. بوش = Bosch) since the sound match skips words under 3 consonants.
 - Elevators section: invite more elevator suppliers/contractors in the group (7 OEMs are pending).
 - Approve batches `B261031102420` (12 companies) and `B261031105500` (7 elevator companies) in the admin page.
+- The new admin passwords are 4 digits (Ahmed's choice, warned they are easy to guess). Suggest longer ones if the admin page is ever misused.
 - Idea offered to Ahmed, not decided yet: a «مطابقة الأعمدة» (column-mapping) step in bulk upload, so members can confirm/correct what each Excel column means before sending.
 - Approve batch `B261031102420` details: IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
