@@ -1206,9 +1206,16 @@ function listTitle(){
 let rentQ = '';
 function renderList(){
   const rq = tokens($('#q').value), rv = normText($('#q').value);
-  if (rq.rent && rv !== rentQ && !filt.group) {           // «ونش سحب كابلات / machine…» → open the rental tab first, if it has results
+  if (rv && rv !== rentQ && !filt.group) {                // a new search
     rentQ = rv;
-    if (mode !== 'srv' && DATA.suppliers.some(s => isSrv(s) && (!filt.city || s.City === filt.city) && qMatch(s, rq))) { setMode('srv'); renderHome(); }
+    // «ونش سحب كابلات / machine…» → the rental tab first, if it has results
+    if (rq.rent && mode !== 'srv' && DATA.suppliers.some(s => isSrv(s) && (!filt.city || s.City === filt.city) && qMatch(s, rq))) { setMode('srv'); renderHome(); }
+    // nothing in this tab but something in another → go to the tab with the most results
+    // (or a normal search typed while on the rental tab) → go to the tab with the most results
+    else if (!filtered().length || (!rq.rent && mode === 'srv')) {
+      const here = filtered().length, best = otherModes().sort((a, b) => b[1] - a[1])[0];
+      if (best && best[1] > here) { setMode(best[0]); renderHome(); }
+    }
   }
   renderChips();
   const list = filtered();
