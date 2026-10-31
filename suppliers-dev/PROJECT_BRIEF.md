@@ -58,6 +58,7 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 - **Updates:** new info for an existing supplier, waiting for approval. Columns: ID (U…), Status, Supplier_ID, Data (JSON of only the new values), Submitted_By, Submitter_Phone, Date, Approved_By, Approved_At, Batch_ID.
 - **Requests:** "looking for a supplier" posts.
 - **Reviews:** star ratings and comments.
+- **Stats** (version 4, created automatically on the first count): Date (yyyy-MM-dd), Kind, Key, Count — one row per day + kind + key. Kinds: `visit` (key empty; one per device per day via localStorage `st_day`), `search` / `nores` (words as typed, lowercased, max 40 chars; anything with 6+ digits or an @ is dropped, so no phone numbers or e-mails), `section` (group id), `open` / `call` / `wa` / `share` (supplier ID). No names, no phone numbers, no IPs.
 - `setup()` aligns old column orders by header name (`alignColumns_`) before writing headers, so it is safe to run again.
 - Public JSON (`doGet`) shows only approved suppliers and hides private fields. It is cached for 5 minutes, and `clearCache()` runs after every admin action.
 
@@ -93,7 +94,7 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 - **"Other" specialty:** free text the member types; the admin sees it.
 - **Old version-1 names:** `upgradeCats()` maps them. The live data was migrated on 2026-10-31.
 
-## 7. Features (version 2)
+## 7. Features (versions 2–4)
 **Public site**
 - Home (version 3): smaller header; search with live suggestions; three tabs موردون ومصانع / تأجير واختبارات / مقاولون متخصصون; quick access = أضف مورداً، شارك قائمة موردين، المساهمون، انضم للقروب («اطلب مورداً» removed, still in bottom nav); section tiles (empty ones say «أضف أول شركة»), recent additions, star of the month.
 - List:
@@ -109,6 +110,7 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
   - Ways to fill it: paste a message (auto-fill), contact .vcf, or Excel/CSV bulk upload with a template, up to 500 rows.
   - Duplicate check by phone, e-mail or name, with a warning while typing. A duplicate becomes an "update" that adds only the new values.
 - Requests board, reviews, leaderboard. A bulk upload counts fully toward the leaderboard; Ahmed accepted this.
+- Usage counts (version 4, app.js `track()`): each thing counts once per page visit; queued and sent as one `{type:'stats', ev:[[kind,key]…]}` with `navigator.sendBeacon` (on page hide, after 8 s, every 30 s, or at 25 events). A search counts after 1.5 s without typing; with 0 results it also counts as `nores`. Opening a supplier from a share link puts its name in the search box, so it counts as a search too.
 
 **Admin page** (password remembered on the phone)
 - **Pending tab:**
@@ -119,10 +121,12 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
   - ➕ add (published at once, still checked for duplicates), ✏️ edit with section chips, 🗑 delete / ↩️ restore.
   - 🔍 «قد تكون مكررة» list with **ادمج** / **ليست مكررة**. The "not a duplicate" choice is remembered per phone. When merging, the other name is kept in Brands so it stays searchable.
   - ⬇️ full Excel export.
+- **«الإحصائيات» tab** (version 4, admin action `stats`, `statsSummary_(days)`): 7 / 30 / 90 days; tiles (visits, call+WhatsApp, searches, shares); daily visitors bar chart; top suppliers by call+WhatsApp+share; top searches; «بحثوا ولم يجدوا نتيجة»; top sections.
 - **Security:**
   - The right password always works.
   - After 15 wrong guesses in 15 minutes, further wrong guesses are blocked.
   - Public posting limit is 150 posts per 10 minutes, shared across all members.
+  - Stats beacons have their own limit (3000 per 10 minutes, `stat_flood`) and never use the posting limit. **Deploy the backend before the site** whenever the site starts sending a new request type, or the old backend would count it against the posting limit.
 
 **Not wanted for now:** WhatsApp alerts to admins (CallMeBot). Ahmed checks the admin page himself. Direct editing of the Sheet is not used; admins do everything from the admin page. Manual Sheet edits show on the site after up to 5 minutes.
 
@@ -152,11 +156,11 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
       1. Fetch the file from `api.github.com/repos/…/contents/…?ref=tmp-setup`. raw.githubusercontent is blocked by CSP.
       2. Base64-decode it as UTF-8 and check a hash.
       3. Read the **current** code from `monaco.editor.getModels()[0].getValue()`.
-      4. Copy the 3 `password: '…'` values (and any whatsapp/callmebotKey) into the new code **inside the browser**. Never print them.
-      5. Check the `SHEET_ID` is the same, then `setValue`.
+      4. Keep the live `const ADMINS = [ … ];` block and the live `const SHEET_ID = '…';` line: replace those two pieces of the new code with the live ones **inside the browser** (regex on both). Never print them. `build.py` leaves `__SHEET_ID__` unless `suppliers-dev/local.json` exists.
+      5. Before `setValue`, check the live code minus those two pieces has the hash of the previous build (proves nobody hand-edited anything else). `new Function()` is blocked by the editor's CSP, so check syntax with node in the sandbox instead.
    4. Click the editor, press Ctrl+S, and wait for «تم الحفظ».
    5. If the data needs a one-time change, select that function in the dropdown and click «تنفيذ» (Run).
-   6. **نشر → إدارة عمليات النشر → ✏️ → الإصدار: الإصدار الجديد → نشر.** This keeps the same URL. Version 2 was deployed 2026-10-31.
+   6. **نشر → إدارة عمليات النشر → ✏️ → الإصدار: الإصدار الجديد → نشر.** This keeps the same URL. Latest: Apps Script **version 5** (2026-10-31, statistics).
    7. Afterwards, force-push `main:tmp-setup` to remove the temp file.
 2. **Site:** bump `CACHE` in `sw.js`, commit `suppliers/*` to `main` and push. GitHub Pages updates in about 1 minute.
 3. **Check:**
@@ -190,6 +194,7 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
   - Alfaneyah got `Elevator Installation & Maintenance` + brand Hyundai Elevator. It was still pending, so the backend merged this into its card in batch `B261031102420` (`merged_pending`).
   - Not added (site dead or no web presence): Fujitec (phone only), Anmar Al-Riyadh (Orona), Sanyo Elevator Saudi (domain redirects to Japan), CGC Elevators (site "coming soon", no contacts), Smart Elevators (smevo), Rakan Elevators (midgrkl), Ajyad, Al-Banaoon, Aman Al-Ibtikar.
   - Tested first on fakegas with v3 code: elevators section shows 7 companies after approval.
+- **2026-10-31: version 4 – statistics.** Anonymous usage counts on the site + «الإحصائيات» tab in the admin page (see §5 Stats, §7). Backend = Apps Script version 5; site `sw.js` cache `elec-ksa-v8`. Tested on fakegas with 4 simulated visitors (exact counts; phone numbers in Latin and Arabic digits and e-mails dropped; bad keys dropped; supplier posts unaffected) and the old e2e8/e2e9 tests. Counting starts on 2026-10-31.
 - **2026-10-31: admin passwords changed.** Ahmed typed the new passwords himself in the Apps Script editor (Claude never types passwords); Claude checked syntax, saved state and deployed **Apps Script version 4** (same URL). API still `v:3`; a wrong password returns `wrong_password`. Any future backend deploy must copy these new passwords from the live code (§9).
 
 ## 11. Open ideas (not requested yet)
@@ -200,6 +205,7 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - Elevators section: invite more elevator suppliers/contractors in the group (7 OEMs are pending).
 - Approve batches `B261031102420` (12 companies) and `B261031105500` (7 elevator companies) in the admin page.
 - The new admin passwords are 4 digits (Ahmed's choice, warned they are easy to guess). Suggest longer ones if the admin page is ever misused.
+- Stats sheet grows by ~50–200 rows a day; if it ever gets slow (tens of thousands of rows), move rows older than a year to an archive sheet.
 - Idea offered to Ahmed, not decided yet: a «مطابقة الأعمدة» (column-mapping) step in bulk upload, so members can confirm/correct what each Excel column means before sending.
 - Approve batch `B261031102420` details: IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
