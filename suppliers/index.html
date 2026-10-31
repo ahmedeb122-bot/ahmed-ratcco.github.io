@@ -953,7 +953,7 @@ function renderHome(){
   const pool = DATA.suppliers.filter(inMode);
   const CG = GROUP_OF('contracting');
   $('#tiles').innerHTML = (mode === 'con'
-    ? CG.cats.map(c => `<button class="tile" data-group="contracting" data-tcat="${esc(c[0])}"><span class="ti">${icon(CG.icon)}</span><b>${esc(catName(c[0]))}</b><small>${t('sup_n', pool.filter(s => s._cats.includes(c[0])).length)}</small></button>`).join('')
+    ? CG.cats.map(c => `<button class="tile" data-group="contracting" data-tcat="${esc(c[0])}"><span class="ti">${icon(CG.icon)}</span><b>${esc(catName(c[0]))}</b><small>${(n => n ? t('sup_n', n) : t('be_first'))(pool.filter(s => s._cats.includes(c[0])).length)}</small></button>`).join('')
     : TAXONOMY.filter(g => !g.con).map(g => `<button class="tile" data-group="${g.id}"><span class="ti">${icon(g.icon)}</span><b>${esc(groupName(g))}</b><small>${(n => n ? t('sup_n', n) : t('be_first'))(pool.filter(s => s._groups.includes(g.id)).length)}</small></button>`).join(''))
     + `<button class="tile" data-go="list" data-all="1"><span class="ti">${icon('list')}</span><b>${esc(mode === 'con' ? t('all_con') : t('all_sup'))}</b><small>${t('sup_n', pool.length)}</small></button>`;
   $('#by').innerHTML = t('by_line', DATA.suppliers.length, TAXONOMY.filter(g => !g.con).length);

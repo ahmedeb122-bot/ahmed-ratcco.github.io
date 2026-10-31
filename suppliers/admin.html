@@ -131,6 +131,7 @@ dl.dl dt{color:var(--ink-3)}
     <section id="tab-requests" hidden></section>
     <section id="tab-all" hidden>
       <div class="toolbar"><input id="q" type="search" placeholder="ابحث لتعديل أو حذف مورد" autocomplete="off"><button class="btn" id="export-all" type="button">⬇️ Excel</button></div>
+      <div id="dups"></div>
       <div class="list" id="all-list"></div>
     </section>
   </main>
@@ -545,7 +546,21 @@ function renderRequests(){
 
 /* ---------- all suppliers ---------- */
 const norm = s => String(s||'').toLowerCase().replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+// possible duplicates among published suppliers (admin decides)
+let notDup = new Set(); try { notDup = new Set(JSON.parse(localStorage.getItem('not_dup') || '[]')); } catch(e){}
+function dupPairs(){
+  const live = DATA.suppliers.filter(s => s.Status === 'approved'), out = [];
+  live.forEach((s, i) => { const r = findDuplicate(s, live.slice(0, i)); if (r && !notDup.has(r.item.ID + '|' + s.ID)) out.push({a: r.item, b: s, why: r.why}); });
+  return out;
+}
+function renderDups(){
+  const ps = dupPairs();
+  $('#dups').innerHTML = ps.length ? `<details class="card"><summary><b>🔍 قد تكون مكررة (${ps.length})</b> <span class="sub">راجعها مرة واحدة</span></summary>
+    ${ps.map(p => `<div class="row"><div><b>${esc(p.a.Name)}</b><span class="sub">و</span><b>${esc(p.b.Name)}</b><span class="sub">${p.why === 'domain' ? 'نفس نطاق الإيميل' : 'أسماء متشابهة'}</span></div>
+      <div class="acts"><button class="btn ok" data-merge="${esc(p.b.ID)}" data-into="${esc(p.a.ID)}">🔗 ادمج</button><button class="btn ghost" data-notdup="${esc(p.a.ID + '|' + p.b.ID)}">ليست مكررة</button></div></div>`).join('')}</details>` : '';
+}
 function renderAll(){
+  renderDups();
   const q = norm($('#q').value.trim());
   const list = DATA.suppliers.filter(s => !q || norm([s.Name, s.Name_AR, s.Category, s.Category_AR, s.City, s.Brands, s.Mobiles, s.ID].join(' ')).includes(q));
   $('#all-list').innerHTML = list.slice(0, 80).map(s => `<div class="row ${s.Status === 'deleted' ? 'del' : ''}" id="c-${esc(s.ID)}">
@@ -571,6 +586,7 @@ document.addEventListener('click', async e => {
   const bt = e.target.closest('[data-batch]'); if (bt) { if (!confirm('اعتماد القائمة كلها؟')) return; bt.disabled = true; const r = await api('approve_batch', {batch: bt.dataset.batch}); if (!r.ok) { bt.disabled = false; return toast(errText(r)); } toast('تم اعتماد ' + r.count + ' ✅'); return refresh(); }
   const mg = e.target.closest('[data-merge]'); if (mg) { if (!confirm('دمج هذا المورد في الموجود؟ تُضاف بياناته الجديدة لبطاقته.')) return; mg.disabled = true; const r = await api('merge', {id: mg.dataset.merge, into: mg.dataset.into}); if (!r.ok) { mg.disabled = false; return toast(errText(r)); } toast('تم الدمج ✅'); return refresh(); }
   if (e.target.closest('#export-all')) return exportAll();
+  const nd = e.target.closest('[data-notdup]'); if (nd) { notDup.add(nd.dataset.notdup); try { localStorage.setItem('not_dup', JSON.stringify([...notDup])); } catch(e){} return renderDups(); }
   const ed = e.target.closest('[data-edit]'); if (ed) return openEdit(ed.dataset.edit, false);
   const ea = e.target.closest('[data-edit-all]'); if (ea) return openEdit(ea.dataset.editAll, true);
   const b = e.target.closest('[data-act]'); if (!b) return;
