@@ -44,6 +44,7 @@ header .top{position:relative;padding:16px 18px 18px}
 .top small{color:rgba(255,255,255,.8);display:block;font-size:.82rem}
 .top h1{padding-inline-start:0}
 .link{position:relative;border:0;background:var(--navy);color:#fff;border-radius:999px;cursor:pointer;padding:5px 12px}
+.hbtns{display:flex;gap:8px;align-items:center}a.link{text-decoration:none;font-size:.9rem}
 nav{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
 nav .wrap{display:flex}
 nav button{flex:1;border:0;background:none;padding:12px 2px;font-weight:600;color:var(--ink-3);border-bottom:3px solid transparent;cursor:pointer}
@@ -124,7 +125,7 @@ dl.dl dt{color:var(--ink-3)}
   <div class="cable" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
   <div class="wrap top">
     <div><h1>لوحة المشرف</h1><small id="who">دليل موردي الكهرباء – Elec in KSA</small></div>
-    <button class="link" id="logout" hidden>خروج</button>
+    <div class="hbtns"><a class="link" href="./" id="back">↩ الدليل</a><button class="link" id="logout" hidden>خروج</button></div>
   </div>
 </header>
 
@@ -426,11 +427,12 @@ $('#login').addEventListener('submit', async e => {
   try { localStorage.setItem('admin_pass', PASS); } catch(e){}
   start(r);
 });
-$('#logout').addEventListener('click', () => { try { localStorage.removeItem('admin_pass'); } catch(e){} location.reload(); });
+$('#logout').addEventListener('click', () => { try { localStorage.removeItem('admin_pass'); localStorage.removeItem('admin_name'); } catch(e){} location.reload(); });
 
 function start(r){
   $('#login-view').hidden = true; $('#app').hidden = false; $('#logout').hidden = false;
   $('#who').textContent = 'أهلاً ' + r.admin + ' · Elec in KSA';
+  try { localStorage.setItem('admin_name', r.admin || ''); } catch(e){}
   setData(r);
 }
 async function refresh(){ const r = await api('load'); if (r.ok) setData(r); else toast(errText(r)); }
@@ -696,7 +698,7 @@ async function exportAll(){
   b.disabled = false; toast('تم تجهيز الملف ✅ (' + rows.length + ' شركة)');
 }
 
-if (PASS) api('load').then(r => { if (r.ok) start(r); else { try { localStorage.removeItem('admin_pass'); } catch(e){} } });
+if (PASS) api('load').then(r => { if (r.ok) start(r); else if (r.error === 'wrong_password') { try { localStorage.removeItem('admin_pass'); localStorage.removeItem('admin_name'); } catch(e){} } });
 })();
 </script>
 </body>

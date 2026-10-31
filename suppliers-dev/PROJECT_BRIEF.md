@@ -112,6 +112,8 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 - Requests board, reviews, leaderboard. A bulk upload counts fully toward the leaderboard; Ahmed accepted this.
 - Usage counts (version 4, app.js `track()`): each thing counts once per page visit; queued and sent as one `{type:'stats', ev:[[kind,key]…]}` with `navigator.sendBeacon` (on page hide, after 8 s, every 30 s, or at 25 events). A search counts after 1.5 s without typing; with 0 results it also counts as `nores`. Opening a supplier from a share link puts its name in the search box, so it counts as a search too.
 
+**Admin sign-in (version 4.1):** members never sign in. Public home footer has a small «🔒 دخول المشرفين» link → `admin.html` (password screen). After sign-in, admin.html stores `admin_pass` + `admin_name` in localStorage (same origin as the site), so the public app shows a yellow bar «🔒 أنت مشرف: <name> · لوحة الإدارة · خروج» (`paintAdmin()` in app.js) and hides the footer link. «خروج» (in app or admin page) clears both keys. admin.html header has «↩ الدليل» back to the app. A stored password is cleared only on `wrong_password` (not on network errors).
+
 **Admin page** (password remembered on the phone)
 - **Pending tab:**
   - A bulk list comes as one card with «اعتمد القائمة كلها».
@@ -196,6 +198,8 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
   - Tested first on fakegas with v3 code: elevators section shows 7 companies after approval.
 - **2026-10-31: version 4 – statistics.** Anonymous usage counts on the site + «الإحصائيات» tab in the admin page (see §5 Stats, §7). Backend = Apps Script version 5; site `sw.js` cache `elec-ksa-v8`. Tested on fakegas with 4 simulated visitors (exact counts; phone numbers in Latin and Arabic digits and e-mails dropped; bad keys dropped; supplier posts unaffected) and the old e2e8/e2e9 tests. Counting starts on 2026-10-31.
 - **2026-10-31: admin passwords changed.** Ahmed typed the new passwords himself in the Apps Script editor (Claude never types passwords); Claude checked syntax, saved state and deployed **Apps Script version 4** (same URL). API still `v:3`; a wrong password returns `wrong_password`. Any future backend deploy must copy these new passwords from the live code (§9).
+
+- **2026-10-31: version 4.1 – admin sign-in from the app.** Ahmed couldn't reach the admin page from the installed app (it had no link; admin.html was a separate URL only). Added footer link «🔒 دخول المشرفين», the admin bar in the app, sign-out from the app, and «↩ الدليل» in admin.html. Site only, no backend change; `sw.js` cache `elec-ksa-v9`. Tested on fakegas (visitor → wrong password → sign-in → app bar → sign-out).
 
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).

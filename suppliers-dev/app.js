@@ -92,6 +92,7 @@ const T = {
   bulk_done:(a,b)=>`✅ وصلت القائمة: ${a} مورد جديد و${b} تحديث بانتظار موافقة المشرف. شكراً لك!`,bulk_more:n=>`و${n} صفاً آخر…`,bulk_libfail:'تعذّر تحميل قارئ ملفات Excel. تأكد من الإنترنت وحاول مرة أخرى.',
   x_title:`دليل موردي الكهرباء – قروب ${G}`,x_join:'للانضمام للقروب',x_need:'اختر تصنيفاً أو مدينة أو ابحث أولاً، ثم حمّل النتيجة.',x_done:'تم تجهيز ملف Excel ✅',
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
+  adm_link:'🔒 دخول المشرفين',adm_open:'لوحة الإدارة',adm_out:'خروج',adm_who:n=>`أنت مشرف${n?': '+n:''}`,
   join_line:'🔹 للانضمام لقروب الواتساب:',dir_line:`📒 صفحة دليل موردي الكهرباء – قروب ${G}`,share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
  en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',search_ph:'Search: Honeywell, cables, generators…',
   mode_sup:'Suppliers',mode_srv:'Rental & testing',mode_con:'Contractors',q_ask:'Ask',q_add:'Add supplier',q_bulk:'Share a supplier list',
@@ -134,6 +135,7 @@ const T = {
   bulk_done:(a,b)=>`✅ List received: ${a} new suppliers and ${b} updates are waiting for approval. Thank you!`,bulk_more:n=>`and ${n} more rows…`,bulk_libfail:'Could not load the Excel reader. Check your connection and try again.',
   x_title:`Electrical Suppliers Directory – ${G} group`,x_join:'Join the group',x_need:'Pick a category or city, or search first, then download the result.',x_done:'Excel file ready ✅',
   copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
+  adm_link:'🔒 Admin sign-in',adm_open:'Admin panel',adm_out:'Sign out',adm_who:n=>`You are an admin${n?': '+n:''}`,
   join_line:'🔹 Join the WhatsApp group:',dir_line:`📒 Electrical Suppliers Directory – ${G} group`,share_wa:'Share on WhatsApp',no_wa:'No mobile number',ago_today:'today',ago_days:n=>`${n}d ago`}
 };
 let lang = 'ar';
@@ -1051,6 +1053,20 @@ $('#inst-btn').addEventListener('click', async () => { if (!deferred) return; de
 $('#inst-x').addEventListener('click', () => { $('#install').hidden = true; try { localStorage.setItem('inst_x', '1'); } catch(e){} });
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 
+/* ---------- admin bar: only on a phone where an admin signed in on the admin page ---------- */
+function paintAdmin(){
+  let pass = '', name = '';
+  try { pass = localStorage.getItem('admin_pass') || ''; name = localStorage.getItem('admin_name') || ''; } catch(e){}
+  $('#adm-bar').hidden = !pass;
+  $('#adm-who').textContent = t('adm_who', name);
+  $('.adm-link').hidden = !!pass;
+}
+$('#adm-out').addEventListener('click', () => {
+  try { localStorage.removeItem('admin_pass'); localStorage.removeItem('admin_name'); } catch(e){}
+  paintAdmin();
+});
+window.addEventListener('pageshow', paintAdmin);
+
 /* ---------- language ---------- */
 function applyLang(){
   document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -1059,6 +1075,7 @@ function applyLang(){
   $$('[data-tp]').forEach(el => el.placeholder = t(el.dataset.tp));
   $('#lang').textContent = lang === 'ar' ? 'EN' : 'عربي';
   $('#copy').textContent = t('copy', new Date().getFullYear());
+  paintAdmin();
   renderAll();
 }
 $('#lang').addEventListener('click', () => { lang = lang === 'ar' ? 'en' : 'ar'; try { localStorage.setItem('lang', lang); } catch(e){} applyLang(); });
