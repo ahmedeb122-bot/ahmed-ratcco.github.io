@@ -28,9 +28,9 @@ const ctx = {
                     newDataValidation: () => ({ requireValueInList() { return this; }, build() { return {}; } }) },
   CacheService: { getScriptCache: () => ({ get: k => store[k] ?? null, put: (k, v) => { store[k] = v; }, getAll: ks => { const o = {}; ks.forEach(k => { if (k in store) o[k] = store[k]; }); return o; },
                                            putAll: o => Object.assign(store, o), removeAll: ks => ks.forEach(k => delete store[k]) }) },
-  LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
+  LockService: { getScriptLock: () => ({ waitLock() {}, tryLock() { return true; }, releaseLock() {} }) },
   ContentService: { MimeType: { JSON: 'json' }, createTextOutput: t => ({ t, setMimeType() { return this; } }) },
-  Utilities: { formatDate: (d, tz, f) => f === 'yyyy-MM' ? d.toISOString().slice(0, 7) : f === 'yyMMddHHmmss' ? d.toISOString().replace(/\D/g,'').slice(2,14) : d.toISOString().slice(0, 16).replace('T', ' ') },
+  Utilities: { formatDate: (d, tz, f) => f === 'yyyy-MM-dd' ? new Date(d.getTime() + 3 * 36e5).toISOString().slice(0, 10) : f === 'yyyy-MM' ? d.toISOString().slice(0, 7) : f === 'yyMMddHHmmss' ? d.toISOString().replace(/\D/g,'').slice(2,14) : d.toISOString().slice(0, 16).replace('T', ' ') },
   UrlFetchApp: { fetch: (u) => { if (u.includes('callmebot')) { sentWA.push(decodeURIComponent(u)); return { getResponseCode: () => 200 }; }
                                   return { getResponseCode: () => 200, getContentText: () => fs.readFileSync(process.argv[3], 'utf8') }; } },
   Session: { getEffectiveUser: () => ({ getEmail: () => '' }) },

@@ -333,9 +333,120 @@ function flushCtx_(ctx) {
   if (ctx.updRows.length) appendRows_(sheet_('Updates'), ctx.updRows);
 }
 
+// ------------------------- الإحصائيات: أرقام فقط، بدون أي بيانات شخصية -------------------------
+// Sheet "Stats": one row per day + kind + key, with a counter. Kinds:
+//   visit (key '') · search / nores (the words searched) · section (section id) · open / call / wa / share (supplier ID)
+const STATS_HEAD = ['Date', 'Kind', 'Key', 'Count'];
+const STAT_KINDS = ['visit', 'search', 'nores', 'section', 'open', 'call', 'wa', 'share'];
+const STAT_MAX_EVENTS = 80;
+
+function statsSheet_() {
+  let sh = sheet_('Stats');
+  if (!sh) {
+    sh = ss_().insertSheet('Stats');
+    sh.getRange(1, 1, 1, STATS_HEAD.length).setValues([STATS_HEAD]).setFontWeight('bold').setBackground('#1b2a6b').setFontColor('#ffffff');
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+function statKey_(kind, key) {
+  let k = String(key == null ? '' : key).slice(0, 80);
+  if (kind === 'visit') return '';
+  if (kind === 'search' || kind === 'nores') {
+    k = k.toLowerCase().replace(/\s+/g, ' ').trim().slice(0, 40);
+    if (k.length < 2 || /[0-9\u0660-\u0669\u06F0-\u06F9]{6,}/.test(k.replace(/[\s+()-]/g, '')) || /@/.test(k)) return null;   // never keep phone numbers or e-mails
+    return k;
+  }
+  if (kind === 'section') return /^[a-z]{2,20}$/.test(k) ? k : null;
+  return /^S\d{1,6}$/.test(k) ? k : null;
+}
+function recordStats_(body) {
+  const ev = Array.isArray(body.ev) ? body.ev.slice(0, STAT_MAX_EVENTS) : [];
+  if (!ev.length) return {ok: true};
+  const cache = CacheService.getScriptCache();
+  const n = Number(cache.get('stat_flood') || 0);
+  if (n > 3000) return {ok: true, skipped: true};            // own limit: never blocks members adding suppliers
+  cache.put('stat_flood', String(n + 1), 600);
+  const add = {};
+  ev.forEach(e => {
+    if (!Array.isArray(e)) return;
+    const kind = String(e[0]); if (STAT_KINDS.indexOf(kind) < 0) return;
+    const key = statKey_(kind, e[1]); if (key === null) return;
+    const id = kind + '|' + key; add[id] = (add[id] || 0) + 1;
+  });
+  if (!Object.keys(add).length) return {ok: true};
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return {ok: true, skipped: true};
+  try {
+    const sh = statsSheet_(), day = Utilities.formatDate(new Date(), 'Asia/Riyadh', 'yyyy-MM-dd');
+    const last = sh.getLastRow();
+    // today's rows are always at the bottom: read only them
+    let first = Number(cache.get('stat_first_' + day) || 0);
+    if (!first || first > last + 1) {
+      first = last + 1;
+      const look = Math.min(last - 1, 3000);
+      if (look > 0) {
+        const dates = sh.getRange(last - look + 1, 1, look, 1).getDisplayValues();
+        for (let i = dates.length - 1; i >= 0 && dates[i][0] === day; i--) first = last - look + 1 + i;
+      }
+      cache.put('stat_first_' + day, String(first), 21600);
+    }
+    const rows = last >= first ? sh.getRange(first, 1, last - first + 1, 4).getDisplayValues() : [];
+    const at = {}; rows.forEach((r, i) => { if (r[0] === day) at[r[1] + '|' + r[2]] = i; });
+    const fresh = [];
+    Object.keys(add).forEach(id => {
+      if (id in at) rows[at[id]][3] = String((Number(rows[at[id]][3]) || 0) + add[id]);
+      else { const p = id.indexOf('|'); fresh.push([day, id.slice(0, p), id.slice(p + 1), String(add[id])]); }
+    });
+    if (rows.length) sh.getRange(first, 1, rows.length, 4).setNumberFormat('@').setValues(rows);
+    appendRows_(sh, fresh);
+    return {ok: true};
+  } finally { lock.releaseLock(); }
+}
+
+// numbers for the admin page: the last `days` days
+function statsSummary_(days) {
+  days = Math.max(7, Math.min(365, Number(days) || 30));
+  const sh = sheet_('Stats');
+  const today = new Date(), fmt = d => Utilities.formatDate(d, 'Asia/Riyadh', 'yyyy-MM-dd');
+  const dayList = []; for (let i = days - 1; i >= 0; i--) dayList.push(fmt(new Date(today.getTime() - i * 864e5)));
+  const from = dayList[0], week = dayList[Math.max(0, dayList.length - 7)];
+  const out = {ok: true, days: dayList.map(d => ({d, visits: 0, searches: 0, contacts: 0})), totals: {}, since: '',
+    search: [], nores: [], section: [], suppliers: []};
+  if (!sh || sh.getLastRow() < 2) return out;
+  const vals = sh.getRange(2, 1, sh.getLastRow() - 1, 4).getDisplayValues();
+  out.since = vals.length ? vals[0][0] : '';
+  const idx = {}; out.days.forEach((x, i) => { idx[x.d] = i; });
+  const tot = {visits: 0, visits7: 0, searches: 0, searches7: 0, contacts: 0, contacts7: 0, shares: 0, opens: 0};
+  const agg = {search: {}, nores: {}, section: {}}, sup = {};
+  vals.forEach(([d, kind, key, c]) => {
+    if (d < from || !(d in idx)) return;
+    const n = Number(c) || 0, recent = d >= week, row = out.days[idx[d]];
+    if (kind === 'visit') { row.visits += n; tot.visits += n; if (recent) tot.visits7 += n; }
+    else if (kind === 'search' || kind === 'nores' || kind === 'section') {
+      agg[kind][key] = (agg[kind][key] || 0) + n;
+      if (kind === 'search') { row.searches += n; tot.searches += n; if (recent) tot.searches7 += n; }
+    } else {
+      const s = sup[key] = sup[key] || {id: key, open: 0, call: 0, wa: 0, share: 0};
+      s[kind] += n;
+      if (kind === 'call' || kind === 'wa') { row.contacts += n; tot.contacts += n; if (recent) tot.contacts7 += n; }
+      if (kind === 'share') tot.shares += n;
+      if (kind === 'open') tot.opens += n;
+    }
+  });
+  const top = (o, k) => Object.keys(o).map(x => ({k: x, n: o[x]})).sort((a, b) => b.n - a.n).slice(0, k);
+  out.search = top(agg.search, 15); out.nores = top(agg.nores, 15); out.section = top(agg.section, 20);
+  const names = {}; readSheet_('Suppliers').forEach(s => { names[s.ID] = s.Name; });
+  out.suppliers = Object.keys(sup).map(k => Object.assign(sup[k], {name: names[k] || k, total: sup[k].call + sup[k].wa + sup[k].share}))
+    .sort((a, b) => b.total - a.total || b.open - a.open).slice(0, 15);
+  out.totals = tot;
+  return out;
+}
+
 function handlePublic_(body) {
   if (!body || typeof body !== 'object') return {ok: false, error: 'bad_request'};
   if (body.website) return {ok: true};
+  if (body.type === 'stats') return recordStats_(body);
   if (flood_(body.type === 'bulk' ? 5 : 1)) return {ok: false, error: 'busy'};
   const lock = LockService.getScriptLock();
   lock.waitLock(25000);
@@ -423,6 +534,7 @@ function handleAdmin_(body) {
     const it = readSheet_('Suppliers').find(s => s.ID === id);
     return it ? {ok: true, item: publicSupplier_(Object.assign({}, it, {Status: undefined}))} : {ok: false, error: 'not_found'};
   }
+  if (act === 'stats') return statsSummary_(body.days);
   if (act === 'export') {
     return {ok: true, suppliers: readSheet_('Suppliers').filter(s => s.Status === 'approved').map(publicSupplier_)};
   }

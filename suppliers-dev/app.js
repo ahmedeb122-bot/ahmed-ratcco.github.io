@@ -389,6 +389,8 @@ function listTitle(){
 function renderList(){
   renderChips();
   const list = filtered();
+  if (filt.group) track('section', filt.group);
+  trackSearchSoon($('#q').value.trim(), list.length);
   $('#list-title').textContent = listTitle();
   $('#count').textContent = list.length > shownLimit ? t('showing', shownLimit, list.length) : t('found', list.length);
   $('#list').innerHTML = list.slice(0, shownLimit).map(cardHTML).join('');
@@ -403,7 +405,7 @@ function toggleCard(head){
   const card = head.closest('.sc'), open = !card.classList.contains('open');
   card.classList.toggle('open', open); head.setAttribute('aria-expanded', open);
   const s = byId[head.dataset.id];
-  if (open && s) card.querySelector('.detail').innerHTML = detailHTML(s);
+  if (open && s) { card.querySelector('.detail').innerHTML = detailHTML(s); track('open', s.ID); }
 }
 
 /* ---------- Excel (export, template, import) ---------- */
@@ -843,6 +845,36 @@ function share(s){
 }
 function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2800); }
 
+/* ---------- usage numbers (counts only: no names, no phone numbers) ---------- */
+const STAT = {q: [], seen: new Set(), searchT: null};
+function track(kind, key){
+  const id = kind + '|' + (key || '');
+  if (STAT.seen.has(id)) return;              // each thing counts once per visit
+  STAT.seen.add(id); STAT.q.push([kind, key || '']);
+  if (STAT.q.length >= 25) flushStats();
+}
+function flushStats(){
+  if (!STAT.q.length || !CONFIG.API_URL) return;
+  const body = JSON.stringify({type: 'stats', ev: STAT.q.splice(0, 80)});
+  try { if (navigator.sendBeacon && navigator.sendBeacon(CONFIG.API_URL, new Blob([body], {type: 'text/plain;charset=utf-8'}))) return; } catch(e) {}
+  try { fetch(CONFIG.API_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body, keepalive: true}).catch(() => {}); } catch(e) {}
+}
+function trackSearchSoon(q, n){
+  clearTimeout(STAT.searchT);
+  if (q.length < 2) return;
+  STAT.searchT = setTimeout(() => { track('search', q); if (!n) track('nores', q); }, 1500);
+}
+(() => {
+  const day = new Date().toISOString().slice(0, 10);
+  let counted = false;
+  try { counted = localStorage.getItem('st_day') === day; if (!counted) localStorage.setItem('st_day', day); } catch(e) {}
+  if (!counted) track('visit');
+  setTimeout(flushStats, 8000);
+  setInterval(flushStats, 30000);
+  addEventListener('pagehide', flushStats);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushStats(); });
+})();
+
 /* ---------- navigation (hash routes so the phone back button works) ---------- */
 const VIEWS = ['home', 'list', 'requests', 'board', 'add', 'bulk'];
 function go(view){
@@ -983,7 +1015,9 @@ $('#bulk-file').addEventListener('change', e => { const f = e.target.files[0]; i
 $('#bulk-tpl').addEventListener('click', downloadTemplate);
 
 document.addEventListener('click', e => {
-  const sh0 = e.target.closest('button[data-share]'); if (sh0) { e.stopPropagation(); return share(byId[sh0.dataset.share]); }
+  const sh0 = e.target.closest('button[data-share]'); if (sh0) { e.stopPropagation(); track('share', sh0.dataset.share); return share(byId[sh0.dataset.share]); }
+  const ct = e.target.closest('a[href^="tel:"], a[href^="https://wa.me/"]'), ctCard = ct && ct.closest('.sc');
+  if (ctCard) track(ct.href.startsWith('tel:') ? 'call' : 'wa', ctCard.id.slice(2));
   if (e.target.closest('[data-stop]')) return;
   const head = e.target.closest('.sc-head'); if (head) return toggleCard(head);
   const md = e.target.closest('[data-mode]'); if (md) { setMode(md.dataset.mode); if (TAB_GROUP[mode] ? filt.group !== TAB_GROUP[mode] : !SUP_GROUPS.includes(filt.group)) filt.group = filt.cat = ''; renderHome(); renderList(); return; }
