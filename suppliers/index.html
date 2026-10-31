@@ -617,6 +617,14 @@ const TAXONOMY = [
     ['Tools', 'عدد يدوية وكهربائية', 'العِدد', 'Tools'],
     ['Test & Measuring', 'أجهزة القياس والفحص', 'أجهزة القياس', 'Test & measuring'],
   ]},
+  {id: 'services', ar: 'التأجير والاختبارات', en: 'Rental & testing', icon: 'crane', cats: [
+    ['Cranes & Heavy Equipment', 'رافعات وآليات ثقيلة', 'رافعات وآليات', 'Cranes & heavy equipment'],
+    ['Cable Pulling Equipment', 'معدات سحب ومد الكابلات', 'سحب الكابلات', 'Cable pulling'],
+    ['Test Van', 'عربة اختبارات', 'عربة اختبارات', 'Test van'],
+    ['Cable Fault Locating', 'كشف أعطال الكابلات', 'أعطال الكابلات', 'Cable fault locating'],
+    ['Transformer & Panel Testing', 'فحص المحولات واللوحات', 'فحص المحولات واللوحات', 'Transformer & panel testing'],
+    ['Earthing Testing', 'فحص وتشغيل أنظمة التأريض', 'فحص التأريض', 'Earthing testing'],
+  ]},
   {id: 'contracting', con: true, ar: 'المقاولات', en: 'Contracting', icon: 'tools', cats: [
     ['Electrical Contracting', 'مقاولات كهرباء عامة', 'كهرباء عامة', 'Electrical'],
     ['Low Current Contracting', 'مقاولات تيار خفيف', 'تيار خفيف', 'Low current'],
@@ -625,7 +633,6 @@ const TAXONOMY = [
     ['MV & Substations Contracting', 'جهد متوسط ومحطات', 'جهد متوسط ومحطات', 'MV & substations'],
     ['Testing & Commissioning', 'فحص واختبار وتشغيل', 'فحص وتشغيل', 'Testing & commissioning'],
     ['O&M', 'تشغيل وصيانة', 'تشغيل وصيانة', 'O&M'],
-    ['Equipment Rental', 'تأجير معدات ومولدات', 'تأجير معدات', 'Equipment rental'],
   ]},
 ];
 // "general supplier": one tap picks every materials section (no lighting)
@@ -649,7 +656,7 @@ const OLD_CATS = {
   'Audio Visual & Auditorium Systems': ['PA & Audio', 'Screens & Clocks'], 'IP CCTV, Audio Visual & Public Address': ['CCTV', 'PA & Audio'],
   'IP Clock Display System': ['Screens & Clocks'], 'IP Digital Signage System': ['Screens & Clocks'], 'Car Parking System & Gate Barrier System': ['Parking & Gates'],
   'Check In & Check Out System': ['Time Attendance'], 'Fire Alarm, VESDA & Fire Protection': ['@fire'], 'Electrical & Mechanical Works / Safety': ['MEP Contracting'],
-  'Full MEP Works Contractors': ['MEP Contracting'], 'O&M & General Contracting': ['O&M'], 'Lighting': ['@lighting'],
+  'Full MEP Works Contractors': ['MEP Contracting'], 'Equipment Rental': ['Cranes & Heavy Equipment'], 'O&M & General Contracting': ['O&M'], 'Lighting': ['@lighting'],
 };
 function upgradeCats(list) {
   const out = [];
@@ -779,6 +786,7 @@ const P = {
  gen:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="m12 8-2.5 4h5L12 16"/>',
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
  earth:'<path d="M12 3v10M5 13h14M7.5 17h9M10 21h4"/>',
+ crane:'<path d="M4 21h8M7 21V4l12 4H7M17 8v5"/><path d="M15 13h4v3h-4z"/>',
  store:'<path d="M4 9h16l-1-5H5z"/><path d="M5 9v11h14V9M9 20v-6h6v6"/>',
 };
 const icon = n => n === 'wa'
@@ -905,7 +913,7 @@ try { ME = JSON.parse(localStorage.getItem('me') || 'null') || ME; } catch(e){}
 try { mode = localStorage.getItem('mode') === 'con' ? 'con' : 'sup'; } catch(e){}
 
 const isCon = s => s.Type === 'Contractor' || s._groups.includes('contracting');
-const isSup = s => s.Type !== 'Contractor';
+const isSup = s => s.Type !== 'Contractor' || s._groups.includes('services');
 const inMode = s => mode === 'con' ? isCon(s) : isSup(s);
 
 /* ---------- load ---------- */
@@ -1145,8 +1153,12 @@ const CAT_WORDS = {
   'BMS': ['bms', 'building management'], 'KNX Smart Home': ['knx', 'smart home', 'منازل ذكيه'], 'PLC & Automation': ['plc', 'automation', 'scada', 'اتمته'],
   '@lowcurrent': ['low current', 'تيار خفيف', 'elv'],
   'Tools': ['tools', 'عدد', 'ادوات'], 'Test & Measuring': ['tester', 'meter', 'fluke', 'megger', 'قياس'],
+  'Cranes & Heavy Equipment': ['crane', 'cranes', 'رافعه', 'رافعات', 'كرين', 'manlift', 'man lift', 'scissor', 'بوبكات', 'اليات'], 'Cable Pulling Equipment': ['cable pulling', 'winch', 'سحب الكابلات', 'ونش'],
+  'Test Van': ['test van', 'عربه اختبار'], 'Cable Fault Locating': ['fault locat', 'cable fault', 'اعطال الكابلات', 'vlf', 'hipot', 'hi pot'],
+  'Transformer & Panel Testing': ['relay testing', 'transformer testing', 'فحص المحولات', 'oil test'], 'Earthing Testing': ['earth test', 'فحص التاريض'],
+  '@services': ['rental', 'تاجير', 'testing', 'اختبارات'],
   'Electrical Contracting': ['electrical contracting', 'مقاولات كهربائيه', 'مقاول كهرباء'], 'Low Current Contracting': ['مقاولات تيار خفيف'], 'MEP Contracting': ['mep'],
-  'Solar Contracting': ['مقاولات طاقه شمسيه'], 'Testing & Commissioning': ['commissioning', 'testing', 'فحص'], 'O&M': ['o&m', 'maintenance', 'صيانه'], 'Equipment Rental': ['rental', 'تاجير'],
+  'Solar Contracting': ['مقاولات طاقه شمسيه'], 'Testing & Commissioning': ['commissioning', 'testing and commissioning', 'فحص وتشغيل الانظمه'], 'O&M': ['o&m', 'maintenance', 'صيانه'],
 };
 const GENERAL_WORDS = ['مورد شامل', 'شامل', 'general supplier', 'مواد كهربائيه', 'electrical materials', 'electrical supplies', 'مستلزمات كهربائيه'];
 function guessCats(text){
@@ -1158,6 +1170,9 @@ function guessCats(text){
     if (words.some(w => tx.includes(' ' + w + ' ') || (w.length >= 5 && tx.includes(w)))) found.push(k);
   });
   if (GENERAL_WORDS.some(w => tx.includes(normText(w)))) GENERAL_GROUPS.forEach(g => found.push('@' + g));
+  // "testing transformers" is a service, not a transformer supplier
+  const NOT_WITH = {'Cable Fault Locating': ['@cables', 'LV Cables', 'MV Cables'], 'Transformer & Panel Testing': ['Transformers', '@mv', '@panels'], 'Earthing Testing': ['@earthing', 'Earthing'], 'Cable Pulling Equipment': ['@cables']};
+  Object.keys(NOT_WITH).forEach(k => { if (found.includes(k)) NOT_WITH[k].forEach(x => { const i = found.indexOf(x); if (i >= 0) found.splice(i, 1); }); });
   // a named specialty makes "the whole section" unnecessary
   return found.filter((k, i) => found.indexOf(k) === i && !(CAT_INFO[k].whole && found.some(x => !CAT_INFO[x].whole && CAT_INFO[x].group === CAT_INFO[k].group)));
 }
@@ -1171,7 +1186,7 @@ function guessCity(text){
 const PHONE_RE = /(?:\+|00)?\d[\d\s\-().]{6,}\d/g;
 const EMAIL_RE = /[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g;
 const COMPANY_RE = /(شركه|شركة|مؤسسه|مؤسسة|مصنع|مجموعه|مجموعة|\bco\b|company|\best\b|ltd|llc|trading|factory|industries|group|holding|electric|cables?|lighting|systems?)/i;
-const PERSON_RE = /^(م\s*\.?|المهندس|مهندس|eng\.?|engr\.?|mr\.?|mrs\.?|ms\.?|الاستاذ|أ\.)\s*/i;
+const PERSON_RE = /^(م\s*\.\s*|م\s+|المهندس|مهندس|eng\.?|engr\.?|mr\.?|mrs\.?|ms\.?|الاستاذ|أ\.)\s*/i;
 function parseText(text){
   const out = {Mobiles: [], Phones: [], Emails: []};
   const raw = String(text || '').replace(/\r/g, '');
@@ -1278,7 +1293,9 @@ function applyParsed(p){
   if (p.Mobiles && p.Phones) put('#a-tel', p.Phones);
   put('#a-email', p.Emails); put('#a-contact', p.Contacts); put('#a-addr', p.Address);
   if (p.City && !$('#a-city').value) { $('#a-city').value = p.City; n++; renderCityPick(); }
-  (p.cats || []).forEach(c => { if (CAT_INFO[c] && CAT_INFO[c].group === 'contracting') setType('Contractor'); picked.add(c); }); if ((p.cats || []).length) n++;
+  const cs = p.cats || [], conOnly = cs.length && cs.every(c => CAT_INFO[c] && CAT_INFO[c].group === 'contracting');
+  if (conOnly) setType('Contractor');
+  cs.forEach(c => picked.add(c)); if (cs.length) n++;
   renderPicker();
   if ($('#a-email').value || $('#a-tel').value || $('#a-contact').value) $('#more-d').open = true;
   $('#filled').hidden = false; $('#filled').textContent = n ? t('filled', n) : t('filled_none');
@@ -1484,7 +1501,7 @@ function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req
 
 /* ---------- share ---------- */
 function share(s){
-  const CAT_EMOJI = [['fire', '🔥'], ['lighting', '💡'], ['lowcurrent', '📡'], ['cables', '🔌'], ['mv', '⚡'], ['backup', '🔋'], ['solar', '☀️'], ['panels', '🔧'], ['switches', '🔌'], ['conduits', '🧰'], ['earthing', '⚡'], ['tools', '🛠'], ['contracting', '👷']];
+  const CAT_EMOJI = [['fire', '🔥'], ['lighting', '💡'], ['lowcurrent', '📡'], ['cables', '🔌'], ['mv', '⚡'], ['backup', '🔋'], ['solar', '☀️'], ['panels', '🔧'], ['switches', '🔌'], ['conduits', '🧰'], ['earthing', '⚡'], ['tools', '🛠'], ['services', '🏗'], ['contracting', '👷']];
   const emoji = (CAT_EMOJI.find(([g]) => s._groups[0] === g) || [, '🏭'])[1];
   const city = s.City ? cityName(s.City) : '';
   const shown = s._cats;

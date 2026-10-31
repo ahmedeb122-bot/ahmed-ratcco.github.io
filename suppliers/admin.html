@@ -220,6 +220,14 @@ const TAXONOMY = [
     ['Tools', 'عدد يدوية وكهربائية', 'العِدد', 'Tools'],
     ['Test & Measuring', 'أجهزة القياس والفحص', 'أجهزة القياس', 'Test & measuring'],
   ]},
+  {id: 'services', ar: 'التأجير والاختبارات', en: 'Rental & testing', icon: 'crane', cats: [
+    ['Cranes & Heavy Equipment', 'رافعات وآليات ثقيلة', 'رافعات وآليات', 'Cranes & heavy equipment'],
+    ['Cable Pulling Equipment', 'معدات سحب ومد الكابلات', 'سحب الكابلات', 'Cable pulling'],
+    ['Test Van', 'عربة اختبارات', 'عربة اختبارات', 'Test van'],
+    ['Cable Fault Locating', 'كشف أعطال الكابلات', 'أعطال الكابلات', 'Cable fault locating'],
+    ['Transformer & Panel Testing', 'فحص المحولات واللوحات', 'فحص المحولات واللوحات', 'Transformer & panel testing'],
+    ['Earthing Testing', 'فحص وتشغيل أنظمة التأريض', 'فحص التأريض', 'Earthing testing'],
+  ]},
   {id: 'contracting', con: true, ar: 'المقاولات', en: 'Contracting', icon: 'tools', cats: [
     ['Electrical Contracting', 'مقاولات كهرباء عامة', 'كهرباء عامة', 'Electrical'],
     ['Low Current Contracting', 'مقاولات تيار خفيف', 'تيار خفيف', 'Low current'],
@@ -228,7 +236,6 @@ const TAXONOMY = [
     ['MV & Substations Contracting', 'جهد متوسط ومحطات', 'جهد متوسط ومحطات', 'MV & substations'],
     ['Testing & Commissioning', 'فحص واختبار وتشغيل', 'فحص وتشغيل', 'Testing & commissioning'],
     ['O&M', 'تشغيل وصيانة', 'تشغيل وصيانة', 'O&M'],
-    ['Equipment Rental', 'تأجير معدات ومولدات', 'تأجير معدات', 'Equipment rental'],
   ]},
 ];
 // "general supplier": one tap picks every materials section (no lighting)
@@ -252,7 +259,7 @@ const OLD_CATS = {
   'Audio Visual & Auditorium Systems': ['PA & Audio', 'Screens & Clocks'], 'IP CCTV, Audio Visual & Public Address': ['CCTV', 'PA & Audio'],
   'IP Clock Display System': ['Screens & Clocks'], 'IP Digital Signage System': ['Screens & Clocks'], 'Car Parking System & Gate Barrier System': ['Parking & Gates'],
   'Check In & Check Out System': ['Time Attendance'], 'Fire Alarm, VESDA & Fire Protection': ['@fire'], 'Electrical & Mechanical Works / Safety': ['MEP Contracting'],
-  'Full MEP Works Contractors': ['MEP Contracting'], 'O&M & General Contracting': ['O&M'], 'Lighting': ['@lighting'],
+  'Full MEP Works Contractors': ['MEP Contracting'], 'Equipment Rental': ['Cranes & Heavy Equipment'], 'O&M & General Contracting': ['O&M'], 'Lighting': ['@lighting'],
 };
 function upgradeCats(list) {
   const out = [];
