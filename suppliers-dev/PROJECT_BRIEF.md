@@ -1,6 +1,6 @@
 # دليل موردي الكهرباء – قروب Elec in KSA
 **Project brief: read this first in every new chat about this project.**
-Last updated: 2026-10-31 (version 4.2 live).
+Last updated: 2026-10-31 (version 4.3 live).
 
 ---
 
@@ -105,6 +105,7 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
   - Two-way dictionary `SYN` → `SYN2` (Arabic ↔ English words and brands).
   - Sound skeleton `skel()`: Arabic and Latin letters map to the same consonants (سيمنس = Siemens = `smns`). Used only for words of 3+ letters; very short names (Bosch, ABB) need a `SYN` entry.
   - Suggestions under both search boxes while typing: sections, specialties, companies, brands, cities (`suggest()`).
+  - Equipment search (version 4.3): words in `MACHINE` (آلة، مكينة، ماكينة، معدات، آليات، إيجار، machine, equipment, rental…) are not matched against cards; they set `tokens().rent`, which opens the rental tab (once per new search, if it has results) and sorts rental companies first; a machine word alone lists the whole rental tab. `KINDS` = equipment families matched at word start (cable pulling: ونش/winch/drum/jack/حامل/بكرات…; ramming: رامنج/ramming/piling/DTH/drill/دريل…; cranes: كرين/crane/forklift/مان ليفت…); a family word also counts as rental intent. Sound match also covers Specialty + Notes (`_sk2`, whole sound-words only, so كرين ≠ current).
   - Results sorted name-first; a «نتائج أخرى في» row links to the other tabs.
 - Add (only name + phone required):
   - Ways to fill it: paste a message (auto-fill), contact .vcf, or Excel/CSV bulk upload with a template, up to 500 rows.
@@ -208,6 +209,7 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - **2026-10-31: version 4.1 – admin sign-in from the app.** Ahmed couldn't reach the admin page from the installed app (it had no link; admin.html was a separate URL only). Added footer link «🔒 دخول المشرفين», the admin bar in the app, sign-out from the app, and «↩ الدليل» in admin.html. Site only, no backend change; `sw.js` cache `elec-ksa-v9`. Tested on fakegas (visitor → wrong password → sign-in → app bar → sign-out).
 
 - **2026-10-31: version 4.2 – edit a card.** Trigger: a Cummins Arabia sales engineer asked Ahmed to replace the contact on Cummins' card, and Ahmed found no edit button in the app. Ahmed chose: admin ✏️ directly on the card; members can suggest a fix that waits for approval; approved suggestions REPLACE old values. Also moved «انضم للقروب» before «المساهمون» in quick access (Ahmed saw it is still partly cut off on a phone and chose to keep the horizontal row as is; a 2×2 grid was offered). Backend = **Apps Script version 6** (same URL, API still `v:3`, new public type `suggest`); site `sw.js` cache `elec-ksa-v10`. Tested on fakegas (member suggests → admin sees before/after → approve replaces; admin edit in the app; stale admin password; no change / wipe contacts / unknown id rejected).
+- **2026-10-31: version 4.3 – equipment search.** Trigger: a member renting ramming / DTH machines (solar pile driving); Ahmed asked that «ramming machine» find «رامنج» and that آلة/مكينة/machine searches show rental equipment, e.g. cable pulling machine = ونش سحب كابلات, Cable Drum Jack = حامل بكرات كابلات. Site only; `sw.js` cache `elec-ksa-v11`. Tested with 18 queries on fakegas (all equipment queries open the rental tab; كابلات / سيمنس / مولدات / Honeywell unchanged).
 
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
@@ -223,4 +225,4 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
 - Cummins Arabia: the live directory has S0116 «CUMMINS / OLAYAN» and S0117 «CUMMINS / SAUDI TECHNIC». Mohamed Megahed (Sales Engineer – Power Gen, Riyadh, Cummins Saudi Arabia Ltd, a Cummins–Olayan partnership) asked to replace the current contact (Eng. Omar, Aftermarket). Ahmed can do it now with «تعديل» on the card.
 - «انضم للقروب» is the 3rd pill and partly hidden on narrow phones; a 2×2 quick-access grid was offered if Ahmed changes his mind.
-
+- Not decided: a rental specialty for pile-driving / drilling machines (رامنج / DTH) under التأجير والاختبارات (needs a backend deploy because shared.js changes). For now such companies go under «رافعات وآليات ثقيلة» with the machine type in التفاصيل.
