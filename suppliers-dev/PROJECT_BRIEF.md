@@ -163,8 +163,16 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
   - Contractors tab and the 13 shop-style sections.
   - Admin add, possible-duplicates list and security fixes.
   - Data merged from 284 rows to 195 companies (89 merged); the old rows are kept with Status `merged`.
+- **2026-10-31: verified import from a 166-page MEP supplier PDF.**
+  - The PDF was mostly mechanical (lifts, HVAC, plumbing, pumps…). Ahmed chose: electrical sections only; drop any company that cannot be verified online; keep the official company phone/e-mail first and at most a rep whose e-mail is on the company domain.
+  - Each candidate was checked on its own website (WebFetch, or the laptop's built-in browser when robots blocked it) and phone numbers were matched against the PDF text layer.
+  - 14 passed. Ahmed dropped SFFECO (mainly fire-fighting equipment) and Al-Fainaq (general contractor), so **12 were sent** as one bulk batch `B261031102420` (pending, by «أحمد إبراهيم (قائمة مدقّقة)»): Sahra Control, SESO, SAS Systems Engineering, NAFFCO KSA, Al Shaikh Intl, ETECHS, Al-Alameya Group (IFMI), SYSCON, Alfaneyah, Saudi Ensas (Voltas), EWM, Al-Alamia (ASSSCO).
+  - Integrators that sell and install (SAS, Al Shaikh, ETECHS, IFMI) are Type `Supplier` plus `Low Current Contracting`, so they show in both tabs. `Type: Contractor` hides a company from supplier sections (`isSup` in app.js).
+  - Not added: duplicates (Siemens, Schneider, Secutron, Honeywell, Arab Emergency, Saudi Pan Gulf, SETRA, Alfanar); dead or for-sale domains; Gmail/phone-only firms; non-electrical firms.
 
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
 - WhatsApp alerts for admins, if Ahmed ever wants them.
 - Update the setup-guide doc for version 2.
+- Approve batch `B261031102420` (12 companies) in the admin page. IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
+- Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
