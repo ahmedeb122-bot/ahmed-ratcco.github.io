@@ -1,6 +1,6 @@
 # دليل موردي الكهرباء – قروب Elec in KSA
 **Project brief: read this first in every new chat about this project.**
-Last updated: 2026-10-31 (version 3 live).
+Last updated: 2026-10-31 (version 4.2 live).
 
 ---
 
@@ -96,7 +96,7 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 
 ## 7. Features (versions 2–4)
 **Public site**
-- Home (version 3): smaller header; search with live suggestions; three tabs موردون ومصانع / تأجير واختبارات / مقاولون متخصصون; quick access = أضف مورداً، شارك قائمة موردين، المساهمون، انضم للقروب («اطلب مورداً» removed, still in bottom nav); section tiles (empty ones say «أضف أول شركة»), recent additions, star of the month.
+- Home (version 3): smaller header; search with live suggestions; three tabs موردون ومصانع / تأجير واختبارات / مقاولون متخصصون; quick access = أضف مورداً، شارك قائمة موردين، انضم للقروب، المساهمون (join moved before contributors in version 4.2) («اطلب مورداً» removed, still in bottom nav); section tiles (empty ones say «أضف أول شركة»), recent additions, star of the month.
 - List:
   - Specialty chips, type chips and city chips.
   - Each card has call, WhatsApp and share. Share opens WhatsApp with a fixed format, the home link and the group join link.
@@ -113,6 +113,12 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 - Usage counts (version 4, app.js `track()`): each thing counts once per page visit; queued and sent as one `{type:'stats', ev:[[kind,key]…]}` with `navigator.sendBeacon` (on page hide, after 8 s, every 30 s, or at 25 events). A search counts after 1.5 s without typing; with 0 results it also counts as `nores`. Opening a supplier from a share link puts its name in the search box, so it counts as a search too.
 
 **Admin sign-in (version 4.1):** members never sign in. Public home footer has a small «🔒 دخول المشرفين» link → `admin.html` (password screen). After sign-in, admin.html stores `admin_pass` + `admin_name` in localStorage (same origin as the site), so the public app shows a yellow bar «🔒 أنت مشرف: <name> · لوحة الإدارة · خروج» (`paintAdmin()` in app.js) and hides the footer link. «خروج» (in app or admin page) clears both keys. admin.html header has «↩ الدليل» back to the app. A stored password is cleared only on `wrong_password` (not on network errors).
+
+**Card editing (version 4.2):** every opened card has a button under the share/rate buttons.
+- Member: «اقترح تعديل» opens an inline form (`.ed-form`, `openEdit()` in app.js) prefilled with Name, Name_AR, Contacts, Mobiles, Phones, Emails, City, Brands, Specialty, Address, Notes + «ما الذي تغيّر؟», name (required) and phone (optional). Sends `{type:'suggest', id, data, by, byPhone}` with only the changed fields. Backend (`editDiff_`) stores an Updates row whose Data has `_replace:1` (+ `_why`). Rejects `no_change`, `not_found` (not approved) and `missing` (would leave no phone/e-mail). Uses the normal posting limit.
+- Admin page: such updates show as «✏️ اقتراح تعديل» with قبل (struck) / بعد per field; «✅ اعتمد التعديل» REPLACES the old values (`applyUpdate_` with `_replace`), unlike normal updates which only add.
+- Admin signed in on the phone (`admin_pass` in localStorage): the button is yellow «تعديل» and saves at once through the existing admin `edit` action; the app patches its data in place. Sections/specialties are not in this form (link to لوحة الإدارة). A stale password signs the admin out of the app with a message.
+- List fields are shown with «،» in the form and stored with ` ; `.
 
 **Admin page** (password remembered on the phone)
 - **Pending tab:**
@@ -201,6 +207,8 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 
 - **2026-10-31: version 4.1 – admin sign-in from the app.** Ahmed couldn't reach the admin page from the installed app (it had no link; admin.html was a separate URL only). Added footer link «🔒 دخول المشرفين», the admin bar in the app, sign-out from the app, and «↩ الدليل» in admin.html. Site only, no backend change; `sw.js` cache `elec-ksa-v9`. Tested on fakegas (visitor → wrong password → sign-in → app bar → sign-out).
 
+- **2026-10-31: version 4.2 – edit a card.** Trigger: a Cummins Arabia sales engineer asked Ahmed to replace the contact on Cummins' card, and Ahmed found no edit button in the app. Ahmed chose: admin ✏️ directly on the card; members can suggest a fix that waits for approval; approved suggestions REPLACE old values. Also moved «انضم للقروب» before «المساهمون» in quick access (Ahmed saw it is still partly cut off on a phone and chose to keep the horizontal row as is; a 2×2 grid was offered). Backend = **Apps Script version 6** (same URL, API still `v:3`, new public type `suggest`); site `sw.js` cache `elec-ksa-v10`. Tested on fakegas (member suggests → admin sees before/after → approve replaces; admin edit in the app; stale admin password; no change / wipe contacts / unknown id rejected).
+
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
 - WhatsApp alerts for admins, if Ahmed ever wants them.
@@ -213,3 +221,6 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - Idea offered to Ahmed, not decided yet: a «مطابقة الأعمدة» (column-mapping) step in bulk upload, so members can confirm/correct what each Excel column means before sending.
 - Approve batch `B261031102420` details: IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
+- Cummins Arabia: the live directory has S0116 «CUMMINS / OLAYAN» and S0117 «CUMMINS / SAUDI TECHNIC». Mohamed Megahed (Sales Engineer – Power Gen, Riyadh, Cummins Saudi Arabia Ltd, a Cummins–Olayan partnership) asked to replace the current contact (Eng. Omar, Aftermarket). Ahmed can do it now with «تعديل» on the card.
+- «انضم للقروب» is the 3rd pill and partly hidden on narrow phones; a 2×2 quick-access grid was offered if Ahmed changes his mind.
+
