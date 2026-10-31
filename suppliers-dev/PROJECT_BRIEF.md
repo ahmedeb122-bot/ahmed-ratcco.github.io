@@ -184,12 +184,20 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
   - Three tabs: suppliers & factories / rental & testing / specialised contractors.
   - New section المصاعد والسلالم الكهربائية + contractor specialty تركيب وصيانة المصاعد. Backend redeployed as Apps Script version 3 (API `v:3`, same URL); `sw.js` cache `elec-ksa-v7`.
   - Bilingual + sound-alike search with live suggestions.
+- **2026-10-31: elevator companies from the same PDF (pages 1–5), verified the same way.**
+  - Sent as bulk batch `B261031105500` (pending): Mitsubishi Electric Saudi (MELSA), Schindler Olayan, Otis Saudi Arabia, TK Elevator, KONE Saudi (KONE Areeco), Gulf Elevators & Escalators (FUJI), Khaled Juffali Co. (KLEEMANN).
+  - OEMs are Type `Manufacturer` with Passenger & Freight Elevators + Escalators + `Elevator Installation & Maintenance`, so they appear in the elevators section and in the contractors tab.
+  - Alfaneyah got `Elevator Installation & Maintenance` + brand Hyundai Elevator. It was still pending, so the backend merged this into its card in batch `B261031102420` (`merged_pending`).
+  - Not added (site dead or no web presence): Fujitec (phone only), Anmar Al-Riyadh (Orona), Sanyo Elevator Saudi (domain redirects to Japan), CGC Elevators (site "coming soon", no contacts), Smart Elevators (smevo), Rakan Elevators (midgrkl), Ajyad, Al-Banaoon, Aman Al-Ibtikar.
+  - Tested first on fakegas with v3 code: elevators section shows 7 companies after approval.
 
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
 - WhatsApp alerts for admins, if Ahmed ever wants them.
 - Update the setup-guide doc for versions 2–3.
 - Grow the `SYN` dictionary with short brand names members search for (e.g. بوش = Bosch) since the sound match skips words under 3 consonants.
-- Elevators section is empty: invite elevator suppliers/contractors in the group.
-- Approve batch `B261031102420` (12 companies) in the admin page. IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
+- Elevators section: invite more elevator suppliers/contractors in the group (7 OEMs are pending).
+- Approve batches `B261031102420` (12 companies) and `B261031105500` (7 elevator companies) in the admin page.
+- Idea offered to Ahmed, not decided yet: a «مطابقة الأعمدة» (column-mapping) step in bulk upload, so members can confirm/correct what each Excel column means before sending.
+- Approve batch `B261031102420` details: IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
