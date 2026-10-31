@@ -41,6 +41,7 @@ const P = {
  crane:'<path d="M4 21h8M7 21V4l12 4H7M17 8v5"/><path d="M15 13h4v3h-4z"/>',
  lift:'<rect x="4.5" y="2.5" width="15" height="19" rx="2"/><path d="M12 2.5v19M6.8 9.5 8.3 7.5 9.8 9.5M14.2 7.5 15.7 9.5 17.2 7.5"/>',
  store:'<path d="M4 9h16l-1-5H5z"/><path d="M5 9v11h14V9M9 20v-6h6v6"/>',
+ pen:'<path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/><path d="m13.5 6.5 4 4"/>',
 };
 const icon = n => n === 'wa'
   ? '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2m0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2m4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.6.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3"/></svg>'
@@ -92,6 +93,10 @@ const T = {
   bulk_done:(a,b)=>`✅ وصلت القائمة: ${a} مورد جديد و${b} تحديث بانتظار موافقة المشرف. شكراً لك!`,bulk_more:n=>`و${n} صفاً آخر…`,bulk_libfail:'تعذّر تحميل قارئ ملفات Excel. تأكد من الإنترنت وحاول مرة أخرى.',
   x_title:`دليل موردي الكهرباء – قروب ${G}`,x_join:'للانضمام للقروب',x_need:'اختر تصنيفاً أو مدينة أو ابحث أولاً، ثم حمّل النتيجة.',x_done:'تم تجهيز ملف Excel ✅',
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
+  ed_btn:'اقترح تعديل',ed_btn_adm:'تعديل',ed_h:'صحّح معلومات الشركة',ed_h_adm:'تعديل البطاقة (مشرف)',ed_p:'غيّر ما تريد ثم أرسل. يظهر التعديل في الدليل بعد موافقة المشرف.',ed_p_adm:'أنت مشرف: ما تحفظه يظهر في الدليل فوراً. ما تكتبه يحلّ محلّ القديم.',
+  ed_name:'اسم الشركة',ed_name_ar:'الاسم بالعربي',ed_sep:'(افصل بفاصلة ،)',ed_why:'ما الذي تغيّر؟',ed_why_ph:'مثال: المسؤول الجديد للمبيعات في الرياض',ed_secs:'لتغيير الأقسام والتخصصات استخدم',
+  ed_send:'أرسل للمشرف',ed_save:'احفظ وانشر',ed_cancel:'إلغاء',ed_none:'لم تغيّر أي معلومة بعد.',ed_need_by:'اكتب اسمك ليعرف المشرف من اقترح التعديل.',ed_sent:'وصل اقتراحك ✅ سيظهر بعد موافقة المشرف. شكراً لك!',
+  ed_saved:'تم الحفظ ✅ ظهر في الدليل.',ed_gone:'هذه الشركة لم تعد في الدليل.',ed_signin:'انتهت جلسة المشرف. ادخل من «دخول المشرفين» ثم حاول مرة أخرى.',
   adm_link:'🔒 دخول المشرفين',adm_open:'لوحة الإدارة',adm_out:'خروج',adm_who:n=>`أنت مشرف${n?': '+n:''}`,
   join_line:'🔹 للانضمام لقروب الواتساب:',dir_line:`📒 صفحة دليل موردي الكهرباء – قروب ${G}`,share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
  en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',search_ph:'Search: Honeywell, cables, generators…',
@@ -135,6 +140,10 @@ const T = {
   bulk_done:(a,b)=>`✅ List received: ${a} new suppliers and ${b} updates are waiting for approval. Thank you!`,bulk_more:n=>`and ${n} more rows…`,bulk_libfail:'Could not load the Excel reader. Check your connection and try again.',
   x_title:`Electrical Suppliers Directory – ${G} group`,x_join:'Join the group',x_need:'Pick a category or city, or search first, then download the result.',x_done:'Excel file ready ✅',
   copy:y=>`© ${y} ${G} — all rights reserved`,disclaimer:'Listings are shared by group members. Verify a supplier before any payment.',
+  ed_btn:'Suggest a fix',ed_btn_adm:'Edit',ed_h:'Correct this company',ed_h_adm:'Edit card (admin)',ed_p:'Change what you need and send. It shows after an admin approves it.',ed_p_adm:'You are an admin: saving publishes at once. What you type replaces the old info.',
+  ed_name:'Company name',ed_name_ar:'Arabic name',ed_sep:'(separate with commas)',ed_why:'What changed?',ed_why_ph:'e.g. new sales contact in Riyadh',ed_secs:'To change sections and specialties use the',
+  ed_send:'Send to admin',ed_save:'Save & publish',ed_cancel:'Cancel',ed_none:'You have not changed anything yet.',ed_need_by:'Enter your name so the admin knows who suggested it.',ed_sent:'Suggestion received ✅ It shows after approval. Thank you!',
+  ed_saved:'Saved ✅ Now live in the directory.',ed_gone:'This company is no longer in the directory.',ed_signin:'Admin session ended. Sign in again from «Admin sign-in».',
   adm_link:'🔒 Admin sign-in',adm_open:'Admin panel',adm_out:'Sign out',adm_who:n=>`You are an admin${n?': '+n:''}`,
   join_line:'🔹 Join the WhatsApp group:',dir_line:`📒 Electrical Suppliers Directory – ${G} group`,share_wa:'Share on WhatsApp',no_wa:'No mobile number',ago_today:'today',ago_days:n=>`${n}d ago`}
 };
@@ -369,7 +378,8 @@ function detailHTML(s){
     ${line('email', splitList(s.Emails).map(e => `<a href="mailto:${esc(e)}" dir="ltr">${esc(e)}</a>`).join('<br>'))}
     ${line('city', esc(cityName(s.City)))}${line('brands', esc(s.Brands).replace(/ ; /g, '، '))}${line('spec', esc(s.Specialty))}${line('address', esc(s.Address))}${line('notes', esc(notes))}
    </dl>
-   <div class="acts"><button class="btn primary" data-share="${esc(s.ID)}">${icon('wa')}${t('share_wa')}</button><button class="btn" data-rate="${esc(s.ID)}">${icon('star')}${t('rate')}</button></div>
+   <div class="acts"><button class="btn primary" data-share="${esc(s.ID)}">${icon('wa')}${t('share_wa')}</button><button class="btn" data-rate="${esc(s.ID)}">${icon('star')}${t('rate')}</button><button class="btn${adminPass() ? ' adm' : ''}" data-edit="${esc(s.ID)}">${icon('pen')}${t(adminPass() ? 'ed_btn_adm' : 'ed_btn')}</button></div>
+   <form class="ed-form" data-sid="${esc(s.ID)}" hidden novalidate></form>
    <div class="reviews">
     ${rv.length ? rv.slice(-20).reverse().map(r => `<div class="rv">${r.rating ? `<span class="stars">${stars(r.rating)}</span> ` : ''}<b>${esc(r.name || '')}</b> <span class="muted">${esc((r.date || '').slice(0, 10))}</span><div>${esc(r.comment)}</div></div>`).join('') : `<div class="muted">${t('no_reviews')}</div>`}
     <form class="rv-form" data-sid="${esc(s.ID)}" hidden novalidate style="margin-top:10px">
@@ -825,6 +835,67 @@ $('#bulk-send').addEventListener('click', async () => {
   showMsg(m, true, t('bulk_done', r.summary.new, r.summary.update));
   BULK = []; $('#bulk-rows').innerHTML = ''; $('#bulk-sums').innerHTML = ''; b.textContent = '✓';
 });
+/* ---------- edit a card: an admin saves at once, a member sends a suggestion that waits for approval ---------- */
+function adminPass(){ try { return localStorage.getItem('admin_pass') || ''; } catch(e) { return ''; } }
+const ED_FIELDS = [['Name', 'ed_name'], ['Name_AR', 'ed_name_ar'], ['Contacts', 'contact'], ['Mobiles', 'mobile'], ['Phones', 'phone'], ['Emails', 'email'],
+  ['City', 'city'], ['Brands', 'brands'], ['Specialty', 'spec'], ['Address', 'address'], ['Notes', 'notes']];
+const ED_LIST = ['Contacts', 'Mobiles', 'Phones', 'Emails', 'Brands'];
+const edShow = (k, val) => ED_LIST.includes(k) ? splitList(val).join('، ') : String(val || '');
+const edRead = (k, val) => ED_LIST.includes(k) ? joinList(val.split(/\s*[;؛,،\n]\s*/).map(x => x.trim())) : val.trim();
+function openEdit(id){
+  const s = byId[id], f = document.querySelector(`.ed-form[data-sid="${CSS.escape(id)}"]`);
+  if (!s || !f) return;
+  if (!f.hidden) { f.hidden = true; return; }
+  const adm = !!adminPass();
+  f.innerHTML = `<h3 class="ed-h">${icon('pen')}${t(adm ? 'ed_h_adm' : 'ed_h')}</h3>
+    <p class="muted">${t(adm ? 'ed_p_adm' : 'ed_p')}</p>
+    ${ED_FIELDS.map(([k, l]) => `<div class="f"><label>${t(l)}${ED_LIST.slice(0, 4).includes(k) ? ` <span class="muted">${t('ed_sep')}</span>` : ''}</label>
+      <input data-k="${k}" value="${esc(edShow(k, s[k]))}" ${/Mobiles|Phones|Emails/.test(k) ? 'dir="ltr" inputmode="' + (k === 'Emails' ? 'email' : 'tel') + '"' : ''} maxlength="300"></div>`).join('')}
+    ${adm ? `<p class="muted">${t('ed_secs')} <a href="admin.html">${t('adm_open')}</a></p>` : `
+    <div class="f"><label>${t('ed_why')}</label><input data-why maxlength="200" placeholder="${esc(t('ed_why_ph'))}"></div>
+    <div class="f"><label>${t('your_name')}</label><input data-by maxlength="60" value="${esc(ME.name)}"></div>
+    <div class="f"><label>${t('your_phone')} <span class="muted">${t('optional_phone')}</span></label><input data-byph maxlength="30" dir="ltr" inputmode="tel" value="${esc(ME.phone)}"></div>
+    <input class="trap" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">`}
+    <div class="acts"><button class="btn primary" type="submit">${t(adm ? 'ed_save' : 'ed_send')}</button><button class="btn" type="button" data-edcancel>${t('ed_cancel')}</button></div>
+    <div class="ed-msg" aria-live="polite"></div>`;
+  f.hidden = false;
+  f.scrollIntoView({block: 'start', behavior: 'smooth'});
+}
+document.addEventListener('submit', async e => {
+  const f = e.target.closest('.ed-form'); if (!f) return;
+  e.preventDefault();
+  const id = f.dataset.sid, s = byId[id], m = f.querySelector('.ed-msg'), btn = f.querySelector('[type=submit]');
+  const data = {};
+  f.querySelectorAll('[data-k]').forEach(i => { const k = i.dataset.k, nv = edRead(k, i.value), ov = edRead(k, edShow(k, s[k])); if (nv !== ov) data[k] = nv; });
+  if (!Object.keys(data).length) return showMsg(m, false, t('ed_none'));
+  const after = Object.assign({}, s, data);
+  if (!String(after.Name || '').trim()) return showMsg(m, false, t('need_name'));
+  if (!after.Mobiles && !after.Phones && !after.Emails) return showMsg(m, false, t('need_contact'));
+  btn.disabled = true; m.textContent = t('sending');
+  const pass = adminPass();
+  if (pass) {
+    const r = await post({type: 'admin', pass, action: 'edit', sheet: 'Suppliers', id, data});
+    btn.disabled = false;
+    if (!r.ok) {
+      if (r.error === 'wrong_password') { try { localStorage.removeItem('admin_pass'); localStorage.removeItem('admin_name'); } catch(err){} paintAdmin(); return showMsg(m, false, t('ed_signin')); }
+      return showMsg(m, false, errText(r));
+    }
+    Object.assign(s, data);
+    setData({suppliers: DATA.suppliers, reviews: DATA.reviews, requests: DATA.requests, board: DATA.board});
+    const head = document.querySelector(`.sc-head[data-id="${CSS.escape(id)}"]`);
+    if (head) { toggleCard(head); head.scrollIntoView({block: 'start'}); }
+    return toast(t('ed_saved'));
+  }
+  const by = f.querySelector('[data-by]').value.trim(), byPhone = f.querySelector('[data-byph]').value.trim(), why = f.querySelector('[data-why]').value.trim();
+  if (!by) { btn.disabled = false; return showMsg(m, false, t('ed_need_by')); }
+  remember(by, byPhone);
+  const r = await post({type: 'suggest', id, data: Object.assign({Why: why}, data), by, byPhone}, f);
+  btn.disabled = false;
+  if (!r.ok) return showMsg(m, false, r.error === 'no_change' ? t('ed_none') : r.error === 'not_found' ? t('ed_gone') : errText(r));
+  f.querySelectorAll('input').forEach(i => i.disabled = true); btn.hidden = true;
+  showMsg(m, true, t('ed_sent'));
+});
+
 function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req) $('#answering').textContent = t('answering', req.text); }
 
 /* ---------- share ---------- */
@@ -1034,6 +1105,8 @@ document.addEventListener('click', e => {
   const ty = e.target.closest('#a-type [data-v]'); if (ty) return setType(ty.dataset.v);
   const g = e.target.closest('[data-go]'); if (g) { if (g.dataset.all) { filt = {group:'', cat:'', city:'', type:''}; $('#q').value = ''; } if (g.dataset.go === 'add' && !answerReq) {} return go(g.dataset.go); }
   const op = e.target.closest('[data-open]'); if (op) return openSupplier(op.dataset.open);
+  const ed = e.target.closest('[data-edit]'); if (ed) return openEdit(ed.dataset.edit);
+  if (e.target.closest('[data-edcancel]')) { e.target.closest('.ed-form').hidden = true; return; }
   const rt = e.target.closest('[data-rate]'); if (rt) { const f = rt.closest('.detail').querySelector('.rv-form'); f.hidden = !f.hidden; return; }
   const st = e.target.closest('[data-star]'); if (st) { const f = st.closest('form'); f.dataset.rating = st.dataset.star;
     f.querySelectorAll('[data-star]').forEach(b => b.classList.toggle('on', +b.dataset.star <= +st.dataset.star)); return; }

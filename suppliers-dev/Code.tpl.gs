@@ -472,6 +472,21 @@ function handlePublic_(body) {
       if (sum.new || sum.update) alertAdmins_('📦 قائمة جديدة من ' + (clean_(body.by, 60) || 'عضو') + ': ' + sum.new + ' جديد، ' + sum.update + ' تحديث');
       return {ok: true, batch, summary: sum, results};
     }
+    if (body.type === 'suggest') {      // a member suggests corrected info for a published card: waits for an admin, then REPLACES the old values
+      const sid = clean_(body.id, 20);
+      const target = readSheet_('Suppliers').find(s => s.ID === sid && s.Status === 'approved');
+      if (!target) return {ok: false, error: 'not_found'};
+      const diff = editDiff_(target, d);
+      if (!Object.keys(diff).length) return {ok: false, error: 'no_change'};
+      const after = Object.assign({}, target, diff);
+      if (!after.Name || !(after.Mobiles || after.Phones || after.Emails)) return {ok: false, error: 'missing'};
+      const sh = sheet_('Updates'), uid = nextId_(sh, 'U');
+      diff._replace = 1;
+      if (clean_(d.Why, 200)) diff._why = clean_(d.Why, 200);
+      appendRows_(sh, [[uid, 'pending', sid, JSON.stringify(diff), clean_(body.by, 60), clean_(body.byPhone, 30), now_(), '', '', '']]);
+      alertAdmins_('✏️ اقتراح تعديل لبطاقة: ' + target.Name);
+      return {ok: true, id: uid};
+    }
     if (body.type === 'request') {
       if (clean_(d.Text, 500).length < 3) return {ok: false, error: 'missing'};
       const sh = sheet_('Requests'), id = nextId_(sh, 'R');
@@ -608,11 +623,29 @@ function applyUpdate_(u, stamp) {
   if (!u) return;
   const target = readSheet_('Suppliers').find(s => s.ID === u.Supplier_ID);
   let data = {}; try { data = JSON.parse(u.Data); } catch (e) {}
-  if (target) {
+  if (target && data._replace) {             // a suggested correction: the new values replace the old ones
+    const diff = editDiff_(target, data);
+    if (Object.keys(diff).length) setCells_('Suppliers', target._row, diff);
+  } else if (target) {
     const diff = mergeDiff(target, data);     // re-check: another update may already have added some of it
     if (Object.keys(diff).length) setCells_('Suppliers', target._row, diff);
   }
   setCells_('Updates', findRow_('Updates', u.ID), Object.assign({Status: 'approved'}, stamp));
+}
+
+// The fields a member may correct, and only those that really changed (list fields compared as " ; " lists).
+const EDIT_FIELDS = ['Name', 'Name_AR', 'Contacts', 'Mobiles', 'Phones', 'Emails', 'City', 'Brands', 'Specialty', 'Address', 'Notes'];
+function editDiff_(target, d) {
+  const out = {};
+  EDIT_FIELDS.forEach(k => {
+    if (!(k in d)) return;
+    let val = clean_(d[k], SUPPLIER_FIELDS[k]);
+    if (LIST_FIELDS[k]) val = joinList(splitList(val));
+    if (k === 'Name' && !val) return;          // the name can be changed, never emptied
+    const old = LIST_FIELDS[k] ? joinList(splitList(target[k])) : String(target[k] || '').trim();
+    if (val !== old) out[k] = val;
+  });
+  return out;
 }
 
 // ------------------------- تنبيه واتساب للمشرفين (اختياري) -------------------------

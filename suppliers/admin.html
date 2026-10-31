@@ -87,6 +87,7 @@ dl.dl dt{color:var(--ink-3)}
 .warn{background:#fde6e6;color:#8a1d22;border-radius:12px;padding:8px 10px;font-size:.88rem;margin-bottom:10px}
 .batch{border:2px solid var(--volt)}
 .add-l{color:var(--ok);font-weight:600}
+.chg{margin-top:8px;padding:8px 10px;border-radius:12px;background:var(--card-2,rgba(127,127,127,.08))}.chg .old{color:var(--ink-3,#888);text-decoration:line-through;font-size:.9rem}.chg .new{color:var(--ok);font-weight:600}
 .tagrow{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px}
 .tagc{background:var(--paper);border-radius:999px;padding:2px 9px;font-size:.78rem;color:var(--ink-2)}
 .pg{background:var(--paper);border-radius:12px;padding:8px;margin-bottom:8px}
@@ -487,7 +488,25 @@ function reviewCard(r){
     </div></div>`;
 }
 const FIELD_AR = {Mobiles:'جوال', Phones:'هاتف', Fax:'فاكس', Emails:'إيميل', Contacts:'المسؤول', Category:'تخصصات', Brands:'الماركات', Name_AR:'الاسم بالعربي', City:'المدينة', Address:'العنوان', Specialty:'التفاصيل'};
+const FIELD_AR2 = Object.assign({Name:'اسم الشركة', Notes:'ملاحظات'}, FIELD_AR);
+function suggestCard(u){
+  const ltr = k => /Mobiles|Phones|Fax|Emails/.test(k) ? ' dir="ltr"' : '';
+  const show = v => esc(split(v).join('، ') || String(v || '')) || '<span class="sub">(فارغ)</span>';
+  const lines = Object.keys(u.Data).filter(k => k[0] !== '_').map(k =>
+    `<div class="chg"><b>${FIELD_AR2[k] || k}</b><div class="old">قبل: <bdi${ltr(k)}>${show(u.Current[k])}</bdi></div><div class="new">بعد: <bdi${ltr(k)}>${show(u.Data[k])}</bdi></div></div>`).join('');
+  return `<div class="card" id="c-${esc(u.ID)}">
+    <h3>✏️ اقتراح تعديل لـ: ${esc(u.SupplierName)}</h3>
+    <div class="sub">${esc(u.Date)} · إذا وافقت تحلّ القيم الجديدة محلّ القديمة</div>
+    ${u.Data._why ? `<div style="margin-top:6px">💬 ${esc(u.Data._why)}</div>` : ''}
+    ${lines}
+    <div class="by" style="margin-top:8px">من: <b>${esc(u.Submitted_By || 'بدون اسم')}</b>${u.Submitter_Phone ? ` · <span class="num">${esc(u.Submitter_Phone)}</span>` : ''}</div>
+    <div class="acts">
+      <button class="btn ok" data-act="approve" data-sheet="Updates" data-id="${esc(u.ID)}">✅ اعتمد التعديل</button>
+      <button class="btn no" data-act="reject" data-sheet="Updates" data-id="${esc(u.ID)}">❌ رفض</button>
+    </div></div>`;
+}
 function updateCard(u){
+  if (u.Data && u.Data._replace) return suggestCard(u);
   const lines = Object.keys(u.Data).filter(k => k !== 'Category_AR').map(k => {
     const keyOf = LIST_FIELDS[k];
     if (!keyOf) return `<div><span class="add-l">➕ ${FIELD_AR[k] || k}:</span> ${esc(u.Data[k])}</div>`;
