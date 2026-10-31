@@ -1,6 +1,6 @@
 # دليل موردي الكهرباء – قروب Elec in KSA
 **Project brief: read this first in every new chat about this project.**
-Last updated: 2026-10-31 (version 2 live).
+Last updated: 2026-10-31 (version 3 live).
 
 ---
 
@@ -77,10 +77,14 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 9. earthing التأريض والصواعق
 10. fire إنذار الحريق
 11. lowcurrent التيار الخفيف (CCTV, access, attendance, gates, networks, phone, PA, screens, BMS, KNX, PLC)
-12. tools العِدد وأجهزة القياس
-13. services التأجير والاختبارات (cranes and heavy equipment, cable pulling, test van, cable fault locating, transformer/panel testing, earthing testing)
+12. elevators المصاعد والسلالم الكهربائية (passenger & freight, escalators & walkways, spare parts) — added in version 3
+13. tools العِدد وأجهزة القياس
 
-**Contractors tab:** 7 specialties (group `contracting`, `con: true`).
+**Rental & testing tab (`tab: 'srv'`, version 3):** group `services` التأجير والاختبارات (cranes and heavy equipment, cable pulling, test van, cable fault locating, transformer/panel testing, earthing testing). The supplier form can still pick it.
+
+**Contractors tab («مقاولون متخصصون»):** 8 specialties (group `contracting`, `con: true`), incl. «تركيب وصيانة المصاعد» (version 3).
+
+**Which tab a company shows in (app.js):** `isSup` = not Type Contractor and has a suppliers-tab section (or none); `isSrv` = has `services`; `isCon` = Type Contractor or has `contracting`. A company can show in more than one tab.
 
 **Rules:**
 - **«مورد شامل» (general supplier)** button = cables + panels + switches + conduits + earthing. It does **not** include lighting; Ahmed said general suppliers usually don't sell lighting.
@@ -91,11 +95,16 @@ Shared code goes between the `/*@@SHARED*/ … /*@@END*/` markers in the pages a
 
 ## 7. Features (version 2)
 **Public site**
-- Home: search, suppliers/contractors switch, section tiles (empty ones say «أضف أول شركة»), recent additions, star of the month.
+- Home (version 3): smaller header; search with live suggestions; three tabs موردون ومصانع / تأجير واختبارات / مقاولون متخصصون; quick access = أضف مورداً، شارك قائمة موردين، المساهمون، انضم للقروب («اطلب مورداً» removed, still in bottom nav); section tiles (empty ones say «أضف أول شركة»), recent additions, star of the month.
 - List:
   - Specialty chips, type chips and city chips.
   - Each card has call, WhatsApp and share. Share opens WhatsApp with a fixed format, the home link and the group join link.
   - Excel export only when a section, search or city is selected; the full export is for admins.
+- Search (version 3):
+  - Two-way dictionary `SYN` → `SYN2` (Arabic ↔ English words and brands).
+  - Sound skeleton `skel()`: Arabic and Latin letters map to the same consonants (سيمنس = Siemens = `smns`). Used only for words of 3+ letters; very short names (Bosch, ABB) need a `SYN` entry.
+  - Suggestions under both search boxes while typing: sections, specialties, companies, brands, cities (`suggest()`).
+  - Results sorted name-first; a «نتائج أخرى في» row links to the other tabs.
 - Add (only name + phone required):
   - Ways to fill it: paste a message (auto-fill), contact .vcf, or Excel/CSV bulk upload with a template, up to 500 rows.
   - Duplicate check by phone, e-mail or name, with a warning while typing. A duplicate becomes an "update" that adds only the new values.
@@ -151,7 +160,7 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
    7. Afterwards, force-push `main:tmp-setup` to remove the temp file.
 2. **Site:** bump `CACHE` in `sw.js`, commit `suppliers/*` to `main` and push. GitHub Pages updates in about 1 minute.
 3. **Check:**
-   - Through the browser: the API returns `v:2`; the page shows the new UI; an admin call with a wrong password returns `wrong_password`.
+   - Through the browser: the API returns `v:3` (wait up to 5 minutes for the cache); the page shows the new UI; an admin call with a wrong password returns `wrong_password`.
    - The sandbox cannot reach script.google.com directly; use the browser.
 
 ## 10. History
@@ -170,9 +179,17 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
   - Integrators that sell and install (SAS, Al Shaikh, ETECHS, IFMI) are Type `Supplier` plus `Low Current Contracting`, so they show in both tabs. `Type: Contractor` hides a company from supplier sections (`isSup` in app.js).
   - Not added: duplicates (Siemens, Schneider, Secutron, Honeywell, Arab Emergency, Saudi Pan Gulf, SETRA, Alfanar); dead or for-sale domains; Gmail/phone-only firms; non-electrical firms.
 
+- **Version 3 (2026-10-31):**
+  - Header ~15% smaller; «اطلب مورداً» removed from quick access; «رفع قائمة Excel» renamed «شارك قائمة موردين».
+  - Three tabs: suppliers & factories / rental & testing / specialised contractors.
+  - New section المصاعد والسلالم الكهربائية + contractor specialty تركيب وصيانة المصاعد. Backend redeployed as Apps Script version 3 (API `v:3`, same URL); `sw.js` cache `elec-ksa-v7`.
+  - Bilingual + sound-alike search with live suggestions.
+
 ## 11. Open ideas (not requested yet)
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
 - WhatsApp alerts for admins, if Ahmed ever wants them.
-- Update the setup-guide doc for version 2.
+- Update the setup-guide doc for versions 2–3.
+- Grow the `SYN` dictionary with short brand names members search for (e.g. بوش = Bosch) since the sound match skips words under 3 consonants.
+- Elevators section is empty: invite elevator suppliers/contractors in the group.
 - Approve batch `B261031102420` (12 companies) in the admin page. IFMI shows a false "likely duplicate" hint with "International Co. for Modern Industries"; it is a different company.
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
