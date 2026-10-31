@@ -254,7 +254,7 @@ function buildList_() {
   const requests = readSheet_('Requests').filter(r => r.Status !== 'hidden').slice(-300)
     .map(r => ({id: r.ID, status: r.Status, text: r.Text, category: r.Category, city: r.City, name: r.Name,
                 date: r.Date, answers: answered[r.ID] || []}));
-  return JSON.stringify({ok: true, v: 2, updated: new Date().toISOString(), suppliers, reviews, requests, board});
+  return JSON.stringify({ok: true, v: 3, updated: new Date().toISOString(), suppliers, reviews, requests, board});
 }
 
 function getCachedList_() {
@@ -401,7 +401,7 @@ function handleAdmin_(body) {
   if (act === 'login' || act === 'load') {
     const sup = readSheet_('Suppliers');
     const byId = {}; sup.forEach(s => { byId[s.ID] = s; });
-    return {ok: true, admin: admin.name, v: 2,
+    return {ok: true, admin: admin.name, v: 3,
       pending: sup.filter(s => s.Status === 'pending').map(s => Object.assign(publicSupplier_(s), {
         Submitter_Phone: s.Submitter_Phone, Batch_ID: s.Batch_ID, Dup_Of: s.Dup_Of, DupName: s.Dup_Of && byId[s.Dup_Of] ? byId[s.Dup_Of].Name : ''})),
       updates: readSheet_('Updates').filter(u => u.Status === 'pending').map(u => {

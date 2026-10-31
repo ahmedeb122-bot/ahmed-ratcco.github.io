@@ -73,25 +73,41 @@ svg{display:block}
 .top{padding:calc(16px + env(safe-area-inset-top)) 20px 0}
 .top-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:12px}
-.logo{width:46px;height:46px;border-radius:15px;background:var(--navy);display:grid;place-items:center}
-.logo svg{width:26px;height:26px}
-.brand b{display:block;font-size:1.02rem;font-weight:700}
-.brand small{display:block;font-size:.8rem;color:var(--ink-3)}
-.lang{border:0;background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font-size:.85rem;font-weight:500}
-.hello{margin:22px 0 4px;font-size:1.75rem;line-height:1.2;font-weight:700;letter-spacing:-.3px}
-.by{margin:0;color:var(--ink-3);font-size:.92rem}
+.logo{width:40px;height:40px;border-radius:13px;background:var(--navy);display:grid;place-items:center}
+.logo svg{width:22px;height:22px}
+.brand b{display:block;font-size:.9rem;font-weight:700}
+.brand small{display:block;font-size:.72rem;color:var(--ink-3)}
+.lang{border:0;background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:.78rem;font-weight:500}
+.hello{margin:18px 0 4px;font-size:1.48rem;line-height:1.2;font-weight:700;letter-spacing:-.3px}
+.by{margin:0;color:var(--ink-3);font-size:.8rem}
 .by b{color:var(--ink);font-weight:500}
-.sbox{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--r-l);padding:0 18px;margin-top:18px;border:1.5px solid transparent}
-.sbox svg{width:22px;height:22px;color:var(--accent);flex-shrink:0}
-.sbox input{flex:1;border:0;background:none;padding:17px 0;font-size:1.02rem;min-width:0}
+.sbox{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--r-l);padding:0 16px;margin-top:14px;border:1.5px solid transparent}
+.sbox svg{width:19px;height:19px;color:var(--accent);flex-shrink:0}
+.sbox input{flex:1;border:0;background:none;padding:14px 0;font-size:.9rem;min-width:0}
 .sbox input:focus{outline:none}
 .sbox input::placeholder{color:var(--ink-3)}
 .sbox:focus-within{border-color:var(--accent)}
 
+/* suggestions under the search box */
+.sbox-wrap{position:relative}
+.sugg{position:absolute;inset-inline:0;top:calc(100% + 6px);z-index:30;background:var(--card);border:1px solid var(--line);border-radius:var(--r-l);box-shadow:0 12px 32px rgba(0,0,0,.18);overflow:hidden;max-height:62vh;overflow-y:auto}
+.sg{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:10px 14px;text-align:start;border-bottom:1px solid var(--line);color:var(--ink)}
+.sg:last-child{border-bottom:0}
+.sg.on,.sg:active{background:var(--accent-soft)}
+.sg .ic{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:grid;place-items:center;color:var(--accent);flex-shrink:0}
+.sg .ic svg{width:17px;height:17px}
+.sg > svg{width:18px;height:18px;color:var(--accent);margin-inline:8px}
+.sg span{min-width:0}
+.sg b{display:block;font-size:.9rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg small{display:block;font-size:.76rem;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg.all b{color:var(--accent)}
+.also{align-items:center;margin:0 20px 10px;padding:0}
+.also > span{font-size:.82rem;color:var(--ink-3);flex-shrink:0}
+
 /* ---------- sections ---------- */
 .sec{margin-top:28px}
 .sec-h{display:flex;align-items:center;justify-content:space-between;margin:0 20px 14px}
-.sec-h h2{margin:0;font-size:1.3rem;font-weight:700}
+.sec-h h2{margin:0;font-size:1.12rem;font-weight:700}
 .see{border:0;background:none;color:var(--accent);font-weight:500;font-size:.95rem;display:flex;align-items:center;gap:4px;padding:4px}
 .see svg{width:16px;height:16px}
 [dir=rtl] .see svg{transform:scaleX(-1)}
@@ -99,8 +115,8 @@ svg{display:block}
 /* quick access (horizontal pills) */
 .quick{display:flex;gap:10px;overflow-x:auto;padding:0 20px 2px;scrollbar-width:none}
 .quick::-webkit-scrollbar{display:none}
-.qp{flex-shrink:0;display:flex;align-items:center;gap:10px;background:var(--card);border:0;border-radius:var(--r-m);padding:13px 18px;font-size:1rem;font-weight:500;text-decoration:none;color:var(--ink)}
-.qp svg{width:22px;height:22px;color:var(--accent)}
+.qp{flex-shrink:0;display:flex;align-items:center;gap:8px;background:var(--card);border:0;border-radius:var(--r-m);padding:11px 15px;font-size:.88rem;font-weight:500;text-decoration:none;color:var(--ink)}
+.qp svg{width:19px;height:19px;color:var(--accent)}
 .qp.wa svg{color:var(--wa)}
 
 /* star of month */
@@ -258,6 +274,9 @@ footer p{margin:0 0 6px}
 
 /* v2: mode switch, picker, easy add, bulk */
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--card);border-radius:var(--r-m);padding:4px;margin-top:12px}
+.seg.three{grid-template-columns:repeat(3,1fr);margin-top:10px}
+.seg.three button{flex-direction:column;gap:3px;padding:8px 4px;font-size:.78rem;line-height:1.25;text-align:center}
+.seg.three button svg{width:18px;height:18px}
 .seg button{border:0;background:none;border-radius:12px;padding:10px 8px;font-weight:500;font-size:.92rem;color:var(--ink-2);display:flex;align-items:center;justify-content:center;gap:8px}
 .seg button svg{width:19px;height:19px}
 .seg button[aria-selected=true],.seg button[aria-pressed=true]{background:var(--accent);color:var(--on-accent)}
@@ -330,9 +349,10 @@ footer p{margin:0 0 6px}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q-home" type="search" enterkeyhint="search" autocomplete="off" data-tp="search_ph" placeholder="ابحث في الدليل" aria-label="Search">
     </label>
-    <div class="seg" role="tablist" aria-label="mode">
-      <button type="button" role="tab" data-mode="sup" aria-selected="true"><span data-icon="box"></span><span data-t="mode_sup">الموردون والمصانع</span></button>
-      <button type="button" role="tab" data-mode="con" aria-selected="false"><span data-icon="tools"></span><span data-t="mode_con">المقاولون</span></button>
+    <div class="seg three" role="tablist" aria-label="mode">
+      <button type="button" role="tab" data-mode="sup" aria-selected="true"><span data-icon="box"></span><span data-t="mode_sup">موردون ومصانع</span></button>
+      <button type="button" role="tab" data-mode="srv" aria-selected="false"><span data-icon="crane"></span><span data-t="mode_srv">تأجير واختبارات</span></button>
+      <button type="button" role="tab" data-mode="con" aria-selected="false"><span data-icon="tools"></span><span data-t="mode_con">مقاولون متخصصون</span></button>
     </div>
   </div>
 
@@ -346,9 +366,8 @@ footer p{margin:0 0 6px}
   <div class="sec">
     <div class="sec-h"><h2 data-t="quick_h">الوصول السريع</h2></div>
     <div class="quick">
-      <button class="qp" type="button" data-go="requests"><span data-icon="chat"></span><span data-t="q_ask">اطلب مورداً</span></button>
       <button class="qp" type="button" data-go="add"><span data-icon="plus"></span><span data-t="q_add">أضف مورداً</span></button>
-      <button class="qp" type="button" data-go="bulk"><span data-icon="sheet"></span><span data-t="q_bulk">رفع قائمة Excel</span></button>
+      <button class="qp" type="button" data-go="bulk"><span data-icon="sheet"></span><span data-t="q_bulk">شارك قائمة موردين</span></button>
       <button class="qp" type="button" data-go="board"><span data-icon="trophy"></span><span data-t="n_board">المساهمون</span></button>
       <a class="qp wa" id="join" target="_blank" rel="noopener"><span data-icon="wa"></span><span data-t="q_join">انضم للقروب</span></a>
     </div>
@@ -395,6 +414,7 @@ footer p{margin:0 0 6px}
     <div class="chips" id="city-chips"></div>
   </div>
   <div class="count" id="count" aria-live="polite"></div>
+  <div class="also chips" id="also" hidden></div>
   <div class="cards" id="list"></div>
   <button class="btn more" id="more" hidden></button>
   <div class="empty" id="empty" hidden>
@@ -613,11 +633,16 @@ const TAXONOMY = [
     ['KNX Smart Home', 'المنازل الذكية KNX', 'المنازل الذكية', 'KNX / smart home'],
     ['PLC & Automation', 'الأتمتة والتحكم PLC', 'أتمتة PLC', 'PLC & automation'],
   ]},
+  {id: 'elevators', ar: 'المصاعد والسلالم الكهربائية', en: 'Elevators & escalators', icon: 'lift', cats: [
+    ['Passenger & Freight Elevators', 'مصاعد ركاب وبضائع', 'مصاعد ركاب وبضائع', 'Passenger & freight'],
+    ['Escalators & Walkways', 'سلالم ومماشي متحركة', 'سلالم متحركة', 'Escalators & walkways'],
+    ['Elevator Spare Parts', 'قطع غيار المصاعد', 'قطع الغيار', 'Spare parts'],
+  ]},
   {id: 'tools', ar: 'العِدد وأجهزة القياس', en: 'Tools & testers', icon: 'tools', cats: [
     ['Tools', 'عدد يدوية وكهربائية', 'العِدد', 'Tools'],
     ['Test & Measuring', 'أجهزة القياس والفحص', 'أجهزة القياس', 'Test & measuring'],
   ]},
-  {id: 'services', ar: 'التأجير والاختبارات', en: 'Rental & testing', icon: 'crane', cats: [
+  {id: 'services', tab: 'srv', ar: 'التأجير والاختبارات', en: 'Rental & testing', icon: 'crane', cats: [
     ['Cranes & Heavy Equipment', 'رافعات وآليات ثقيلة', 'رافعات وآليات', 'Cranes & heavy equipment'],
     ['Cable Pulling Equipment', 'معدات سحب ومد الكابلات', 'سحب الكابلات', 'Cable pulling'],
     ['Test Van', 'عربة اختبارات', 'عربة اختبارات', 'Test van'],
@@ -633,6 +658,7 @@ const TAXONOMY = [
     ['MV & Substations Contracting', 'جهد متوسط ومحطات', 'جهد متوسط ومحطات', 'MV & substations'],
     ['Testing & Commissioning', 'فحص واختبار وتشغيل', 'فحص وتشغيل', 'Testing & commissioning'],
     ['O&M', 'تشغيل وصيانة', 'تشغيل وصيانة', 'O&M'],
+    ['Elevator Installation & Maintenance', 'تركيب وصيانة المصاعد', 'المصاعد', 'Elevators'],
   ]},
 ];
 // "general supplier": one tap picks every materials section (no lighting)
@@ -787,6 +813,7 @@ const P = {
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
  earth:'<path d="M12 3v10M5 13h14M7.5 17h9M10 21h4"/>',
  crane:'<path d="M4 21h8M7 21V4l12 4H7M17 8v5"/><path d="M15 13h4v3h-4z"/>',
+ lift:'<rect x="4.5" y="2.5" width="15" height="19" rx="2"/><path d="M12 2.5v19M6.8 9.5 8.3 7.5 9.8 9.5M14.2 7.5 15.7 9.5 17.2 7.5"/>',
  store:'<path d="M4 9h16l-1-5H5z"/><path d="M5 9v11h14V9M9 20v-6h6v6"/>',
 };
 const icon = n => n === 'wa'
@@ -799,10 +826,11 @@ const groupIcon = s => { const c = (s._cats || [])[0]; const g = c && CAT_INFO[c
 /* ---------- words ---------- */
 const T = {
  ar:{title:'دليل موردي الكهرباء',brand_sub:'قروب مهندسي الكهرباء',search_ph:'ابحث: Honeywell، كابلات، مولدات…',
-  mode_sup:'الموردون والمصانع',mode_con:'المقاولون',q_ask:'اطلب مورداً',q_add:'أضف مورداً',q_bulk:'رفع قائمة Excel',q_join:'انضم للقروب',
+  mode_sup:'موردون ومصانع',mode_srv:'تأجير واختبارات',mode_con:'مقاولون متخصصون',q_ask:'اطلب مورداً',q_add:'أضف مورداً',q_bulk:'شارك قائمة موردين',
+  sg_all:q=>`كل النتائج لـ «${q}»`,sg_sec:'قسم',sg_spec:'تخصص',sg_co:'شركة',sg_brand:'ماركة',sg_city:'مدينة',also_in:'نتائج أخرى في:',q_join:'انضم للقروب',
   inst_h:'ثبّت الدليل على جوالك',inst_p:'أيقونة بجانب واتساب، تفتح مثل التطبيق',inst_btn:'تثبيت',inst_ios:'اضغط زر المشاركة ⬆️ ثم «إضافة إلى الشاشة الرئيسية»',
   cats_h:'استكشف التصنيفات',quick_h:'الوصول السريع',see_all_cats:'عرض الكل',by_line:(n,c)=>`<b>${n}</b> شركة في <b>${c}</b> قسماً · يجمعه أعضاء قروب ${G}`,
-  see_all:'كل الموردين',recent_h:'آخر الإضافات',all_sup:'كل الموردين',all_con:'كل المقاولين',all_in:'الكل',
+  see_all:'كل الموردين',recent_h:'آخر الإضافات',all_sup:'كل الموردين',all_srv:'كل التأجير والاختبارات',all_con:'كل المقاولين',all_in:'الكل',
   n_home:'الرئيسية',n_list:'الدليل',n_req:'الطلبات',n_board:'المساهمون',all_city:'كل المدن',
   found:n=>`${n} شركة`,showing:(a,b)=>`يظهر ${a} من ${b}`,more:'عرض المزيد',sup_n:n=>`${n} شركة`,
   empty_h:'لم نجد مورداً بهذا البحث',empty_p:'اطلبه من الأعضاء، وعندما يرد أحدهم يُضاف إلى الدليل للجميع.',ask_btn:'اطلب هذا المورد',add_btn:'أعرف مورداً، أضيفه',
@@ -840,10 +868,11 @@ const T = {
   copy:y=>`© ${y} ${G} — جميع الحقوق محفوظة`,disclaimer:'البيانات يضيفها أعضاء القروب للفائدة. تأكد من المورد قبل أي تعامل مالي.',
   join_line:'🔹 للانضمام لقروب الواتساب:',dir_line:`📒 صفحة دليل موردي الكهرباء – قروب ${G}`,share_wa:'مشاركة في واتساب',no_wa:'لا يوجد رقم جوال',ago_today:'اليوم',ago_days:n=>`قبل ${n} يوم`},
  en:{title:'Electrical Suppliers Directory',brand_sub:'Electrical engineers group',search_ph:'Search: Honeywell, cables, generators…',
-  mode_sup:'Suppliers & factories',mode_con:'Contractors',q_ask:'Ask',q_add:'Add supplier',q_bulk:'Upload Excel list',q_join:'Join group',
+  mode_sup:'Suppliers',mode_srv:'Rental & testing',mode_con:'Contractors',q_ask:'Ask',q_add:'Add supplier',q_bulk:'Share a supplier list',
+  sg_all:q=>`All results for “${q}”`,sg_sec:'Section',sg_spec:'Specialty',sg_co:'Company',sg_brand:'Brand',sg_city:'City',also_in:'Also found in:',q_join:'Join group',
   inst_h:'Install on your phone',inst_p:'An icon next to WhatsApp, opens like an app',inst_btn:'Install',inst_ios:'Tap Share ⬆️ then “Add to Home Screen”',
   cats_h:'Explore categories',quick_h:'Quick access',see_all_cats:'See all',by_line:(n,c)=>`<b>${n}</b> companies in <b>${c}</b> sections · collected by ${G} members`,
-  see_all:'All suppliers',recent_h:'Recently added',all_sup:'All suppliers',all_con:'All contractors',all_in:'All',
+  see_all:'All suppliers',recent_h:'Recently added',all_sup:'All suppliers',all_srv:'All rental & testing',all_con:'All contractors',all_in:'All',
   n_home:'Home',n_list:'Directory',n_req:'Requests',n_board:'Top',all_city:'All cities',
   found:n=>`${n} companies`,showing:(a,b)=>`Showing ${a} of ${b}`,more:'Show more',sup_n:n=>`${n} companies`,
   empty_h:'No supplier found',empty_p:'Ask the members. When someone answers, it is added for everyone.',ask_btn:'Ask for it',add_btn:'I know one, add it',
@@ -896,9 +925,46 @@ const SYN = {
  'تاريض':'earthing','ارضي':'earthing','صواعق':'lightning','اكسس':'access','دخول':'access','بوابات':'gate','مواقف':'parking','صوت':'audio','مفاتيح':'switch','افياش':'wiring',
  'مواسير':'conduit','حوامل':'tray','تري':'tray','باسواي':'busway','بطاريات':'ups','شبكات':'data','خفيف':'low current','شمسيه':'solar','سولار':'solar',
  'الرياض':'riyadh','رياض':'riyadh','الدمام':'dammam','دمام':'dammam','الخبر':'khobar','خبر':'khobar','جده':'jeddah','الشرقيه':'eastern','الجبيل':'jubail',
+ 'مصعد':'elevator','مصاعد':'elevator','اسانسير':'elevator','اصانصير':'elevator','سلالم':'escalator','تاجير':'rental','اختبار':'testing','اختبارات':'testing','فحص':'testing',
+ 'رافعه':'crane','رافعات':'crane','كرين':'crane','مقاول':'contracting','مقاولين':'contracting','مقاولات':'contracting','صيانه':'maintenance','قواطع':'breaker','قاطع':'breaker','عدد':'tools','ادوات':'tools',
+ 'مصنع':'manufacturer','مصانع':'manufacturer','نحاس':'copper','المنيوم':'aluminum','انفرتر':'inverter','الواح':'panel','بطاريه':'battery','سنترال':'pabx','ذكي':'smart',
  'هانيويل':'honeywell','بوش':'bosch','سيمنس':'siemens','شنايدر':'schneider','اشنايدر':'schneider','الفنار':'fanar','فنار':'fanar','ليجراند':'legrand','السويدي':'sewedy','كانتك':'kantech','فيليبس':'philips','ابب':'abb'
 };
-const tokens = q => normText(q).split(' ').filter(Boolean).map(w => [w, SYN[w]].filter(Boolean));
+// two-way dictionary: Arabic word -> English words and English word -> Arabic words
+const SYN2 = {};
+Object.entries(SYN).forEach(([a, e]) => { (SYN2[a] = SYN2[a] || []).push(e); (SYN2[e] = SYN2[e] || []).push(a); });
+// "sound skeleton": Siemens and سيمنس both become "smns", so a name typed in the other language still matches
+const AR_SK = {'ب':'b','پ':'b','ت':'t','ط':'t','ث':'s','س':'s','ص':'s','ز':'s','ذ':'s','ظ':'s','ج':'g','غ':'g','گ':'g','خ':'k','ق':'k','ك':'k','د':'d','ض':'d','ر':'r','ش':'x','چ':'x','ف':'f','ڤ':'f','ل':'l','م':'m','ن':'n'};
+function skel(w){
+  if (/[\u0600-\u06ff]/.test(w)) {
+    if (w.length > 4 && w.startsWith('ال')) w = w.slice(2);
+    if (w.length > 4 && w.endsWith('ات')) w = w.slice(0, -2);
+    w = [...w].map(c => AR_SK[c] || (/\d/.test(c) ? c : '')).join('');
+  } else {
+    w = w.replace(/x/g, 'ks').replace(/sch|sh|ch/g, 'x').replace(/ph/g, 'f').replace(/th/g, 't').replace(/kh|ck|qu/g, 'k').replace(/gh/g, 'g')
+      .replace(/c(?=[eiy])/g, 's').replace(/[cq]/g, 'k').replace(/z/g, 's').replace(/j/g, 'g').replace(/v/g, 'f').replace(/p/g, 'b').replace(/[aeiouyhw]/g, '');
+  }
+  return w.replace(/(.)\1+/g, '$1');
+}
+// every way a word can be looked for: itself, "al-" removed, and its sound skeleton
+function skelWords(text){
+  const out = [];
+  normText(text).split(' ').forEach(w => {
+    if (!w) return;
+    out.push(skel(w));
+    const bare = w.replace(/^(al|el)(?=[a-z]{4})/, '');
+    if (bare !== w) out.push(skel(bare));
+  });
+  return ' ' + out.filter(Boolean).join(' ') + ' ';
+}
+const QSTOP = new Set([...NAME_STOP, 'مورد', 'موردين', 'supplier', 'suppliers', 'في', 'من', 'in']);
+// a search becomes a list of words; each word has its alternatives (translations + sound skeleton)
+function tokens(q){
+  let ws = normText(q).split(' ').filter(Boolean);
+  if (ws.length > 1) { const k = ws.filter(w => !QSTOP.has(w)); if (k.length) ws = k; }
+  return ws.map(w => ({w, alts: [w].concat(SYN2[w] || []), sk: w.length >= 3 ? skel(w) : ''}));
+}
+const tokMatch = (s, tk) => tk.alts.some(a => s._hay.includes(a)) || (tk.sk.length >= 3 && s._sk.includes(' ' + tk.sk));
 
 /* ---------- phones ---------- */
 function tel(raw){ const k = phoneKey(raw); return k ? (k.length === 9 ? '966' + k : k) : ''; }
@@ -906,15 +972,25 @@ const isMobileKSA = d => /^9665\d{8}$/.test(d);
 
 /* ---------- state ---------- */
 let DATA = {suppliers:[], reviews:[], requests:[], board:null};
+let SG_INDEX = null;
 let byId = {}, revBy = {}, shownLimit = 30, answerReq = null;
 let mode = 'sup', filt = {group:'', cat:'', city:'', type:''};
 let ME = {name:'', phone:''};
 try { ME = JSON.parse(localStorage.getItem('me') || 'null') || ME; } catch(e){}
-try { mode = localStorage.getItem('mode') === 'con' ? 'con' : 'sup'; } catch(e){}
+const MODES = ['sup', 'srv', 'con'];
+try { const m = localStorage.getItem('mode'); mode = MODES.includes(m) ? m : 'sup'; } catch(e){}
 
+// three tabs: suppliers & factories / rental & testing / specialised contractors
+const TAB_GROUP = {srv: 'services', con: 'contracting'};
+const SUP_GROUPS = TAXONOMY.filter(g => !g.con && !g.tab).map(g => g.id);
+const groupMode = id => { const g = GROUP_OF(id); return g && g.con ? 'con' : g && g.tab ? g.tab : 'sup'; };
 const isCon = s => s.Type === 'Contractor' || s._groups.includes('contracting');
-const isSup = s => s.Type !== 'Contractor' || s._groups.includes('services');
-const inMode = s => mode === 'con' ? isCon(s) : isSup(s);
+const isSrv = s => s._groups.includes('services');
+const isSup = s => s.Type !== 'Contractor' && (!s._groups.length || s._groups.some(g => SUP_GROUPS.includes(g)));
+const IN = {sup: isSup, srv: isSrv, con: isCon};
+const inMode = s => IN[mode](s);
+const modeOf = s => MODES.find(m => IN[m](s)) || 'sup';
+function setMode(m){ mode = m; try { localStorage.setItem('mode', mode); } catch(e){} }
 
 /* ---------- load ---------- */
 async function load(){
@@ -933,12 +1009,14 @@ async function load(){
 }
 function setData(j){
   DATA = {suppliers:j.suppliers||[], reviews:j.reviews||[], requests:j.requests||[], board:j.board||null};
-  byId = {}; revBy = {};
+  byId = {}; revBy = {}; SG_INDEX = null;
   DATA.suppliers.forEach(s => {
     s._cats = upgradeCats(s.Category);
     s._groups = groupsOf(s._cats);
     s._hay = normText([s.Name, s.Name_AR, s.Category, s.Category_AR, s.Specialty, s.Brands, s.City, CITY_AR[s.City], s.Contacts, s.Notes, s.Address, s.Emails,
       s._cats.map(c => CAT_INFO[c] ? CAT_INFO[c].sar + ' ' + CAT_INFO[c].sen : '').join(' ')].join(' '));
+    s._sk = skelWords([s.Name, s.Name_AR, s.Brands, s.Contacts, s.City].join(' '));
+    s._nm = normText(s.Name + ' ' + (s.Name_AR || ''));
     byId[s.ID] = s;
   });
   DATA.reviews.forEach(r => (revBy[r.sid] = revBy[r.sid] || []).push(r));
@@ -951,12 +1029,12 @@ function renderAll(){ renderHome(); fillForms(); renderList(); renderRequests();
 function renderHome(){
   $$('.seg [data-mode]').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === mode));
   const pool = DATA.suppliers.filter(inMode);
-  const CG = GROUP_OF('contracting');
-  $('#tiles').innerHTML = (mode === 'con'
-    ? CG.cats.map(c => `<button class="tile" data-group="contracting" data-tcat="${esc(c[0])}"><span class="ti">${icon(CG.icon)}</span><b>${esc(catName(c[0]))}</b><small>${(n => n ? t('sup_n', n) : t('be_first'))(pool.filter(s => s._cats.includes(c[0])).length)}</small></button>`).join('')
-    : TAXONOMY.filter(g => !g.con).map(g => `<button class="tile" data-group="${g.id}"><span class="ti">${icon(g.icon)}</span><b>${esc(groupName(g))}</b><small>${(n => n ? t('sup_n', n) : t('be_first'))(pool.filter(s => s._groups.includes(g.id)).length)}</small></button>`).join(''))
-    + `<button class="tile" data-go="list" data-all="1"><span class="ti">${icon('list')}</span><b>${esc(mode === 'con' ? t('all_con') : t('all_sup'))}</b><small>${t('sup_n', pool.length)}</small></button>`;
-  $('#by').innerHTML = t('by_line', DATA.suppliers.length, TAXONOMY.filter(g => !g.con).length);
+  const CG = TAB_GROUP[mode] && GROUP_OF(TAB_GROUP[mode]);
+  $('#tiles').innerHTML = (CG
+    ? CG.cats.map(c => `<button class="tile" data-group="${CG.id}" data-tcat="${esc(c[0])}"><span class="ti">${icon(CG.icon)}</span><b>${esc(catName(c[0]))}</b><small>${(n => n ? t('sup_n', n) : t('be_first'))(pool.filter(s => s._cats.includes(c[0])).length)}</small></button>`).join('')
+    : SUP_GROUPS.map(GROUP_OF).map(g => `<button class="tile" data-group="${g.id}"><span class="ti">${icon(g.icon)}</span><b>${esc(groupName(g))}</b><small>${(n => n ? t('sup_n', n) : t('be_first'))(pool.filter(s => s._groups.includes(g.id)).length)}</small></button>`).join(''))
+    + `<button class="tile" data-go="list" data-all="1"><span class="ti">${icon('list')}</span><b>${esc(t('all_' + mode))}</b><small>${t('sup_n', pool.length)}</small></button>`;
+  $('#by').innerHTML = t('by_line', DATA.suppliers.length, SUP_GROUPS.length);
   const b = DATA.board, star = b && b.monthTop && b.monthTop[0];
   $('#star-sec').hidden = !star;
   if (star) { $('#star-name').textContent = star.name; $('#star-n').textContent = t('adds', star.month); }
@@ -988,11 +1066,25 @@ function rank(s){
   const named = filt.cat ? s._cats.includes(filt.cat) : s._cats.some(c => CAT_INFO[c] && !CAT_INFO[c].whole && CAT_INFO[c].group === filt.group);
   return s._groups.length * 2 + (named ? 0 : 1);
 }
+// how well a company matches the search: name starts with it, a name word starts with it, found anywhere, sounds alike
+function qScore(s, q, full){
+  if (!q.length) return 0;
+  if (full && (s._nm.startsWith(full) || (' ' + s._nm).includes(' ' + full))) return 0;
+  if (q.some(tk => tk.alts.some(a => (' ' + s._nm).includes(' ' + a)))) return 1;
+  return q.every(tk => tk.alts.some(a => s._hay.includes(a))) ? 2 : 3;
+}
+const qMatch = (s, q) => q.every(tk => tokMatch(s, tk));
 function filtered(){
+  const q = tokens($('#q').value), full = normText($('#q').value);
+  const list = DATA.suppliers.filter(s => inMode(s) && inSection(s) && typeOk(s) && (!filt.city || s.City === filt.city) && qMatch(s, q));
+  if (!filt.group && !q.length) return list;
+  return list.map((s, i) => [qScore(s, q, full) * 100 + rank(s), i, s]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
+}
+// the same search in the other tabs, so nothing is hidden by the tab you are on
+function otherModes(){
   const q = tokens($('#q').value);
-  const list = DATA.suppliers.filter(s => inMode(s) && inSection(s) && typeOk(s) &&
-    (!filt.city || s.City === filt.city) && q.every(alts => alts.some(w => s._hay.includes(w))));
-  return filt.group ? list.map((s, i) => [rank(s), i, s]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]) : list;
+  if (!q.length || filt.group) return [];
+  return MODES.filter(m => m !== mode).map(m => [m, DATA.suppliers.filter(s => IN[m](s) && (!filt.city || s.City === filt.city) && qMatch(s, q)).length]).filter(x => x[1]);
 }
 function renderChips(){
   const g = filt.group && GROUP_OF(filt.group);
@@ -1003,7 +1095,7 @@ function renderChips(){
     $('#cat-chips').innerHTML = [`<button class="chip" data-cat="" aria-pressed="${!filt.cat}">${t('all_in')}</button>`]
       .concat(cats.map(c => `<button class="chip" data-cat="${esc(c.key)}" aria-pressed="${filt.cat === c.key}">${esc(catShort(c.key))} <small>${c.n}</small></button>`)).join('');
   }
-  $('#type-chips').hidden = mode === 'con';
+  $('#type-chips').hidden = mode !== 'sup';
   $('#type-chips').innerHTML = [['', 'all_types'], ['Manufacturer', 'f_mfrs'], ['Supplier', 'f_sups']]
     .map(([k, l]) => `<button class="chip" data-ftype="${k}" aria-pressed="${filt.type === k}">${t(l)}</button>`).join('');
   const pool = DATA.suppliers.filter(s => inMode(s) && inSection(s) && typeOk(s));
@@ -1066,7 +1158,7 @@ function detailHTML(s){
 function listTitle(){
   if (filt.cat) return catName(filt.cat);
   if (filt.group) return groupName(GROUP_OF(filt.group));
-  return mode === 'con' ? t('all_con') : t('all_sup');
+  return t('all_' + mode);
 }
 function renderList(){
   renderChips();
@@ -1077,6 +1169,9 @@ function renderList(){
   $('#empty').hidden = !!list.length;
   $('#count').hidden = !list.length;
   $('#more').hidden = list.length <= shownLimit; $('#more').textContent = t('more');
+  const om = otherModes();
+  $('#also').hidden = !om.length;
+  $('#also').innerHTML = om.length ? `<span>${t('also_in')}</span>` + om.map(([m, n]) => `<button class="chip" data-mode="${m}">${esc(t('mode_' + m))} <small>${n}</small></button>`).join('') : '';
 }
 function toggleCard(head){
   const card = head.closest('.sc'), open = !card.classList.contains('open');
@@ -1157,6 +1252,9 @@ const CAT_WORDS = {
   'Test Van': ['test van', 'عربه اختبار'], 'Cable Fault Locating': ['fault locat', 'cable fault', 'اعطال الكابلات', 'vlf', 'hipot', 'hi pot'],
   'Transformer & Panel Testing': ['relay testing', 'transformer testing', 'فحص المحولات', 'oil test'], 'Earthing Testing': ['earth test', 'فحص التاريض'],
   '@services': ['rental', 'تاجير', 'testing', 'اختبارات'],
+  '@elevators': ['elevator', 'elevators', 'lift', 'lifts', 'مصعد', 'مصاعد', 'اسانسير', 'اصانصير'], 'Escalators & Walkways': ['escalator', 'escalators', 'سلالم متحركه', 'travelator'],
+  'Passenger & Freight Elevators': ['passenger elevator', 'freight elevator', 'مصاعد ركاب', 'مصعد ركاب'], 'Elevator Spare Parts': ['elevator parts', 'قطع غيار مصاعد', 'قطع غيار المصاعد'],
+  'Elevator Installation & Maintenance': ['elevator maintenance', 'صيانه المصاعد', 'صيانه مصاعد', 'تركيب مصاعد'],
   'Electrical Contracting': ['electrical contracting', 'مقاولات كهربائيه', 'مقاول كهرباء'], 'Low Current Contracting': ['مقاولات تيار خفيف'], 'MEP Contracting': ['mep'],
   'Solar Contracting': ['مقاولات طاقه شمسيه'], 'Testing & Commissioning': ['commissioning', 'testing and commissioning', 'فحص وتشغيل الانظمه'], 'O&M': ['o&m', 'maintenance', 'صيانه'],
 };
@@ -1501,7 +1599,7 @@ function setAnswer(req){ answerReq = req; $('#answering').hidden = !req; if (req
 
 /* ---------- share ---------- */
 function share(s){
-  const CAT_EMOJI = [['fire', '🔥'], ['lighting', '💡'], ['lowcurrent', '📡'], ['cables', '🔌'], ['mv', '⚡'], ['backup', '🔋'], ['solar', '☀️'], ['panels', '🔧'], ['switches', '🔌'], ['conduits', '🧰'], ['earthing', '⚡'], ['tools', '🛠'], ['services', '🏗'], ['contracting', '👷']];
+  const CAT_EMOJI = [['fire', '🔥'], ['lighting', '💡'], ['lowcurrent', '📡'], ['cables', '🔌'], ['mv', '⚡'], ['backup', '🔋'], ['solar', '☀️'], ['panels', '🔧'], ['switches', '🔌'], ['conduits', '🧰'], ['earthing', '⚡'], ['elevators', '🛗'], ['tools', '🛠'], ['services', '🏗'], ['contracting', '👷']];
   const emoji = (CAT_EMOJI.find(([g]) => s._groups[0] === g) || [, '🏭'])[1];
   const city = s.City ? cityName(s.City) : '';
   const shown = s._cats;
@@ -1544,7 +1642,7 @@ function route(){
 }
 function openSupplier(id){
   const s = byId[id]; if (!s) return;
-  if (!inMode(s)) { mode = isSup(s) ? 'sup' : 'con'; renderHome(); }
+  if (!inMode(s)) { setMode(modeOf(s)); renderHome(); }
   filt = {group:'', cat:'', city:'', type:''}; $('#q').value = s.Name; shownLimit = 30;
   history.replaceState(null, '', '#list'); route(); renderList();
   const head = document.querySelector(`#r-${CSS.escape(id)} .sc-head`);
@@ -1552,12 +1650,99 @@ function openSupplier(id){
 }
 window.addEventListener('hashchange', route);
 
+/* ---------- suggestions while typing ---------- */
+// everything that can be suggested: sections, specialties, companies, brands, cities (built once per data load)
+function sgIndex(){
+  if (SG_INDEX) return SG_INDEX;
+  const ix = [], seen = new Set();
+  const add = (kind, key, words, extra) => ix.push(Object.assign({kind, key, nt: ' ' + normText(words.join(' ')) + ' ', sk: skelWords(words.join(' '))}, extra));
+  TAXONOMY.forEach(g => {
+    add('sec', g.id, [g.ar, g.en].concat(CAT_WORDS['@' + g.id] || []), {group: g.id, cat: '', ic: g.icon});
+    g.cats.forEach(c => add('spec', c[0], [c[0], c[1], c[2], c[3]].concat(CAT_WORDS[c[0]] || []), {group: g.id, cat: c[0], ic: g.icon}));
+  });
+  DATA.suppliers.forEach(x => {
+    add('co', x.ID, [x.Name, x.Name_AR || ''], {id: x.ID, ic: groupIcon(x)});
+    splitList(x.Brands).forEach(b => { const k = normText(b); if (k.length > 1 && !seen.has(k) && k !== normText(x.Name)) { seen.add(k); add('brand', b, [b], {ic: 'star'}); } });
+  });
+  [...new Set(DATA.suppliers.map(x => x.City).filter(c => c && CITY_AR[c] && !/,/.test(c)))].forEach(c => add('city', c, [c, CITY_AR[c]], {ic: 'home'}));
+  return (SG_INDEX = ix);
+}
+const SG_MAX = {sec: 2, spec: 3, co: 4, brand: 2, city: 1};
+function suggest(text){
+  const nq = normText(text); if (!nq) return [];
+  const words = nq.split(' '), last = words[words.length - 1];
+  // the typed letters, their translations (كاب → cable) and their sound skeleton
+  const pre = [nq].concat(words.length === 1 && last.length >= 2 ? Object.keys(SYN2).filter(k => k.startsWith(last)).flatMap(k => SYN2[k]) : []);
+  const sk = words.length === 1 && last.length >= 3 ? skel(last) : '';
+  const score = it => pre.some(p => it.nt.startsWith(' ' + p)) ? 0 : pre.some(p => it.nt.includes(' ' + p)) ? 1 : sk.length >= 3 && it.sk.includes(' ' + sk) ? 2 : -1;
+  const got = {sec: [], spec: [], co: [], brand: [], city: []};
+  sgIndex().forEach(it => { const sc = score(it); if (sc >= 0) got[it.kind].push([sc, it]); });
+  const out = [];
+  ['sec', 'spec', 'co', 'brand', 'city'].forEach(k => got[k].sort((a, b) => a[0] - b[0]).slice(0, SG_MAX[k]).forEach(x => out.push(x[1])));
+  // a specialty already covered by a suggested section is not repeated
+  return out.filter(it => !(it.kind === 'spec' && out.some(o => o.kind === 'sec' && o.group === it.group && normText(catName(it.cat)) === normText(groupName(GROUP_OF(o.group)))))).slice(0, 9);
+}
+function sgLabel(it){
+  if (it.kind === 'sec') return groupName(GROUP_OF(it.group));
+  if (it.kind === 'spec') return catName(it.cat);
+  if (it.kind === 'co') { const x = byId[it.id]; return x.Name + (x.Name_AR ? ' · ' + x.Name_AR : ''); }
+  if (it.kind === 'city') return cityName(it.key);
+  return it.key;
+}
+function sgSub(it){
+  if (it.kind === 'spec') return t('sg_spec') + ' · ' + groupName(GROUP_OF(it.group));
+  if (it.kind === 'co') return [catsLine(byId[it.id], 1), cityName(byId[it.id].City)].filter(Boolean).join(' · ');
+  return t('sg_' + it.kind);
+}
+let sgList = [], sgPos = -1;
+function showSugg(input){
+  const box = input.closest('.sbox-wrap').querySelector('.sugg'), v = input.value.trim();
+  sgList = v ? suggest(v) : []; sgPos = -1;
+  if (!v) { box.hidden = true; return; }
+  box.innerHTML = `<button type="button" class="sg all" data-sg="-1">${icon('search')}<span><b>${esc(t('sg_all', v))}</b></span></button>`
+    + sgList.map((it, i) => `<button type="button" class="sg" data-sg="${i}" role="option"><span class="ic">${icon(it.ic)}</span><span><b dir="auto">${esc(sgLabel(it))}</b><small dir="auto">${esc(sgSub(it))}</small></span></button>`).join('');
+  box.hidden = false;
+}
+const hideSugg = () => $$('.sugg').forEach(b => b.hidden = true);
+function pickSugg(i, input){
+  hideSugg();
+  const it = sgList[i], home = input.id === 'q-home';
+  if (!it) { if (home) homeSearch(); else { input.blur(); } return; }
+  $('#q-home').value = '';
+  if (it.kind === 'co') { input.blur(); return openSupplier(it.id); }
+  shownLimit = 30;
+  if (it.kind === 'sec' || it.kind === 'spec') {
+    if (groupMode(it.group) !== mode) { setMode(groupMode(it.group)); renderHome(); }
+    $('#q').value = ''; filt = {group: it.group, cat: it.cat, city: '', type: ''};
+  } else if (it.kind === 'city') { $('#q').value = ''; filt = {group: '', cat: '', city: it.key, type: ''}; }
+  else { $('#q').value = it.key; filt = {group: '', cat: '', city: '', type: ''}; }
+  input.blur(); go('list'); renderList();
+}
+$$('.sbox').forEach(lb => {
+  const w = document.createElement('div'); w.className = 'sbox-wrap';
+  lb.parentNode.insertBefore(w, lb); w.appendChild(lb);
+  w.insertAdjacentHTML('beforeend', '<div class="sugg" role="listbox" hidden></div>');
+  const input = lb.querySelector('input'), box = w.querySelector('.sugg');
+  box.addEventListener('pointerdown', e => e.preventDefault());   // keep the keyboard open while tapping
+  box.addEventListener('click', e => { const b = e.target.closest('[data-sg]'); if (b) pickSugg(+b.dataset.sg, input); });
+  input.addEventListener('focus', () => { if (input.value.trim()) showSugg(input); });
+  input.addEventListener('blur', () => setTimeout(() => { box.hidden = true; }, 120));
+  input.addEventListener('keydown', e => {
+    const items = box.querySelectorAll('[data-sg]');
+    if (e.key === 'Escape') { box.hidden = true; return; }
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && !box.hidden && items.length) {
+      e.preventDefault(); sgPos = (sgPos + 1 + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length - 1;
+      items.forEach((b, i) => b.classList.toggle('on', i - 1 === sgPos));
+    }
+    if (e.key === 'Enter') { e.preventDefault(); if (!box.hidden && sgPos >= 0) pickSugg(sgPos, input); else if (input.id === 'q-home') { hideSugg(); homeSearch(); } else { hideSugg(); input.blur(); } }
+  });
+});
+
 /* ---------- events ---------- */
-let timer;
-$('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { shownLimit = 30; renderList(); }, 120); });
+let timer, sgTimer;
+$('#q').addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => { shownLimit = 30; renderList(); }, 120); clearTimeout(sgTimer); sgTimer = setTimeout(() => showSugg($('#q')), 60); });
 const homeSearch = () => { $('#q').value = $('#q-home').value; filt = {group:'', cat:'', city:'', type:''}; go('list'); };
-$('#q-home').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); homeSearch(); } });
-$('#q-home').addEventListener('input', () => { clearTimeout(timer); if ($('#q-home').value.trim().length >= 2) timer = setTimeout(() => { homeSearch(); setTimeout(() => { const q = $('#q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }, 30); }, 450); });
+$('#q-home').addEventListener('input', () => { clearTimeout(sgTimer); sgTimer = setTimeout(() => showSugg($('#q-home')), 60); });
 $('#more').addEventListener('click', () => { shownLimit += 40; renderList(); });
 $('#empty-ask').addEventListener('click', () => { $('#rq-text').value = $('#q').value.trim(); go('requests'); });
 $('#empty-add').addEventListener('click', () => { $('#a-name').value = $('#q').value.trim(); go('add'); checkDup(); });
@@ -1575,8 +1760,8 @@ document.addEventListener('click', e => {
   const sh0 = e.target.closest('button[data-share]'); if (sh0) { e.stopPropagation(); return share(byId[sh0.dataset.share]); }
   if (e.target.closest('[data-stop]')) return;
   const head = e.target.closest('.sc-head'); if (head) return toggleCard(head);
-  const md = e.target.closest('[data-mode]'); if (md) { mode = md.dataset.mode; try { localStorage.setItem('mode', mode); } catch(e){} renderHome(); renderList(); return; }
-  const grp = e.target.closest('[data-group]'); if (grp) { $('#q').value = ''; filt = {group: grp.dataset.group, cat: grp.dataset.tcat || '', city: '', type: ''}; return go('list'); }
+  const md = e.target.closest('[data-mode]'); if (md) { setMode(md.dataset.mode); if (TAB_GROUP[mode] ? filt.group !== TAB_GROUP[mode] : !SUP_GROUPS.includes(filt.group)) filt.group = filt.cat = ''; renderHome(); renderList(); return; }
+  const grp = e.target.closest('[data-group]'); if (grp) { if (groupMode(grp.dataset.group) !== mode) { setMode(groupMode(grp.dataset.group)); renderHome(); } $('#q').value = ''; filt = {group: grp.dataset.group, cat: grp.dataset.tcat || '', city: '', type: ''}; return go('list'); }
   const cat = e.target.closest('[data-cat]'); if (cat) { filt.cat = cat.dataset.cat; shownLimit = 30; return renderList(); }
   const city = e.target.closest('[data-city]'); if (city) { filt.city = city.dataset.city; shownLimit = 30; return renderList(); }
   const sec = e.target.closest('[data-sec]'); if (sec) { toggleSection(sec.dataset.sec); return renderPicker(); }
