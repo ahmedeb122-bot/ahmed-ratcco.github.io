@@ -131,6 +131,7 @@ dl.dl dt{color:var(--ink-3)}
     <section id="tab-requests" hidden></section>
     <section id="tab-all" hidden>
       <div class="toolbar"><input id="q" type="search" placeholder="ابحث لتعديل أو حذف مورد" autocomplete="off"><button class="btn" id="export-all" type="button">⬇️ Excel</button></div>
+      <button class="btn ok" id="add-new" type="button" style="width:100%;margin-bottom:10px">➕ أضف مورداً (يُنشر مباشرة)</button>
       <div id="dups"></div>
       <div class="list" id="all-list"></div>
     </section>
@@ -381,7 +382,7 @@ async function api(action, extra = {}){
     return await res.json();
   } catch(e) { return {ok:false, error:'net'}; }
 }
-const ERR = {wrong_password:'كلمة السر غير صحيحة.', blocked:'محاولات كثيرة خاطئة. انتظر 15 دقيقة.', net:'لا يوجد اتصال. تأكد من الإنترنت.',
+const ERR = {missing:'بيانات ناقصة: الاسم ورقم أو إيميل.', not_found:'غير موجود.', wrong_password:'كلمة السر غير صحيحة.', blocked:'محاولات كثيرة خاطئة. انتظر 15 دقيقة.', net:'لا يوجد اتصال. تأكد من الإنترنت.',
   no_api:'لم يُضف رابط API_URL في هذا الملف بعد (راجع دليل الإعداد).', not_found:'العنصر غير موجود، ربما عدّله مشرف آخر.'};
 const errText = r => ERR[r.error] || 'حدث خطأ، حاول مرة أخرى.';
 function toast(m){ const d = document.createElement('div'); d.className = 'toast'; d.textContent = m; document.body.appendChild(d); setTimeout(() => d.remove(), 2200); }
@@ -493,20 +494,22 @@ function renderPending(){
 /* ---------- edit form ---------- */
 const FIELDS = [['Name','اسم المورد'],['Name_AR','الاسم بالعربي'],['Brands','الماركات وأسماء أخرى'],['Type','النوع (Manufacturer = مصنع / Supplier = مورد / Contractor = مقاول)'],['Specialty','التفاصيل'],
   ['City','المدينة'],['Contacts','المسؤول'],['Mobiles','الجوال (افصل بـ ; )'],['Phones','هاتف المكتب'],['Fax','الفاكس'],['Emails','الإيميل'],['Address','العنوان'],['Notes','ملاحظات']];
+const closeEdit = () => document.querySelectorAll('#edit-form').forEach(f => f.closest('.card').remove());
 async function openEdit(id, fromAll){
-  let s = DATA.pending.find(x => x.ID === id);
+  if (!id) closeEdit();
+  let s = id ? DATA.pending.find(x => x.ID === id) : {Type: 'Supplier'};
   if (!s) { const r = await api('get', {id}); if (!r.ok) return toast(errText(r)); s = r.item; }
-  editing = {id, pending: s.Status === 'pending' || !!DATA.pending.find(x => x.ID === id), cats: new Set(upgradeCats(s.Category))};
+  editing = {id, add: !id, pending: s.Status === 'pending' || !!DATA.pending.find(x => x.ID === id), cats: new Set(upgradeCats(s.Category))};
   const box = document.createElement('div');
-  box.className = 'card'; box.id = 'c-' + id;
-  box.innerHTML = `<h3>تعديل: ${esc(s.Name)}</h3>
+  box.className = 'card'; box.id = 'c-' + (id || 'new');
+  box.innerHTML = `<h3>${id ? 'تعديل: ' + esc(s.Name) : '➕ مورد جديد'}</h3>
     <form id="edit-form"><label>التخصصات</label><div id="e-cats"></div>${FIELDS.map(([k, l]) => `<label for="e-${k}">${l}</label><input id="e-${k}" value="${esc(s[k])}" ${/Mobiles|Phones|Fax|Emails/.test(k) ? 'dir="ltr"' : ''}>`).join('')}
     <div style="height:12px"></div>
     <div class="acts">
-      ${editing.pending ? `<button class="btn ok" type="submit" data-mode="edit_approve">💾 حفظ وموافقة</button>` : `<button class="btn ok" type="submit" data-mode="edit">💾 حفظ</button>`}
+      ${editing.add ? `<button class="btn ok" type="submit" data-mode="add">💾 أضف وانشر</button>` : editing.pending ? `<button class="btn ok" type="submit" data-mode="edit_approve">💾 حفظ وموافقة</button>` : `<button class="btn ok" type="submit" data-mode="edit">💾 حفظ</button>`}
       <button class="btn ghost" type="button" id="cancel-edit">إلغاء</button>
     </div></form>`;
-  const old = document.getElementById('c-' + id);
+  const old = document.getElementById('c-' + (id || 'new'));
   if (old) old.replaceWith(box); else { const list = $('#tab-' + (fromAll ? 'all' : 'pending')); list.prepend(box); }
   renderEditCats();
   box.scrollIntoView({block:'start', behavior:'smooth'});
@@ -525,10 +528,12 @@ document.addEventListener('submit', async e => {
   const mode = e.submitter ? e.submitter.dataset.mode : 'edit';
   const data = {}; FIELDS.forEach(([k]) => data[k] = $('#e-' + k).value.trim()); data.Category = [...editing.cats];
   e.submitter && (e.submitter.disabled = true);
+  if (mode === 'add' && (!data.Name || !(data.Mobiles || data.Phones || data.Emails))) { e.submitter && (e.submitter.disabled = false); return toast('اكتب الاسم ورقماً أو إيميلاً'); }
   const r = await api(mode, {sheet:'Suppliers', id:editing.id, data});
   if (!r.ok) { e.submitter && (e.submitter.disabled = false); return toast(errText(r)); }
-  toast(mode === 'edit_approve' ? 'تم الحفظ والموافقة ✅' : 'تم الحفظ ✅');
-  editing = null; refresh();
+  toast(mode === 'add' ? (r.status === 'new' ? 'تمت الإضافة والنشر ✅' : r.status === 'exists' ? 'موجود مسبقاً: ' + r.existing : 'كان موجوداً، أضفنا المعلومات الجديدة لبطاقة ' + r.existing + ' ✅')
+    : mode === 'edit_approve' ? 'تم الحفظ والموافقة ✅' : 'تم الحفظ ✅');
+  editing = null; closeEdit(); refresh();
 });
 
 /* ---------- requests ---------- */
@@ -581,11 +586,12 @@ document.addEventListener('click', async e => {
   if (tab) { document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-selected', b === tab));
     ['pending','requests','all'].forEach(n => $('#tab-' + n).hidden = n !== tab.dataset.tab); return; }
   if (e.target.closest('#reload')) return refresh();
-  if (e.target.closest('#cancel-edit')) { editing = null; return refresh(); }
+  if (e.target.closest('#cancel-edit')) { editing = null; closeEdit(); return refresh(); }
   const ec = e.target.closest('[data-ecat]'); if (ec && editing) { const k = ec.dataset.ecat; editing.cats.has(k) ? editing.cats.delete(k) : editing.cats.add(k); return renderEditCats(); }
   const bt = e.target.closest('[data-batch]'); if (bt) { if (!confirm('اعتماد القائمة كلها؟')) return; bt.disabled = true; const r = await api('approve_batch', {batch: bt.dataset.batch}); if (!r.ok) { bt.disabled = false; return toast(errText(r)); } toast('تم اعتماد ' + r.count + ' ✅'); return refresh(); }
   const mg = e.target.closest('[data-merge]'); if (mg) { if (!confirm('دمج هذا المورد في الموجود؟ تُضاف بياناته الجديدة لبطاقته.')) return; mg.disabled = true; const r = await api('merge', {id: mg.dataset.merge, into: mg.dataset.into}); if (!r.ok) { mg.disabled = false; return toast(errText(r)); } toast('تم الدمج ✅'); return refresh(); }
   if (e.target.closest('#export-all')) return exportAll();
+  if (e.target.closest('#add-new')) return openEdit('', true);
   const nd = e.target.closest('[data-notdup]'); if (nd) { notDup.add(nd.dataset.notdup); try { localStorage.setItem('not_dup', JSON.stringify([...notDup])); } catch(e){} return renderDups(); }
   const ed = e.target.closest('[data-edit]'); if (ed) return openEdit(ed.dataset.edit, false);
   const ea = e.target.closest('[data-edit-all]'); if (ea) return openEdit(ea.dataset.editAll, true);
