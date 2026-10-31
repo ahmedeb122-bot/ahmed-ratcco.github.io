@@ -165,6 +165,7 @@ const SYN = {
  'مصعد':'elevator','مصاعد':'elevator','اسانسير':'elevator','اصانصير':'elevator','سلالم':'escalator','تاجير':'rental','اختبار':'testing','اختبارات':'testing','فحص':'testing',
  'رافعه':'crane','رافعات':'crane','كرين':'crane','مقاول':'contracting','مقاولين':'contracting','مقاولات':'contracting','صيانه':'maintenance','قواطع':'breaker','قاطع':'breaker','عدد':'tools','ادوات':'tools',
  'مصنع':'manufacturer','مصانع':'manufacturer','نحاس':'copper','المنيوم':'aluminum','انفرتر':'inverter','الواح':'panel','بطاريه':'battery','سنترال':'pabx','ذكي':'smart',
+ 'رامنج':'ramming','خوازيق':'piling','دريل':'drill','ونش':'winch','بكرات':'drum','جاك':'jack','هيدروليك':'hydraulic','فوركلفت':'forklift',
  'هانيويل':'honeywell','بوش':'bosch','سيمنس':'siemens','شنايدر':'schneider','اشنايدر':'schneider','الفنار':'fanar','فنار':'fanar','ليجراند':'legrand','السويدي':'sewedy','كانتك':'kantech','فيليبس':'philips','ابب':'abb'
 };
 // two-way dictionary: Arabic word -> English words and English word -> Arabic words
@@ -195,13 +196,27 @@ function skelWords(text){
   return ' ' + out.filter(Boolean).join(' ') + ' ';
 }
 const QSTOP = new Set([...NAME_STOP, 'مورد', 'موردين', 'supplier', 'suppliers', 'في', 'من', 'in']);
-// a search becomes a list of words; each word has its alternatives (translations + sound skeleton)
+// words that mean "a machine / equipment for rent": they are not looked for in the card; they send the search to the rental tab
+const MACHINE = new Set(['اله', 'الات', 'الاله', 'مكنه', 'مكينه', 'ماكينه', 'ماكنه', 'مكاين', 'مكينات', 'ماكينات', 'المكينه', 'الماكينه', 'معدات', 'معده', 'المعدات',
+  'اليات', 'اليه', 'الاليات', 'ايجار', 'اجار', 'تاجير', 'للايجار', 'بالايجار', 'للتاجير', 'ايجارات',
+  'machine', 'machines', 'machinery', 'equipment', 'equipments', 'rental', 'rent', 'rentals', 'hire', 'renting']);
+// a family of equipment: any of its words finds a company that wrote any other of its words (or picked the matching specialty)
+const KINDS = [
+  ['ونش', 'winch', 'سحب', 'pulling', 'puller', 'بكرات', 'بكره', 'drum', 'drums', 'jack', 'jacks', 'جاك', 'حامل', 'رولات', 'roller', 'rollers', 'cable pulling', 'سحب الكابلات'],
+  ['رامنج', 'رامينج', 'رامر', 'ramming', 'rammer', 'piling', 'pile', 'piles', 'pile driver', 'خوازيق', 'خازوق', 'dth', 'drill', 'drilling', 'دريل', 'حفر', 'حفاره', 'حفار', 'auger'],
+  ['رافعه', 'رافعات', 'كرين', 'كرينات', 'crane', 'cranes', 'فوركلفت', 'forklift', 'مان ليفت', 'manlift', 'boom', 'heavy equipment', 'اليات ثقيله'],
+];
+const KIND_OF = {};
+KINDS.forEach(k => k.forEach(w => { KIND_OF[normText(w)] = k.map(normText); }));
+// a search becomes a list of words; each word has its alternatives (translations + equipment family + sound skeleton)
 function tokens(q){
   let ws = normText(q).split(' ').filter(Boolean);
   if (ws.length > 1) { const k = ws.filter(w => !QSTOP.has(w)); if (k.length) ws = k; }
-  return ws.map(w => ({w, alts: [w].concat(SYN2[w] || []), sk: w.length >= 3 ? skel(w) : ''}));
+  const tk = ws.filter(w => !MACHINE.has(w)).map(w => ({w, alts: [w].concat(SYN2[w] || []), kin: KIND_OF[w] || [], sk: w.length >= 3 ? skel(w) : ''}));
+  tk.rent = tk.length < ws.length || ws.some(w => KIND_OF[w]);   // the search asked for a machine / equipment (ونش، رامنج، كرين…)
+  return tk;
 }
-const tokMatch = (s, tk) => tk.alts.some(a => s._hay.includes(a)) || (tk.sk.length >= 3 && s._sk.includes(' ' + tk.sk));
+const tokMatch = (s, tk) => tk.alts.some(a => s._hay.includes(a)) || tk.kin.some(a => (' ' + s._hay).includes(' ' + a)) || (tk.sk.length >= 3 && (s._sk.includes(' ' + tk.sk) || s._sk2.includes(' ' + tk.sk + ' ')));
 
 /* ---------- phones ---------- */
 function tel(raw){ const k = phoneKey(raw); return k ? (k.length === 9 ? '966' + k : k) : ''; }
@@ -253,6 +268,7 @@ function setData(j){
     s._hay = normText([s.Name, s.Name_AR, s.Category, s.Category_AR, s.Specialty, s.Brands, s.City, CITY_AR[s.City], s.Contacts, s.Notes, s.Address, s.Emails,
       s._cats.map(c => CAT_INFO[c] ? CAT_INFO[c].sar + ' ' + CAT_INFO[c].sen : '').join(' ')].join(' '));
     s._sk = skelWords([s.Name, s.Name_AR, s.Brands, s.Contacts, s.City].join(' '));
+    s._sk2 = skelWords([s.Specialty, s.Notes].join(' '));   // details: whole sound-words only (رامنج = ramming), so «كرين» does not hit «current»
     s._nm = normText(s.Name + ' ' + (s.Name_AR || ''));
     byId[s.ID] = s;
   });
@@ -313,15 +329,15 @@ function qScore(s, q, full){
 const qMatch = (s, q) => q.every(tk => tokMatch(s, tk));
 function filtered(){
   const q = tokens($('#q').value), full = normText($('#q').value);
-  const list = DATA.suppliers.filter(s => inMode(s) && inSection(s) && typeOk(s) && (!filt.city || s.City === filt.city) && qMatch(s, q));
-  if (!filt.group && !q.length) return list;
-  return list.map((s, i) => [qScore(s, q, full) * 100 + rank(s), i, s]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
+  const list = DATA.suppliers.filter(s => inMode(s) && inSection(s) && typeOk(s) && (!filt.city || s.City === filt.city) && qMatch(s, q) && (!q.rent || q.length || isSrv(s)));
+  if (!filt.group && !q.length && !q.rent) return list;
+  return list.map((s, i) => [(q.rent && !isSrv(s) ? 1000 : 0) + qScore(s, q, full) * 100 + rank(s), i, s]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(x => x[2]);
 }
 // the same search in the other tabs, so nothing is hidden by the tab you are on
 function otherModes(){
   const q = tokens($('#q').value);
-  if (!q.length || filt.group) return [];
-  return MODES.filter(m => m !== mode).map(m => [m, DATA.suppliers.filter(s => IN[m](s) && (!filt.city || s.City === filt.city) && qMatch(s, q)).length]).filter(x => x[1]);
+  if ((!q.length && !q.rent) || filt.group) return [];
+  return MODES.filter(m => m !== mode).map(m => [m, DATA.suppliers.filter(s => IN[m](s) && (!filt.city || s.City === filt.city) && qMatch(s, q) && (!q.rent || q.length || isSrv(s))).length]).filter(x => x[1]);
 }
 function renderChips(){
   const g = filt.group && GROUP_OF(filt.group);
@@ -398,7 +414,13 @@ function listTitle(){
   if (filt.group) return groupName(GROUP_OF(filt.group));
   return t('all_' + mode);
 }
+let rentQ = '';
 function renderList(){
+  const rq = tokens($('#q').value), rv = normText($('#q').value);
+  if (rq.rent && rv !== rentQ && !filt.group) {           // «ونش سحب كابلات / machine…» → open the rental tab first, if it has results
+    rentQ = rv;
+    if (mode !== 'srv' && DATA.suppliers.some(s => isSrv(s) && (!filt.city || s.City === filt.city) && qMatch(s, rq))) { setMode('srv'); renderHome(); }
+  }
   renderChips();
   const list = filtered();
   if (filt.group) track('section', filt.group);
