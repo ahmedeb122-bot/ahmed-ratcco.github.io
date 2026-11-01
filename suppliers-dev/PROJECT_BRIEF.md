@@ -1,6 +1,6 @@
 # دليل موردي الكهرباء – قروب Elec in KSA
 **Project brief: read this first in every new chat about this project.**
-Last updated: 2026-10-31 (version 4.4 live).
+Last updated: 2026-11-01 (version 4.5 live).
 
 ---
 
@@ -215,7 +215,10 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 
 - **2026-10-31: version 4.4 – admins delete a supplier from anywhere.** Trigger: member Hussein Rahil sent two suggestions that AL-MISBAH FABRICATORS CO. closed 7 years ago, and the suggestion card had no delete. Ahmed chose a delete button on the suggestion card, plus delete for admins on any card in the app. Site only (uses the existing admin `delete` action, no backend deploy); `sw.js` cache `elec-ksa-v13`. Tested on fakegas: delete from a suggestion closes both pending suggestions; delete from the app card hides it and it shows as «محذوف» with ↩️ in the admin page; a suggestion on an already deleted supplier offers only «إغلاق الاقتراح».
 
+- **2026-11-01: version 4.5 – full name.** Ahmed asked that anyone opening the link or app sees the full name «دليل موردي الكهرباء في السعودية». Changed only: the home header title (`title` in app.js, EN «Electrical Suppliers Directory in Saudi Arabia») and the manifest `name` (shown on the Android app splash screen). Kept as is (Ahmed: change only the name): `short_name` «Elec in KSA» under the icon, the browser tab `<title>`, the byline, share messages. iPhone has no splash screen. Site only; `sw.js` cache `elec-ksa-v14`.
+
 ## 11. Open ideas (not requested yet)
+- Offered, not decided (2026-11-01): a WhatsApp link preview card (Open Graph title + image) with the full name, and a short own domain (e.g. elecksa.com, Ahmed would buy it).
 - Offered, not decided: a «🚫 أُغلقت الشركة» choice in the member «اقترح تعديل» form (needs a backend deploy).
 - AL-MISBAH FABRICATORS CO.: two pending suggestions (Hussein Rahil) say it closed; Ahmed to delete it with the new button.
 - Review the 12 "possible duplicates" in the admin page (e.g. MESC × MESC/Middle East, SASCOM ×2, SETRA × TREND/SETRA).
