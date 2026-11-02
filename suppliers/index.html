@@ -1345,7 +1345,57 @@ const PHONE_RE = /(?:\+|00)?\d[\d\s\-().]{6,}\d/g;
 const EMAIL_RE = /[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g;
 const COMPANY_RE = /(شركه|شركة|مؤسسه|مؤسسة|مصنع|مجموعه|مجموعة|\bco\b|company|\best\b|ltd|llc|trading|factory|industries|group|holding|electric|cables?|lighting|systems?)/i;
 const PERSON_RE = /^(م\s*\.\s*|م\s+|المهندس|مهندس|eng\.?|engr\.?|mr\.?|mrs\.?|ms\.?|الاستاذ|أ\.)\s*/i;
+/* labelled lines («العنوان: …», «Brands: …») — one paste fills every field */
+const LABELS = [
+  ['Name_AR', /^(الاسم بالعربي|الاسم العربي|الاسم بالعربية|اسم الشركه بالعربي|اسم الشركة بالعربي|arabic name|name \(ar\))$/i],
+  ['Name', /^(اسم الشركه|اسم الشركة|الشركه|الشركة|اسم المورد|company|company name|name)$/i],
+  ['Type', /^(النوع|نوع الشركه|نوع الشركة|type)$/i],
+  ['Cats', /^(الاقسام|الأقسام|القسم|التصنيف|sections?|categories)$/i],
+  ['Brands', /^(الماركات|الوكالات|الماركات والوكالات|brands?|agencies)$/i],
+  ['Specialty', /^(التفاصيل|المنتجات|المنتجات والخدمات|التخصص|products?|details|specialty)$/i],
+  ['Address', /^(العنوان|address)$/i],
+  ['City', /^(المدينه|المدينة|city)$/i],
+  ['Contacts', /^(المسؤول|المسئول|الشخص المسؤول|contact|contact person)$/i],
+  ['Web', /^(الموقع|الموقع الالكتروني|الموقع الإلكتروني|website|web)$/i],
+  ['Notes', /^(ملاحظات|ملاحظه|ملاحظة|notes?)$/i],
+];
+function labelOf(line){
+  const m = line.match(/^\s*[*•\-–]?\s*([^:：]{2,30})\s*[:：]\s*(.*)$/); if (!m) return null;
+  const key = m[1].replace(/[*_]/g, '').trim(), hit = LABELS.find(([, re]) => re.test(key));
+  return hit ? {f: hit[0], v: m[2].replace(/^[*_]+|[*_]+$/g, '').trim()} : null;
+}
+// «الأقسام: اللوحات والقواطع، لوحات التوزيع» → exact section / specialty names (English names or keys work too)
+function catsFromList(list){
+  const found = [];
+  String(list).split(/[،,;؛\/]|\s+و\s+(?=ال)/).map(x => normText(x.replace(/\(.*?\)/g, ''))).filter(Boolean).forEach(item => {
+    const k = Object.keys(CAT_INFO).find(k => [k, CAT_INFO[k].ar, CAT_INFO[k].sar, CAT_INFO[k].sen].some(w => normText(w) === item));
+    if (k) found.push(k); else guessCats(item).forEach(c => found.push(c));
+  });
+  return found.filter((k, i) => found.indexOf(k) === i && !(CAT_INFO[k].whole && found.some(x => !CAT_INFO[x].whole && CAT_INFO[x].group === CAT_INFO[k].group)));
+}
 function parseText(text){
+  const lab = {};
+  const body = String(text || '').replace(/\r/g, '').split('\n').filter(l => {
+    const x = labelOf(l); if (!x || !x.v) return true;
+    lab[x.f] = lab[x.f] ? lab[x.f] + ' ' + x.v : x.v;
+    return x.f === 'Name' || x.f === 'Contacts';            // these two still go through the normal reading
+  }).join('\n');
+  const p = parseTextPlain(body);
+  if (lab.Name) p.Name = lab.Name;
+  if (lab.Contacts) p.Contacts = lab.Contacts.replace(PHONE_RE, ' ').replace(EMAIL_RE, ' ').replace(/[–—\-,،]+\s*$/, '').replace(/\s+/g, ' ').trim();
+  if (lab.Name_AR) p.Name_AR = lab.Name_AR;
+  ['Brands', 'Specialty', 'Address'].forEach(k => { if (lab[k]) p[k] = lab[k]; });
+  const notes = [lab.Notes, lab.Web ? (/[؀-ۿ]/.test(text) ? 'الموقع: ' : 'Website: ') + lab.Web : ''].filter(Boolean).join(' – ');
+  if (notes) p.Notes = notes;
+  if (lab.City) p.City = guessCity(lab.City) || lab.City;
+  else if (lab.Address && guessCity(lab.Address)) p.City = guessCity(lab.Address);
+  if (lab.Type) p.Type = /مصنع|manufactur|factory/i.test(lab.Type) ? 'Manufacturer' : /مقاول|contract/i.test(lab.Type) ? 'Contractor' : 'Supplier';
+  // a «الأقسام:» line decides the sections; otherwise guess from the whole text
+  if (lab.Cats) p.cats = catsFromList(lab.Cats);
+  else p.cats = guessCats([body, lab.Specialty].join(' '));
+  return p;
+}
+function parseTextPlain(text){
   const out = {Mobiles: [], Phones: [], Emails: []};
   const raw = String(text || '').replace(/\r/g, '');
   (raw.match(EMAIL_RE) || []).forEach(e => { if (!out.Emails.includes(e.toLowerCase())) out.Emails.push(e.toLowerCase()); });
@@ -1368,7 +1418,7 @@ function parseText(text){
   const person = keep.find(x => PERSON_RE.test(x.l));
   const first = keep.find(x => x !== person && !x.fax && x.l.length <= 80 && !CITY_WORDS.some(([, ws]) => ws.includes(normText(x.l))));
   const pick = company || first;
-  if (pick) { const parts = pick.l.split(/\s+—\s+|\s+-\s+/); name = parts[0]; if (parts[1] && /[؀-ۿ]/.test(parts[1]) && !/[؀-ۿ]/.test(parts[0])) nameAr = parts[1]; }
+  if (pick) { const parts = pick.orig.replace(EMAIL_RE, ' ').replace(PHONE_RE, ' ').replace(/\s+/g, ' ').trim().split(/\s+[—–]\s+|\s+-\s+/).map(x => x.replace(/[|•·,،:]+/g, ' ').trim()); name = parts[0]; if (parts[1] && /[؀-ۿ]/.test(parts[1]) && !/[؀-ۿ]/.test(parts[0])) nameAr = parts[1]; }
   if (person) contact = person.l.replace(/\s+(—|-).*$/, '').trim();
   if (out.Phones.length && /fax|فاكس/i.test(raw)) {
     const faxLine = lines.find(l => /fax|فاكس/i.test(l));
@@ -1444,25 +1494,29 @@ function fillForms(){
   [['#a-by', ME.name], ['#a-byph', ME.phone], ['#rq-name', ME.name], ['#rq-phone', ME.phone], ['#bk-by', ME.name], ['#bk-byph', ME.phone]]
     .forEach(([id, val]) => { const el = $(id); if (el && !el.value) el.value = val || ''; });
 }
+let pastedNameAr = '';   // Arabic name from a pasted message (the form has no field for it)
 function applyParsed(p){
   let n = 0;
   const put = (id, val) => { if (val && !$(id).value.trim()) { $(id).value = val; n++; } };
   put('#a-name', p.Name); put('#a-mob', [p.Mobiles, p.Phones && !p.Mobiles ? p.Phones : ''].filter(Boolean).join(' , '));
   if (p.Mobiles && p.Phones) put('#a-tel', p.Phones);
   put('#a-email', p.Emails); put('#a-contact', p.Contacts); put('#a-addr', p.Address);
+  put('#a-brands', p.Brands); put('#a-spec', p.Specialty); put('#a-notes', p.Notes);
+  if (p.Name_AR && !pastedNameAr) { pastedNameAr = p.Name_AR; n++; }
+  if (p.Type && p.Type !== 'Supplier') setType(p.Type);
   if (p.City && !$('#a-city').value) { $('#a-city').value = p.City; n++; renderCityPick(); }
   const cs = p.cats || [], conOnly = cs.length && cs.every(c => CAT_INFO[c] && CAT_INFO[c].group === 'contracting');
-  if (conOnly) setType('Contractor');
+  if (conOnly && !p.Type) setType('Contractor');
   cs.forEach(c => picked.add(c)); if (cs.length) n++;
   renderPicker();
-  if ($('#a-email').value || $('#a-tel').value || $('#a-contact').value) $('#more-d').open = true;
+  if ($('#a-email').value || $('#a-tel').value || $('#a-contact').value || $('#a-brands').value || $('#a-addr').value) $('#more-d').open = true;
   $('#filled').hidden = false; $('#filled').textContent = n ? t('filled', n) : t('filled_none');
   checkDup();
 }
 function formData(){
   return {Name: v('#a-name'), Mobiles: v('#a-mob').replace(/\s*[,،/]\s*/g, ' ; '), Phones: v('#a-tel').replace(/\s*[,،/]\s*/g, ' ; '), Emails: v('#a-email').replace(/\s*[,،]\s*/g, ' ; '),
     Category: [...picked].filter(k => isConForm() === (CAT_INFO[k] && CAT_INFO[k].group === 'contracting')).concat(splitList(v('#a-other').replace(/[،,]/g, ';'))), Type: getType(), City: v('#a-city'), Contacts: v('#a-contact'), Brands: v('#a-brands'), Specialty: v('#a-spec'),
-    Address: v('#a-addr'), Notes: v('#a-notes'), Submitted_By: v('#a-by'), Submitter_Phone: v('#a-byph'), Request_ID: answerReq ? answerReq.id : ''};
+    Address: v('#a-addr'), Notes: v('#a-notes'), Name_AR: pastedNameAr, Submitted_By: v('#a-by'), Submitter_Phone: v('#a-byph'), Request_ID: answerReq ? answerReq.id : ''};
 }
 let dupTimer;
 function checkDup(){
@@ -1479,7 +1533,7 @@ function checkDup(){
 }
 function resetAdd(){
   $('#f-add').reset(); picked = new Set(); fineOpen = false; setType(mode === 'con' ? 'Contractor' : 'Supplier');
-  $('#dup').hidden = true; $('#filled').hidden = true; $('#paste-box').hidden = true; $('#paste-text').value = ''; $('#more-d').open = false;
+  $('#dup').hidden = true; $('#filled').hidden = true; $('#paste-box').hidden = true; $('#paste-text').value = ''; pastedNameAr = ''; $('#more-d').open = false;
   fillForms(); setAnswer(null);
 }
 

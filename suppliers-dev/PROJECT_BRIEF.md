@@ -1,6 +1,6 @@
 # دليل موردي الكهرباء – قروب Elec in KSA
 **Project brief: read this first in every new chat about this project.**
-Last updated: 2026-11-01 (version 4.5 live).
+Last updated: 2026-11-02 (version 4.6 live).
 
 ---
 
@@ -217,6 +217,10 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 
 - **2026-11-01: version 4.5 – full name.** Ahmed asked that anyone opening the link or app sees the full name «دليل موردي الكهرباء في السعودية». Changed only: the home header title (`title` in app.js, EN «Electrical Suppliers Directory in Saudi Arabia») and the manifest `name` (shown on the Android app splash screen). Kept as is (Ahmed: change only the name): `short_name` «Elec in KSA» under the icon, the browser tab `<title>`, the byline, share messages. iPhone has no splash screen. Site only; `sw.js` cache `elec-ksa-v14`.
 
+- **2026-11-02: version 4.6 – paste reads labelled lines.** Ahmed now sends Claude a business-card photo (or a short message); Claude checks the directory for a duplicate, researches the company online and writes ONE ready message that Ahmed pastes in «الصق رسالة». `parseText()` in app.js now reads labelled lines (`LABELS`, `labelOf()`): «النوع:» (مصنع/مورد/مقاول), «الأقسام:» (exact section/specialty names via `catsFromList()`, which decides the sections instead of keyword guessing), «التفاصيل:», «الماركات:», «المسؤول:», «المدينة:», «العنوان:», «الموقع:» (added to Notes), «ملاحظات:», «الاسم بالعربي:» (sent as `Name_AR`; the form has no visible field for it, `pastedNameAr`). A first line «English — عربي» also gives the Arabic name (old bug: the dash was stripped before splitting). Plain pastes work as before. Site only; `sw.js` cache `elec-ksa-v15`. Tested on fakegas (12 fields filled, Name_AR saved) + old e2e6.
+  - Message format Claude uses (keep it): first line = company name; then النوع / الأقسام / التفاصيل (≤200 chars) / الماركات / المسؤول / الجوال / الهاتف / الإيميل / المدينة / العنوان / الموقع / ملاحظات. Only facts from the card or the company's own site; nothing invented (no made-up Arabic name). If the company site looks unreliable, take only product types from it, not phones/addresses.
+  - First card: DISTYIT (Elsewedy Cables Telecom authorized distributor, Riyadh). Ahmed pasted it on the OLD site first: the name came out as the details line and «Telecom» became «ecom» (old parser strips the word "tel"). He should reject that pending entry and paste again.
+
 ## 11. Open ideas (not requested yet)
 - Offered, not decided (2026-11-01): a WhatsApp link preview card (Open Graph title + image) with the full name, and a short own domain (e.g. elecksa.com, Ahmed would buy it).
 - Offered, not decided: a «🚫 أُغلقت الشركة» choice in the member «اقترح تعديل» form (needs a backend deploy).
@@ -234,4 +238,6 @@ Needs Ahmed's laptop linked, using the built-in browser of the Claude desktop ap
 - Secutron (S0110) has no phone or e-mail in the directory. The PDF lists one rep mobile only, so it was not added.
 - Cummins Arabia: the live directory has S0116 «CUMMINS / OLAYAN» and S0117 «CUMMINS / SAUDI TECHNIC». Mohamed Megahed (Sales Engineer – Power Gen, Riyadh, Cummins Saudi Arabia Ltd, a Cummins–Olayan partnership) asked to replace the current contact (Eng. Omar, Aftermarket). Ahmed can do it now with «تعديل» on the card.
 - «انضم للقروب» is the 3rd pill and partly hidden on narrow phones; a 2×2 quick-access grid was offered if Ahmed changes his mind.
+- **Business-card upload for members (Ahmed's idea, 2026-11-02):** member photographs a card → site reads it and searches the web → fills the form → member sends → admin approves. Options offered: (1) Gemini API through Apps Script with web search (key in Apps Script only; recommended), (2) member uploads photo only, admin + Claude fill it later, (3) on-phone OCR only (no web search). Not decided. Do NOT add a hint to members before the feature exists.
+- The old paste parser removes "tel" inside words (Telecom → ecom) in unlabelled lines (`rest` regex in `parseTextPlain`); harmless for labelled lines, worth fixing with word boundaries.
 - Not decided: a rental specialty for pile-driving / drilling machines (رامنج / DTH) under التأجير والاختبارات (needs a backend deploy because shared.js changes). For now such companies go under «رافعات وآليات ثقيلة» with the machine type in التفاصيل.
