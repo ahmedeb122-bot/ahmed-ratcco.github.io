@@ -560,7 +560,7 @@ const LABELS = [
   ['Name', /^(اسم الشركه|اسم الشركة|الشركه|الشركة|اسم المورد|company|company name|name)$/i],
   ['Type', /^(النوع|نوع الشركه|نوع الشركة|type)$/i],
   ['Cats', /^(الاقسام|الأقسام|القسم|التصنيف|sections?|categories)$/i],
-  ['Brands', /^(الماركات|الوكالات|الماركات والوكالات|brands?|agencies)$/i],
+  ['Brands', /^(الماركات|الوكالات|الماركات والوكالات|الماركات وأسماء أخرى|الماركات واسماء اخرى|brands?|agencies|brands & other names)$/i],
   ['Specialty', /^(التفاصيل|المنتجات|المنتجات والخدمات|التخصص|products?|details|specialty)$/i],
   ['Address', /^(العنوان|address)$/i],
   ['City', /^(المدينه|المدينة|city)$/i],
@@ -569,6 +569,7 @@ const LABELS = [
   ['Notes', /^(ملاحظات|ملاحظه|ملاحظة|notes?)$/i],
 ];
 function labelOf(line){
+  line = line.replace(/^[\s\u200E\u200F\u{1F000}-\u{1FAFF}\u{2100}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]+/u, '');   // «🏷️ *الماركات:* …» from a shared message
   const m = line.match(/^\s*[*•\-–]?\s*([^:：]{2,30})\s*[:：]\s*(.*)$/); if (!m) return null;
   const key = m[1].replace(/[*_]/g, '').trim(), hit = LABELS.find(([, re]) => re.test(key));
   return hit ? {f: hit[0], v: m[2].replace(/^[*_]+|[*_]+$/g, '').trim()} : null;
@@ -1006,12 +1007,19 @@ function share(s){
   const cats = shown.slice(0, 3).map(catName).join('، ') + (shown.length > 3 ? '…' : '');
   const head = ['🏢 ' + s.Name + (s.Name_AR ? ' — ' + s.Name_AR : ''), emoji + ' ' + cats + (city ? ' — ' + city : '')];
   const info = [];
+  const LTR = '\u200E';                                       // keeps "+966 55 482 3457" in the right order in Arabic WhatsApp
   if (s.Contacts) info.push('👤 ' + s.Contacts.replace(/ ; /g, '، '));
-  splitList(s.Mobiles).forEach(p => info.push('📱 ' + p));
-  splitList(s.Phones).forEach(p => info.push('☎️ ' + p));
+  splitList(s.Mobiles).forEach(p => info.push(LTR + '📱 ' + p));
+  splitList(s.Phones).forEach(p => info.push(LTR + '☎️ ' + p));
+  splitList(s.Fax).forEach(p => info.push(LTR + '📠 ' + t('fax') + ': ' + p));
   splitList(s.Emails).forEach(p => info.push('✉️ ' + p));
+  // labelled lines, so a shared message pasted back into «أضف مورد» fills the same fields
+  const notes = (s.Notes || '').replace(/NOT ACTIVE/i, '').trim();
+  const more = [['🏷️', 'brands', (s.Brands || '').replace(/ ; /g, '، ')], ['📝', 'spec', s.Specialty], ['📍', 'address', s.Address],
+    ['🗒️', 'notes', notes && normText(notes) !== normText(s.Specialty || '') ? notes : '']]
+    .filter(([, , v]) => v && String(v).trim()).map(([e, k, v]) => e + ' *' + t(k) + ':* ' + String(v).trim());
   const home = CONFIG.SITE_URL.replace(/[?#].*$/, '');
-  const text = head.join('\n') + (info.length ? '\n\n' + info.join('\n') : '') +
+  const text = head.join('\n') + (info.length ? '\n\n' + info.join('\n') : '') + (more.length ? '\n\n' + more.join('\n') : '') +
     '\n\n' + t('dir_line') + '\n' + home + '\n\n' + t('join_line') + '\n' + CONFIG.JOIN_LINK;
   window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank', 'noopener');
 }
